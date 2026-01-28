@@ -6,6 +6,7 @@ import { News } from '../components/News/News'
 import { InfoBlocks } from '../components/InfoBlocks/InfoBlock'
 import { ContactSection } from '../components/ContactSection/ContactSection'
 import { Footer } from '../components/Footer/Footer'
+import { AnimatedSection } from '../components/ui/AnimatedSection'
 
 export default function Home() {
   return (
@@ -13,11 +14,21 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
-        <Categories />
-        <ProductCards />
-        <News />
-        <InfoBlocks />
-        <ContactSection />
+        <AnimatedSection>
+          <Categories />
+        </AnimatedSection>
+        <AnimatedSection delay={100}>
+          <ProductCards />
+        </AnimatedSection>
+        <AnimatedSection delay={150}>
+          <News />
+        </AnimatedSection>
+        <AnimatedSection delay={200}>
+          <InfoBlocks />
+        </AnimatedSection>
+        <AnimatedSection delay={250}>
+          <ContactSection />
+        </AnimatedSection>
       </main>
       <Footer />
     </div>

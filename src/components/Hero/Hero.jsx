@@ -31,13 +31,13 @@ export function Hero() {
             <img
               src={banner.imageDesktop}
               alt={banner.alt}
-              className="hidden md:block w-full h-auto"
+              className="hidden lg:block w-full h-auto"
             />
             {/* Mobile */}
             <img
               src={banner.imageMobile}
               alt={banner.alt}
-              className="md:hidden w-full h-auto"
+              className="lg:hidden w-full h-auto"
             />
           </SwiperSlide>
         ))}

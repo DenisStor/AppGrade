@@ -12,7 +12,7 @@ export function FooterColumn({ title, links }) {
         <li key={index}>
           <a
             href={link.href}
-            className="text-gray-medium hover:text-gray-dark transition-colors"
+            className="text-gray-400 hover:text-white transition-colors"
           >
             {link.label}
           </a>
@@ -23,10 +23,10 @@ export function FooterColumn({ title, links }) {
 
   if (isMobile) {
     return (
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-700">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full py-4 text-gray-dark font-semibold"
+          className="flex items-center justify-between w-full py-4 text-white font-semibold"
         >
           {title}
           <ChevronDown
@@ -47,7 +47,7 @@ export function FooterColumn({ title, links }) {
 
   return (
     <div>
-      <h3 className="text-lg font-bold text-gray-dark mb-4">{title}</h3>
+      <h3 className="text-lg font-bold text-white mb-4">{title}</h3>
       {content}
     </div>
   )

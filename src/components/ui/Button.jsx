@@ -10,6 +10,7 @@ export function Button({
     secondary: 'bg-gray-dark text-white hover:bg-black',
     outline: 'border border-gray-dark text-gray-dark hover:bg-gray-dark hover:text-white',
     'outline-white': 'border border-white text-white hover:bg-white hover:text-gray-dark',
+    white: 'bg-white text-gray-dark hover:bg-gray-100',
     ghost: 'text-gray-dark hover:bg-gray-100',
     glass: 'bg-gray-light border border-gray-200/50 text-gray-dark hover:bg-gray-200 shadow-glass hover:shadow-glass-hover',
   }

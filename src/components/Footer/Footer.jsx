@@ -39,12 +39,12 @@ const FOOTER_LINKS = {
 
 export function Footer() {
   return (
-    <footer className="bg-gray-light border-t border-gray-200/50 pt-12 pb-6">
+    <footer className="bg-gray-dark border-t border-gray-700 pt-12 pb-6">
       <Container>
         {/* Logo */}
         <div className="mb-8">
           <a href="/">
-            <img src={logo} alt="APPGRADE" className="h-6" />
+            <img src={logo} alt="APPGRADE" className="h-6 brightness-0 invert" />
           </a>
         </div>
 

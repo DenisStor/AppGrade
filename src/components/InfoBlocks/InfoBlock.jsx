@@ -1,56 +1,66 @@
-import { Container } from '../ui/Container'
-import { Button } from '../ui/Button'
-import { Wrench, MessageCircle } from 'lucide-react'
+import { Headphones, Truck, Shield } from 'lucide-react'
 
 export function InfoBlocks() {
   return (
     <section className="py-10 md:py-14">
       <div className="mx-4 lg:mx-8 border-t border-gray-300 mb-8" />
-      <Container>
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Service Block */}
+      <div className="px-4 lg:px-8">
+        <h2 className="text-2xl lg:text-3xl font-bold mb-8 text-gray-dark">
+          Почему мы
+        </h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Клиентский сервис */}
           <div className="bg-gray-light border border-gray-200/50 shadow-glass hover:shadow-glass-hover hover:scale-[1.01] transition-all duration-300 rounded-3xl p-8 md:p-10">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Wrench size={24} className="text-orange-600" />
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Headphones size={24} className="text-blue-600" />
               </div>
               <div>
                 <h3 className="text-xl md:text-2xl font-bold text-gray-dark mb-2">
-                  Сервисный центр
+                  Клиентский сервис
                 </h3>
-                <p className="text-gray-medium mb-4">
-                  Профессиональный ремонт техники Apple с гарантией качества.
-                  Оригинальные запчасти и опытные мастера.
+                <p className="text-gray-medium">
+                  Поддержка 24/7 для всех клиентов
                 </p>
-                <Button variant="secondary" size="sm">
-                  Записаться
-                </Button>
               </div>
             </div>
           </div>
 
-          {/* Telegram Block */}
+          {/* Быстрая доставка */}
           <div className="bg-gray-light border border-gray-200/50 shadow-glass hover:shadow-glass-hover hover:scale-[1.01] transition-all duration-300 rounded-3xl p-8 md:p-10">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                <MessageCircle size={24} className="text-gray-dark" />
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Truck size={24} className="text-green-600" />
               </div>
               <div>
                 <h3 className="text-xl md:text-2xl font-bold text-gray-dark mb-2">
-                  Telegram-канал
+                  Быстрая доставка
                 </h3>
-                <p className="text-gray-medium mb-4">
-                  Подпишитесь на наш канал и первыми узнавайте о скидках,
-                  новинках и эксклюзивных предложениях.
+                <p className="text-gray-medium">
+                  Доставим в день заказа по Москве
                 </p>
-                <Button variant="primary" size="sm">
-                  Подписаться
-                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Оригинальная техника */}
+          <div className="bg-gray-light border border-gray-200/50 shadow-glass hover:shadow-glass-hover hover:scale-[1.01] transition-all duration-300 rounded-3xl p-8 md:p-10">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Shield size={24} className="text-purple-600" />
+              </div>
+              <div>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-dark mb-2">
+                  Оригинальная техника
+                </h3>
+                <p className="text-gray-medium">
+                  Только сертифицированные товары
+                </p>
               </div>
             </div>
           </div>
         </div>
-      </Container>
+      </div>
     </section>
   )
 }

@@ -1,4 +1,5 @@
 import { Button } from '../ui/Button'
+import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 
 export function ProductCard({
   title,
@@ -27,11 +28,14 @@ export function ProductCard({
       </div>
 
       <div className="mt-6">
-        <img
-          src={image}
-          alt={title}
-          className="w-full max-w-xs mx-auto mb-6"
-        />
+        <div className="overflow-hidden rounded-xl max-w-xs mx-auto mb-6">
+          <ImageWithSkeleton
+            src={image}
+            alt={title}
+            className="w-full transition-transform duration-300 hover:scale-105"
+            skeletonClassName="rounded-xl"
+          />
+        </div>
         <div className="flex gap-3">
           <Button
             variant="secondary"
