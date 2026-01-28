@@ -5,6 +5,8 @@ import 'swiper/css/pagination'
 
 import heroDesktop from '../../assets/banners/hero-desktop.png'
 import heroMobile from '../../assets/banners/hero-mobile.png'
+import banner2Desktop from '../../assets/banners/banner-2-desktop.png'
+import banner2Mobile from '../../assets/banners/banner-2-mobile.png'
 
 const BANNERS = [
   {
@@ -12,6 +14,12 @@ const BANNERS = [
     imageDesktop: heroDesktop,
     imageMobile: heroMobile,
     alt: 'iPhone 17 PRO MAX'
+  },
+  {
+    id: 2,
+    imageDesktop: banner2Desktop,
+    imageMobile: banner2Mobile,
+    alt: 'Sony PlayStation 5'
   },
 ]
 
@@ -21,8 +29,9 @@ export function Hero() {
       <Swiper
         modules={[Pagination, Autoplay]}
         pagination={{ clickable: true }}
-        autoplay={{ delay: 5000 }}
+        autoplay={{ delay: 20000 }}
         loop={BANNERS.length > 1}
+        grabCursor={true}
         className="w-full hero-swiper"
       >
         {BANNERS.map((banner) => (
