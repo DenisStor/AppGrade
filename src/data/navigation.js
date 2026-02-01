@@ -1,11 +1,11 @@
 // Основная навигация (каталог)
 export const NAV_MAIN = [
-  { label: 'iPhone', href: '/iphone' },
-  { label: 'Mac', href: '/mac' },
-  { label: 'iPad', href: '/ipad' },
-  { label: 'Watch', href: '/watch' },
-  { label: 'AirPods', href: '/airpods' },
-  { label: 'Аксессуары', href: '/accessories' },
+  { label: 'iPhone', href: '/catalog/iphone' },
+  { label: 'Mac', href: '/catalog/mac' },
+  { label: 'iPad', href: '/catalog/ipad' },
+  { label: 'Watch', href: '/catalog/watch' },
+  { label: 'AirPods', href: '/catalog/airpods' },
+  { label: 'Аксессуары', href: '/catalog/accessories' },
   { label: 'Каталог', href: '/catalog' },
   { label: 'Сервис', href: '/service' },
   { label: 'О нас', href: '/about' },
@@ -20,12 +20,12 @@ export const NAV_TOP = [
 
 // Мобильное меню (объединение основной навигации и инфо-ссылок)
 export const NAV_MOBILE = [
-  { label: 'iPhone', href: '/iphone' },
-  { label: 'Mac', href: '/mac' },
-  { label: 'iPad', href: '/ipad' },
-  { label: 'Watch', href: '/watch' },
-  { label: 'AirPods', href: '/airpods' },
-  { label: 'Аксессуары', href: '/accessories' },
+  { label: 'iPhone', href: '/catalog/iphone' },
+  { label: 'Mac', href: '/catalog/mac' },
+  { label: 'iPad', href: '/catalog/ipad' },
+  { label: 'Watch', href: '/catalog/watch' },
+  { label: 'AirPods', href: '/catalog/airpods' },
+  { label: 'Аксессуары', href: '/catalog/accessories' },
   { label: 'Доставка и оплата', href: '/delivery' },
   { label: 'Гарантия', href: '/warranty' },
   { label: 'Контакты', href: '/contacts' },
@@ -37,12 +37,12 @@ export const FOOTER_SECTIONS = {
   catalog: {
     title: 'Каталог',
     links: [
-      { label: 'iPhone', href: '/iphone' },
-      { label: 'Mac', href: '/mac' },
-      { label: 'iPad', href: '/ipad' },
-      { label: 'Watch', href: '/watch' },
-      { label: 'AirPods', href: '/airpods' },
-      { label: 'Аксессуары', href: '/accessories' },
+      { label: 'iPhone', href: '/catalog/iphone' },
+      { label: 'Mac', href: '/catalog/mac' },
+      { label: 'iPad', href: '/catalog/ipad' },
+      { label: 'Watch', href: '/catalog/watch' },
+      { label: 'AirPods', href: '/catalog/airpods' },
+      { label: 'Аксессуары', href: '/catalog/accessories' },
     ],
   },
   info: {

@@ -1,14 +1,29 @@
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Menu, Search } from 'lucide-react'
 import { useScrollPosition } from '../../hooks/useScrollPosition'
 import { Navigation } from './Navigation'
 import { MobileMenu } from './MobileMenu'
 import { Container } from '../ui/Container'
+import { SearchInput } from '../search/SearchInput'
+import { useSearchStore } from '../../stores/useSearchStore'
 import logo from '../../assets/logo.png'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
   const { isScrolled } = useScrollPosition()
+  const { query, setQuery, reset } = useSearchStore()
+  const navigate = useNavigate()
+
+  const handleMobileSearch = (e) => {
+    e.preventDefault()
+    if (query.trim()) {
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`)
+      setIsMobileSearchOpen(false)
+      reset()
+    }
+  }
 
   return (
     <>
@@ -28,14 +43,34 @@ export function Header() {
               <Menu size={24} />
             </button>
 
-            <a href="/">
+            <Link to="/">
               <img src={logo} alt="APPGRADE" className="h-5" />
-            </a>
+            </Link>
 
-            <button className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all">
+            <button
+              onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all"
+            >
               <Search size={24} />
             </button>
           </Container>
+
+          {/* Mobile Search Bar */}
+          {isMobileSearchOpen && (
+            <div className="px-4 pb-3 animate-fade-in">
+              <form onSubmit={handleMobileSearch} className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-medium" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Поиск товаров..."
+                  autoFocus
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-100 rounded-lg text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-gray-200"
+                />
+              </form>
+            </div>
+          )}
         </div>
 
         {/* Desktop Header */}

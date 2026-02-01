@@ -1,0 +1,88 @@
+import { X } from 'lucide-react'
+import { formatMemory, formatPrice } from '../../data/products'
+
+export function ActiveFilters({
+  filters,
+  availableColors = [],
+  availableMemory = [],
+  onRemoveColor,
+  onRemoveMemory,
+  onResetPrice,
+  onResetStock,
+  onResetAll,
+  className = '',
+}) {
+  const hasFilters =
+    filters.colors.length > 0 ||
+    filters.memory.length > 0 ||
+    filters.inStock ||
+    filters.priceRange[0] > 0 ||
+    filters.priceRange[1] < 500000
+
+  if (!hasFilters) return null
+
+  const getColorName = (colorId) => {
+    const color = availableColors.find((c) => c.id === colorId)
+    return color?.name || colorId
+  }
+
+  return (
+    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+      <span className="text-sm text-gray-medium">Фильтры:</span>
+
+      {/* Цена */}
+      {(filters.priceRange[0] > 0 || filters.priceRange[1] < 500000) && (
+        <Tag
+          label={`${formatPrice(filters.priceRange[0])} — ${formatPrice(filters.priceRange[1])}`}
+          onRemove={onResetPrice}
+        />
+      )}
+
+      {/* Цвета */}
+      {filters.colors.map((colorId) => (
+        <Tag
+          key={colorId}
+          label={getColorName(colorId)}
+          onRemove={() => onRemoveColor(colorId)}
+        />
+      ))}
+
+      {/* Память */}
+      {filters.memory.map((memory) => (
+        <Tag
+          key={memory}
+          label={formatMemory(memory)}
+          onRemove={() => onRemoveMemory(memory)}
+        />
+      ))}
+
+      {/* В наличии */}
+      {filters.inStock && (
+        <Tag label="В наличии" onRemove={onResetStock} />
+      )}
+
+      {/* Сбросить все */}
+      <button
+        onClick={onResetAll}
+        className="text-sm text-gray-medium hover:text-gray-dark transition-colors underline underline-offset-2"
+      >
+        Сбросить все
+      </button>
+    </div>
+  )
+}
+
+function Tag({ label, onRemove }) {
+  return (
+    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 rounded-full text-sm">
+      <span className="text-gray-dark">{label}</span>
+      <button
+        onClick={onRemove}
+        className="p-0.5 hover:bg-gray-200 rounded-full transition-colors"
+        aria-label={`Удалить фильтр: ${label}`}
+      >
+        <X className="w-3.5 h-3.5 text-gray-medium" />
+      </button>
+    </span>
+  )
+}

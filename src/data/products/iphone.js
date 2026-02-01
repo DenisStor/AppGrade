@@ -1,0 +1,343 @@
+export const iphoneProducts = [
+  {
+    id: 'iphone-17-pro-max',
+    slug: 'iphone-17-pro-max',
+    category: 'iphone',
+    name: 'iPhone 17 Pro Max',
+    shortDescription: 'Титановый корпус. Чип A19 Pro. Камера 48 Мп.',
+    badges: ['new'],
+    variants: [
+      {
+        id: 'iphone-17-pro-max-black-256',
+        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 256,
+        price: 169990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-pro-max-black-512',
+        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 512,
+        price: 189990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-pro-max-black-1tb',
+        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 1024,
+        price: 219990,
+        oldPrice: null,
+        inStock: false,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-pro-max-white-256',
+        color: { id: 'white', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 256,
+        price: 169990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-pro-max-white-512',
+        color: { id: 'white', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 512,
+        price: 189990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-pro-max-natural-256',
+        color: { id: 'natural', name: 'Натуральный титан', hex: '#c4b8a5' },
+        memory: 256,
+        price: 169990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-naturaltitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-pro-max-desert-256',
+        color: { id: 'desert', name: 'Титан пустыни', hex: '#c2a87d' },
+        memory: 256,
+        price: 169990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-deserttitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+    ],
+    specs: {
+      display: '6.9" Super Retina XDR OLED',
+      chip: 'A19 Pro',
+      camera: '48 Мп + 12 Мп + 12 Мп',
+      battery: 'До 33 часов видео',
+      weight: '227 г',
+    },
+    description:
+      'iPhone 17 Pro Max — самый мощный iPhone с титановым корпусом, чипом A19 Pro и улучшенной камерой ProMotion.',
+    relatedIds: ['iphone-17-pro', 'case-iphone-17'],
+  },
+  {
+    id: 'iphone-17-pro',
+    slug: 'iphone-17-pro',
+    category: 'iphone',
+    name: 'iPhone 17 Pro',
+    shortDescription: 'Титановый корпус. Чип A19 Pro. Камера 48 Мп.',
+    badges: ['new'],
+    variants: [
+      {
+        id: 'iphone-17-pro-black-128',
+        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 128,
+        price: 139990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-3inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-pro-black-256',
+        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 256,
+        price: 154990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-3inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-pro-white-256',
+        color: { id: 'white', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 256,
+        price: 154990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-3inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+    ],
+    specs: {
+      display: '6.3" Super Retina XDR OLED',
+      chip: 'A19 Pro',
+      camera: '48 Мп + 12 Мп + 12 Мп',
+      battery: 'До 27 часов видео',
+      weight: '199 г',
+    },
+    description:
+      'iPhone 17 Pro — компактный флагман с титановым корпусом, чипом A19 Pro и профессиональной камерой.',
+    relatedIds: ['iphone-17-pro-max', 'case-iphone-17'],
+  },
+  {
+    id: 'iphone-17',
+    slug: 'iphone-17',
+    category: 'iphone',
+    name: 'iPhone 17',
+    shortDescription: 'Чип A19. Dynamic Island. Камера 48 Мп.',
+    badges: ['new'],
+    variants: [
+      {
+        id: 'iphone-17-black-128',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 128,
+        price: 109990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-black-256',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 256,
+        price: 124990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-pink-128',
+        color: { id: 'pink', name: 'Розовый', hex: '#f9d1cf' },
+        memory: 128,
+        price: 109990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-17-blue-128',
+        color: { id: 'blue', name: 'Голубой', hex: '#a8c9e2' },
+        memory: 128,
+        price: 109990,
+        oldPrice: null,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+    ],
+    specs: {
+      display: '6.1" Super Retina XDR OLED',
+      chip: 'A19',
+      camera: '48 Мп + 12 Мп',
+      battery: 'До 22 часов видео',
+      weight: '170 г',
+    },
+    description:
+      'iPhone 17 — стильный и производительный смартфон с чипом A19, Dynamic Island и улучшенной камерой.',
+    relatedIds: ['iphone-17-plus', 'case-iphone-17'],
+  },
+  {
+    id: 'iphone-16-pro-max',
+    slug: 'iphone-16-pro-max',
+    category: 'iphone',
+    name: 'iPhone 16 Pro Max',
+    shortDescription: 'Титановый корпус. Чип A18 Pro. Камера 48 Мп.',
+    badges: ['hit'],
+    variants: [
+      {
+        id: 'iphone-16-pro-max-black-256',
+        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 256,
+        price: 149990,
+        oldPrice: 169990,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-16-pro-max-black-512',
+        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 512,
+        price: 169990,
+        oldPrice: 189990,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-16-pro-max-white-256',
+        color: { id: 'white', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 256,
+        price: 149990,
+        oldPrice: 169990,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+    ],
+    specs: {
+      display: '6.9" Super Retina XDR OLED',
+      chip: 'A18 Pro',
+      camera: '48 Мп + 12 Мп + 12 Мп',
+      battery: 'До 33 часов видео',
+      weight: '227 г',
+    },
+    description:
+      'iPhone 16 Pro Max — флагман прошлого поколения с отличным соотношением цена/качество.',
+    relatedIds: ['iphone-16-pro', 'case-iphone-16'],
+  },
+  {
+    id: 'iphone-15',
+    slug: 'iphone-15',
+    category: 'iphone',
+    name: 'iPhone 15',
+    shortDescription: 'Чип A16. Dynamic Island. USB-C.',
+    badges: ['sale'],
+    variants: [
+      {
+        id: 'iphone-15-black-128',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 128,
+        price: 79990,
+        oldPrice: 99990,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-black?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-15-black-256',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 256,
+        price: 89990,
+        oldPrice: 109990,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-black?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-15-blue-128',
+        color: { id: 'blue', name: 'Голубой', hex: '#7eb4d3' },
+        memory: 128,
+        price: 79990,
+        oldPrice: 99990,
+        inStock: false,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-blue?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+      {
+        id: 'iphone-15-pink-128',
+        color: { id: 'pink', name: 'Розовый', hex: '#f4d4d4' },
+        memory: 128,
+        price: 79990,
+        oldPrice: 99990,
+        inStock: true,
+        images: [
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-pink?wid=800&hei=800&fmt=png-alpha',
+        ],
+      },
+    ],
+    specs: {
+      display: '6.1" Super Retina XDR OLED',
+      chip: 'A16 Bionic',
+      camera: '48 Мп + 12 Мп',
+      battery: 'До 20 часов видео',
+      weight: '171 г',
+    },
+    description:
+      'iPhone 15 — надёжный выбор с современными возможностями по выгодной цене.',
+    relatedIds: ['iphone-15-plus', 'case-iphone-15'],
+  },
+]
+
+export const iphoneCategories = {
+  id: 'iphone',
+  name: 'iPhone',
+  slug: 'iphone',
+  description: 'Смартфоны Apple',
+  seoTitle: 'Купить iPhone в Калининграде — APPGRADE',
+  seoDescription:
+    'Официальные iPhone с гарантией. iPhone 17, iPhone 16, iPhone 15. Доставка по Калининграду.',
+}

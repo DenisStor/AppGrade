@@ -1,6 +1,11 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
-// Каталог
+// Layouts
+import CatalogLayout from './layouts/CatalogLayout'
+// Каталог (новый)
+import CategoryPage from './pages/catalog/CategoryPage'
+import ProductPage from './pages/catalog/ProductPage'
+// Каталог (старые страницы для совместимости)
 import IPhonePage from './pages/catalog/IPhonePage'
 import MacPage from './pages/catalog/MacPage'
 import IPadPage from './pages/catalog/IPadPage'
@@ -10,6 +15,8 @@ import AccessoriesPage from './pages/catalog/AccessoriesPage'
 import VisionPage from './pages/catalog/VisionPage'
 import UsedPage from './pages/catalog/UsedPage'
 import CatalogPage from './pages/catalog/CatalogPage'
+// Поиск
+import SearchPage from './pages/SearchPage'
 // Информационные
 import DeliveryPage from './pages/info/DeliveryPage'
 import WarrantyPage from './pages/info/WarrantyPage'
@@ -29,16 +36,27 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      {/* Каталог */}
-      <Route path="/iphone" element={<IPhonePage />} />
-      <Route path="/mac" element={<MacPage />} />
-      <Route path="/ipad" element={<IPadPage />} />
-      <Route path="/watch" element={<WatchPage />} />
-      <Route path="/airpods" element={<AirPodsPage />} />
-      <Route path="/accessories" element={<AccessoriesPage />} />
-      <Route path="/vision" element={<VisionPage />} />
-      <Route path="/used" element={<UsedPage />} />
-      <Route path="/catalog" element={<CatalogPage />} />
+
+      {/* Новый каталог */}
+      <Route path="/catalog" element={<CatalogLayout />}>
+        <Route index element={<CatalogPage />} />
+        <Route path=":category" element={<CategoryPage />} />
+        <Route path=":category/:slug" element={<ProductPage />} />
+      </Route>
+
+      {/* Поиск */}
+      <Route path="/search" element={<SearchPage />} />
+
+      {/* Редиректы со старых URL */}
+      <Route path="/iphone" element={<Navigate to="/catalog/iphone" replace />} />
+      <Route path="/mac" element={<Navigate to="/catalog/mac" replace />} />
+      <Route path="/ipad" element={<Navigate to="/catalog/ipad" replace />} />
+      <Route path="/watch" element={<Navigate to="/catalog/watch" replace />} />
+      <Route path="/airpods" element={<Navigate to="/catalog/airpods" replace />} />
+      <Route path="/accessories" element={<Navigate to="/catalog/accessories" replace />} />
+      <Route path="/vision" element={<Navigate to="/catalog/vision" replace />} />
+      <Route path="/used" element={<Navigate to="/catalog/used" replace />} />
+
       {/* Информационные */}
       <Route path="/delivery" element={<DeliveryPage />} />
       <Route path="/warranty" element={<WarrantyPage />} />
