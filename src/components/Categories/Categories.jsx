@@ -1,36 +1,31 @@
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { FreeMode } from 'swiper/modules'
 import 'swiper/css'
-import 'swiper/css/free-mode'
 
+import { SectionHeader } from '../ui/SectionHeader'
 import { CategoryCard } from './CategoryCard'
 import { categories } from '../../data/categories'
 
 export function Categories() {
   return (
-    <section className="py-10 md:py-14">
-      <div className="pl-4 lg:pl-8 mb-6">
-        <h2 className="text-2xl lg:text-3xl font-bold text-gray-dark">
-          Лучшие устройства в одном магазине
-        </h2>
-        <p className="text-gray-medium mt-2">
-          Выберите нужную категорию
-        </p>
+    <section className="pt-14 md:pt-20">
+      <div className="section-padding mb-10">
+        <SectionHeader
+          title="Лучшие устройства в одном магазине"
+          subtitle="Выберите нужную категорию"
+          linkText="Смотреть все категории"
+          linkHref="/iphone"
+        />
       </div>
-      <div>
+      <div className="overflow-hidden">
         <Swiper
-          modules={[FreeMode]}
-          freeMode={true}
           spaceBetween={12}
           slidesPerView="auto"
-          slidesOffsetBefore={16}
-          slidesOffsetAfter={16}
           breakpoints={{
-            1024: {
-              slidesOffsetBefore: 32,
-              slidesOffsetAfter: 32,
-            },
+            375: { spaceBetween: 16 },
+            768: { spaceBetween: 20 },
+            1024: { spaceBetween: 24 },
           }}
+          className="!pl-6 lg:!pl-60 !pr-6 lg:!pr-60"
         >
           {categories.map((category) => (
             <SwiperSlide key={category.id} style={{ width: 'auto' }}>

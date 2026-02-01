@@ -1,7 +1,13 @@
 import { useInView } from '../../hooks/useInView'
+import { useReducedMotion } from '../../hooks/useReducedMotion'
 
 export function AnimatedSection({ children, className = '', delay = 0 }) {
   const [ref, isInView] = useInView()
+  const prefersReduced = useReducedMotion()
+
+  if (prefersReduced) {
+    return <div className={className}>{children}</div>
+  }
 
   return (
     <div

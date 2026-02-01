@@ -1,29 +1,32 @@
+import { Link } from 'react-router-dom'
 import { MapPin, Phone } from 'lucide-react'
 import { Container } from '../ui/Container'
+import { CONTACTS } from '../../data/config'
+import { NAV_TOP } from '../../data/navigation'
 
 export function TopBar() {
   return (
     <div className="bg-gray-light py-2 text-sm hidden md:block">
       <Container className="flex items-center justify-between">
         <div className="flex items-center gap-6 text-gray-medium">
-          <a href="/delivery" className="hover:text-gray-dark transition-colors">
-            Доставка и оплата
-          </a>
-          <a href="/warranty" className="hover:text-gray-dark transition-colors">
-            Гарантия
-          </a>
-          <a href="/contacts" className="hover:text-gray-dark transition-colors">
-            Контакты
-          </a>
+          {NAV_TOP.map((item) => (
+            <Link
+              key={item.href}
+              to={item.href}
+              className="hover:text-gray-dark transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
         <div className="flex items-center gap-6">
-          <a href="#" className="flex items-center gap-1.5 text-gray-medium hover:text-gray-dark transition-colors">
+          <span className="flex items-center gap-1.5 text-gray-medium">
             <MapPin size={14} />
-            <span>Москва</span>
-          </a>
-          <a href="tel:+74951234567" className="flex items-center gap-1.5 font-semibold text-gray-dark hover:text-gray-medium transition-colors">
+            <span>{CONTACTS.city}</span>
+          </span>
+          <a href={CONTACTS.phoneLink} className="flex items-center gap-1.5 font-semibold text-gray-dark hover:text-gray-medium transition-colors">
             <Phone size={14} />
-            <span>+7 (495) 123-45-67</span>
+            <span>{CONTACTS.phone}</span>
           </a>
         </div>
       </Container>

@@ -1,31 +1,48 @@
-import { Phone, Mail, MapPin, Clock } from 'lucide-react'
+import { Mail, MapPin, Clock } from 'lucide-react'
+import { CONTACTS } from '../../data/config'
 
 export function FooterContacts() {
   return (
     <div>
-      <h3 className="text-lg font-bold text-white mb-4">Контакты</h3>
+      <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+        <span className="w-8 h-px bg-gradient-to-r from-blue-500 to-transparent" />
+        Контакты
+      </h3>
+
+      {/* Телефон — крупный блок */}
+      <div className="mb-6">
+        <a
+          href={CONTACTS.phoneLink}
+          className="group block"
+        >
+          <span className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
+            {CONTACTS.phone}
+          </span>
+        </a>
+      </div>
+
+      {/* Остальные контакты */}
       <div className="space-y-3">
         <a
-          href="tel:+74951234567"
-          className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors"
+          href={`mailto:${CONTACTS.email}`}
+          className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors group"
         >
-          <Phone size={18} />
-          <span>+7 (495) 123-45-67</span>
-        </a>
-        <a
-          href="mailto:info@electronicsstore.ru"
-          className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors"
-        >
-          <Mail size={18} />
-          <span>info@electronicsstore.ru</span>
+          <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+            <Mail size={16} />
+          </span>
+          <span>{CONTACTS.email}</span>
         </a>
         <div className="flex items-center gap-3 text-gray-400">
-          <MapPin size={18} />
-          <span>Москва, ул. Примерная, д. 1</span>
+          <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+            <MapPin size={16} />
+          </span>
+          <span>{CONTACTS.fullAddress}</span>
         </div>
         <div className="flex items-center gap-3 text-gray-400">
-          <Clock size={18} />
-          <span>Ежедневно 10:00 — 22:00</span>
+          <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+            <Clock size={16} />
+          </span>
+          <span>{CONTACTS.workHours}</span>
         </div>
       </div>
     </div>

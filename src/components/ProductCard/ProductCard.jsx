@@ -10,7 +10,7 @@ export function ProductCard({
 }) {
   return (
     <div
-      className="rounded-3xl overflow-hidden p-8 md:p-10 flex flex-col h-full bg-gray-light border border-gray-200/50 shadow-glass hover:shadow-glass-hover hover:scale-[1.02] transition-all duration-300"
+      className="rounded-liquid-lg overflow-hidden p-8 md:p-10 flex flex-col h-full liquid-glass hover:shadow-liquid-hover hover:scale-[1.02] transition-all duration-liquid"
     >
       <div className="flex-1">
         <p className="text-sm font-semibold mb-1 text-gray-dark">

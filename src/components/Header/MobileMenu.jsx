@@ -1,23 +1,14 @@
+import { Link } from 'react-router-dom'
 import { X, ChevronRight, Phone, MapPin } from 'lucide-react'
-
-const MENU_ITEMS = [
-  { label: 'iPhone', href: '/iphone' },
-  { label: 'Mac', href: '/mac' },
-  { label: 'iPad', href: '/ipad' },
-  { label: 'Watch', href: '/watch' },
-  { label: 'AirPods', href: '/airpods' },
-  { label: 'Аксессуары', href: '/accessories' },
-  { label: 'Доставка и оплата', href: '/delivery' },
-  { label: 'Гарантия', href: '/warranty' },
-  { label: 'Контакты', href: '/contacts' },
-]
+import { CONTACTS } from '../../data/config'
+import { NAV_MOBILE } from '../../data/navigation'
 
 export function MobileMenu({ isOpen, onClose }) {
   return (
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 liquid-glass-dark z-40 transition-opacity duration-liquid lg:hidden ${
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={onClose}
@@ -25,7 +16,7 @@ export function MobileMenu({ isOpen, onClose }) {
 
       {/* Menu */}
       <div
-        className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-gray-light z-50 transform transition-transform duration-300 lg:hidden ${
+        className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] liquid-glass z-50 transform transition-transform duration-liquid lg:hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -33,36 +24,37 @@ export function MobileMenu({ isOpen, onClose }) {
           <span className="text-lg font-bold text-gray-dark">Меню</span>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all"
           >
             <X size={24} />
           </button>
         </div>
 
         <nav className="p-4">
-          {MENU_ITEMS.map((item) => (
-            <a
+          {NAV_MOBILE.map((item) => (
+            <Link
               key={item.href}
-              href={item.href}
-              className="flex items-center justify-between py-3 border-b border-gray-100 text-gray-dark hover:text-gray-medium transition-colors"
+              to={item.href}
+              onClick={onClose}
+              className="flex items-center justify-between py-3.5 min-h-[48px] border-b border-gray-100 text-gray-dark hover:text-gray-medium transition-colors"
             >
               <span className="font-medium">{item.label}</span>
               <ChevronRight size={18} className="text-gray-medium" />
-            </a>
+            </Link>
           ))}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-gray-light">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/20 bg-white/30 backdrop-blur-sm">
           <a
-            href="tel:+74951234567"
+            href={CONTACTS.phoneLink}
             className="flex items-center gap-2 text-gray-dark font-semibold mb-2"
           >
             <Phone size={18} />
-            +7 (495) 123-45-67
+            {CONTACTS.phone}
           </a>
           <div className="flex items-center gap-2 text-gray-medium text-sm">
             <MapPin size={16} />
-            Москва
+            {CONTACTS.city}
           </div>
         </div>
       </div>

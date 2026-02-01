@@ -13,10 +13,8 @@ export function Header() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 shadow-[0_1px_3px_rgba(0,0,0,0.08)] ${
-          isScrolled
-            ? 'bg-gray-light backdrop-blur-[10px] border-b border-gray-200/50 shadow-glass'
-            : 'bg-gray-light/80 backdrop-blur-sm'
+        className={`sticky top-0 z-50 transition-all duration-liquid ${
+          isScrolled ? 'liquid-glass-scrolled' : 'liquid-glass'
         }`}
       >
 
@@ -25,7 +23,7 @@ export function Header() {
           <Container className="flex items-center justify-between py-3">
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all"
             >
               <Menu size={24} />
             </button>
@@ -34,7 +32,7 @@ export function Header() {
               <img src={logo} alt="APPGRADE" className="h-5" />
             </a>
 
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <button className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all">
               <Search size={24} />
             </button>
           </Container>

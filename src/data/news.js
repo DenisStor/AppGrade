@@ -1,20 +1,24 @@
+import news1 from '../assets/news/news-1.png'
+import news2 from '../assets/news/news-2.png'
+import news3 from '../assets/news/news-3.png'
+
 export const news = [
   {
     id: 1,
-    image: 'https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&h=600&fit=crop',
-    date: '25 ЯНВАРЯ, 2026',
-    title: 'iPhone 17 Pro уже в продаже',
+    image: news1,
+    date: '27 ЯНВАРЯ, 2026',
+    title: 'Эксперты APPGRADE предупреждают: без чехла ходить опасно для кармы',
   },
   {
     id: 2,
-    image: 'https://images.unsplash.com/photo-1629131726692-1accd0c53ce0?w=600&h=600&fit=crop',
-    date: '20 ЯНВАРЯ, 2026',
-    title: 'Скидки до 30% на AirPods',
+    image: news2,
+    date: '24 ЯНВАРЯ, 2026',
+    title: 'Apple Watch спас отношения — теперь он отвечает за тебя',
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=600&fit=crop',
-    date: '15 ЯНВАРЯ, 2026',
-    title: 'Новый MacBook Air M4',
+    image: news3,
+    date: '20 ЯНВАРЯ, 2026',
+    title: 'Исследование: люди с новым iPhone зарабатывают на 40% больше',
   },
 ]

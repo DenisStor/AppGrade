@@ -1,9 +1,10 @@
+import { Link } from 'react-router-dom'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 
 export function CategoryCard({ name, image, link }) {
   return (
-    <a href={link} className="group block w-[200px] md:w-[240px] lg:w-[300px]">
-      <div className="aspect-[0.78125] overflow-hidden bg-[#FAFAFA] border border-gray-200/50 shadow-glass group-hover:shadow-glass-hover group-hover:scale-[1.02] transition-all duration-300 p-3 flex items-center justify-center">
+    <Link to={link} className="group block w-[160px] xs:w-[180px] sm:w-[200px] md:w-[240px] lg:w-[280px]">
+      <div className="aspect-[0.78125] overflow-hidden liquid-glass group-hover:shadow-liquid-hover group-hover:scale-[1.02] transition-all duration-liquid p-3 flex items-center justify-center">
         <div className="w-4/5 h-4/5">
           <ImageWithSkeleton
             src={image}
@@ -13,9 +14,9 @@ export function CategoryCard({ name, image, link }) {
           />
         </div>
       </div>
-      <p className="text-base md:text-lg lg:text-xl font-semibold text-gray-dark text-center mt-5 tracking-tight">
+      <p className="text-fluid-lg font-semibold text-gray-dark text-center mt-5 tracking-tight">
         {name}
       </p>
-    </a>
+    </Link>
   )
 }

@@ -11,7 +11,7 @@ export function BenefitCard({ icon, title, description }) {
   const Icon = ICONS[icon]
 
   return (
-    <div className="text-center p-6 bg-gray-light border border-gray-200/50 rounded-2xl shadow-glass hover:shadow-glass-hover hover:scale-[1.02] transition-all duration-300">
+    <div className="text-center p-6 liquid-glass rounded-liquid hover:shadow-liquid-hover hover:scale-[1.02] transition-all duration-liquid">
       <div className="w-14 h-14 mx-auto mb-4 bg-white border border-gray-200/50 rounded-2xl flex items-center justify-center shadow-sm">
         <Icon size={28} className="text-gray-dark" />
       </div>

@@ -23,28 +23,173 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @layer utilities {
-  .glass {
-    background: rgba(245, 245, 247, 0.9);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+  /* Regular - для карточек, меню */
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
 
-  .glass-strong {
+  /* Clear - для overlay над изображениями */
+  .liquid-glass-clear {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  /* Dark - для тёмных overlay */
+  .liquid-glass-dark {
+    background: rgba(28, 28, 30, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Scrolled - усиленный эффект при скролле */
+  .liquid-glass-scrolled {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  /* Reduced motion - для accessibility */
+  .liquid-glass-reduced {
     background: rgba(245, 245, 247, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
   }
 }
 
-/* Hero Swiper пагинация */
+/* Fallback для браузеров без поддержки backdrop-filter */
+@supports not (backdrop-filter: blur(20px)) {
+  .liquid-glass,
+  .liquid-glass-clear,
+  .liquid-glass-scrolled {
+    background: rgba(245, 245, 247, 0.95);
+  }
+}
+
+/* Hero Swiper пагинация с Liquid Glass */
 .hero-swiper .swiper-pagination-bullet {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   opacity: 1;
 }
 
 .hero-swiper .swiper-pagination-bullet-active {
   background: #ffffff;
+}
+
+/* Keyframes для анимаций */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Утилиты анимаций */
+@layer utilities {
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out forwards;
+  }
+
+  .animate-ripple {
+    animation: ripple 0.6s linear;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+}
+
+/* Fluid Typography */
+@layer utilities {
+  .text-fluid-2xl {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+  }
+  .text-fluid-xl {
+    font-size: clamp(1.25rem, 1rem + 0.75vw, 1.875rem);
+  }
+  .text-fluid-lg {
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+  }
+}
+
+/* Стандартные отступы секций */
+@layer utilities {
+  .section-padding {
+    @apply px-6 lg:px-60;
+  }
+
+  .section-margin {
+    @apply mx-6 lg:mx-60;
+  }
+}
+
+/* Hover эффект для карточек */
+@layer components {
+  .card-hover {
+    @apply hover:shadow-liquid-hover hover:scale-[1.02] transition-all duration-300;
+  }
+
+  .nav-link {
+    @apply text-gray-dark hover:text-gray-medium font-medium transition-colors;
+  }
 }
 

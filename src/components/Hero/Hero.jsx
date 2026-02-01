@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Autoplay } from 'swiper/modules'
 import 'swiper/css'
@@ -23,16 +24,31 @@ const BANNERS = [
   },
 ]
 
+function HeroSkeleton() {
+  return (
+    <div className="w-full">
+      {/* Desktop skeleton */}
+      <div className="hidden lg:block w-full aspect-[1920/600] animate-shimmer bg-gray-200 rounded-lg" />
+      {/* Mobile skeleton */}
+      <div className="lg:hidden w-full aspect-[390/500] animate-shimmer bg-gray-200 rounded-lg" />
+    </div>
+  )
+}
+
 export function Hero() {
+  const [isLoaded, setIsLoaded] = useState(false)
+
   return (
     <section className="w-full">
+      {!isLoaded && <HeroSkeleton />}
       <Swiper
         modules={[Pagination, Autoplay]}
         pagination={{ clickable: true }}
         autoplay={{ delay: 20000 }}
         loop={BANNERS.length > 1}
         grabCursor={true}
-        className="w-full hero-swiper"
+        className={`w-full hero-swiper ${!isLoaded ? 'hidden' : ''}`}
+        onInit={() => setIsLoaded(true)}
       >
         {BANNERS.map((banner) => (
           <SwiperSlide key={banner.id}>

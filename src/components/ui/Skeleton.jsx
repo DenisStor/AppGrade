@@ -1,7 +1,15 @@
-export function Skeleton({ className = '' }) {
+export function Skeleton({ className = '', variant = 'default' }) {
+  const variants = {
+    default: 'animate-shimmer',
+    text: 'animate-shimmer h-4 rounded',
+    title: 'animate-shimmer h-6 rounded w-3/4',
+    card: 'animate-shimmer rounded-liquid-lg',
+    circle: 'animate-shimmer rounded-full',
+  }
+
   return (
     <div
-      className={`animate-pulse bg-gray-200 rounded ${className}`}
+      className={`bg-gray-200 ${variants[variant]} ${className}`}
     />
   )
 }
