@@ -1,11 +1,89 @@
-import { iphoneProducts, iphoneCategories } from './iphone'
-import { macProducts, macCategory } from './mac'
+import { iphoneProducts } from './iphone'
+import { macProducts } from './mac'
+import { samsungProducts } from './samsung'
+import { dysonProducts } from './dyson'
 
-export const allProducts = [...iphoneProducts, ...macProducts]
+export const allProducts = [
+  ...iphoneProducts,
+  ...macProducts,
+  ...samsungProducts,
+  ...dysonProducts,
+]
 
+// Новая мультибрендовая система категорий
 export const categories = {
-  iphone: iphoneCategories,
-  mac: macCategory,
+  smartphones: {
+    id: 'smartphones',
+    name: 'Смартфоны',
+    slug: 'smartphones',
+    description: 'iPhone, Samsung Galaxy и другие смартфоны',
+    seoTitle: 'Купить смартфон в Калининграде — APPGRADE',
+    seoDescription:
+      'iPhone, Samsung Galaxy с гарантией. Доставка по Калининграду.',
+  },
+  laptops: {
+    id: 'laptops',
+    name: 'Ноутбуки',
+    slug: 'laptops',
+    description: 'MacBook Pro, MacBook Air, iMac',
+    seoTitle: 'Купить ноутбук в Калининграде — APPGRADE',
+    seoDescription:
+      'MacBook Pro, MacBook Air, iMac с гарантией. Доставка по Калининграду.',
+  },
+  tablets: {
+    id: 'tablets',
+    name: 'Планшеты',
+    slug: 'tablets',
+    description: 'iPad и другие планшеты',
+    seoTitle: 'Купить планшет в Калининграде — APPGRADE',
+    seoDescription:
+      'iPad с гарантией. Доставка по Калининграду.',
+  },
+  watches: {
+    id: 'watches',
+    name: 'Умные часы',
+    slug: 'watches',
+    description: 'Apple Watch, Samsung Watch и другие',
+    seoTitle: 'Купить умные часы в Калининграде — APPGRADE',
+    seoDescription:
+      'Apple Watch с гарантией. Доставка по Калининграду.',
+  },
+  headphones: {
+    id: 'headphones',
+    name: 'Наушники',
+    slug: 'headphones',
+    description: 'AirPods, Galaxy Buds и другие',
+    seoTitle: 'Купить наушники в Калининграде — APPGRADE',
+    seoDescription:
+      'AirPods с гарантией. Доставка по Калининграду.',
+  },
+  hairdryers: {
+    id: 'hairdryers',
+    name: 'Фены',
+    slug: 'hairdryers',
+    description: 'Dyson Supersonic',
+    seoTitle: 'Купить фен Dyson в Калининграде — APPGRADE',
+    seoDescription:
+      'Фены Dyson Supersonic с гарантией. Доставка по Калининграду.',
+  },
+  stylers: {
+    id: 'stylers',
+    name: 'Стайлеры',
+    slug: 'stylers',
+    description: 'Dyson Airwrap, Corrale',
+    seoTitle: 'Купить стайлер Dyson в Калининграде — APPGRADE',
+    seoDescription:
+      'Стайлеры Dyson Airwrap, Corrale с гарантией. Доставка по Калининграду.',
+  },
+  accessories: {
+    id: 'accessories',
+    name: 'Аксессуары',
+    slug: 'accessories',
+    description: 'Чехлы, кабели и другие аксессуары',
+    seoTitle: 'Купить аксессуары в Калининграде — APPGRADE',
+    seoDescription:
+      'Аксессуары Apple и Samsung с гарантией. Доставка по Калининграду.',
+  },
 }
 
 export const getProductsByCategory = (categorySlug) => {
@@ -73,7 +151,11 @@ export const getAvailableColors = (product) => {
 
 export const getAvailableMemory = (product) => {
   if (!product?.variants?.length) return []
-  const memorySet = new Set(product.variants.map((v) => v.memory))
+  const memorySet = new Set(
+    product.variants
+      .map((v) => v.memory)
+      .filter((m) => m !== null && m !== undefined)
+  )
   return Array.from(memorySet).sort((a, b) => a - b)
 }
 
@@ -88,4 +170,4 @@ export const formatMemory = (memory) => {
   return `${memory} ГБ`
 }
 
-export { iphoneProducts, macProducts }
+export { iphoneProducts, macProducts, samsungProducts, dysonProducts }

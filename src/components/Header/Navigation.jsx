@@ -3,9 +3,12 @@ import { ShoppingBag } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { SearchInput } from '../search/SearchInput'
 import { NAV_MAIN } from '../../data/navigation'
+import { useCartStore } from '../../stores/useCartStore'
 import logo from '../../assets/logo.png'
 
 export function Navigation() {
+  const cartCount = useCartStore((state) => state.getCount())
+
   return (
     <Container className="flex items-center justify-between py-4 gap-8">
       {/* Logo */}
@@ -29,12 +32,17 @@ export function Navigation() {
       {/* Actions */}
       <div className="flex items-center gap-4">
         <SearchInput variant="header" />
-        <button className="relative p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all">
+        <Link
+          to="/cart"
+          className="relative p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all"
+        >
           <ShoppingBag size={20} className="text-gray-dark" />
-          <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-gray-dark text-white text-xs font-bold rounded-full flex items-center justify-center">
-            2
-          </span>
-        </button>
+          {cartCount > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-gray-dark text-white text-xs font-bold rounded-full flex items-center justify-center">
+              {cartCount > 99 ? '99+' : cartCount}
+            </span>
+          )}
+        </Link>
       </div>
     </Container>
   )

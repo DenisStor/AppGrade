@@ -14,11 +14,8 @@ export function MemorySelector({
 
   return (
     <div className={className}>
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3">
         <span className="text-sm font-medium text-gray-dark">Память</span>
-        {selected && (
-          <span className="text-sm text-gray-medium">{formatMemory(selected)}</span>
-        )}
       </div>
 
       <div className="flex flex-wrap gap-2">

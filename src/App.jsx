@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { ToastContainer } from './components/ui/Toast'
 import Home from './pages/Home'
 // Layouts
 import CatalogLayout from './layouts/CatalogLayout'
@@ -31,9 +32,13 @@ import PrivacyPage from './pages/info/PrivacyPage'
 import TermsPage from './pages/info/TermsPage'
 import BlogPage from './pages/info/BlogPage'
 import BlogPostPage from './pages/info/BlogPostPage'
+// Корзина
+import CartPage from './pages/cart/CartPage'
 
 function App() {
   return (
+    <>
+    <ToastContainer />
     <Routes>
       <Route path="/" element={<Home />} />
 
@@ -47,15 +52,29 @@ function App() {
       {/* Поиск */}
       <Route path="/search" element={<SearchPage />} />
 
-      {/* Редиректы со старых URL */}
-      <Route path="/iphone" element={<Navigate to="/catalog/iphone" replace />} />
-      <Route path="/mac" element={<Navigate to="/catalog/mac" replace />} />
-      <Route path="/ipad" element={<Navigate to="/catalog/ipad" replace />} />
-      <Route path="/watch" element={<Navigate to="/catalog/watch" replace />} />
-      <Route path="/airpods" element={<Navigate to="/catalog/airpods" replace />} />
+      {/* Корзина */}
+      <Route path="/cart" element={<CartPage />} />
+
+      {/* Редиректы со старых URL на новые категории */}
+      <Route path="/iphone" element={<Navigate to="/catalog/smartphones" replace />} />
+      <Route path="/mac" element={<Navigate to="/catalog/laptops" replace />} />
+      <Route path="/ipad" element={<Navigate to="/catalog/tablets" replace />} />
+      <Route path="/watch" element={<Navigate to="/catalog/watches" replace />} />
+      <Route path="/airpods" element={<Navigate to="/catalog/headphones" replace />} />
       <Route path="/accessories" element={<Navigate to="/catalog/accessories" replace />} />
-      <Route path="/vision" element={<Navigate to="/catalog/vision" replace />} />
-      <Route path="/used" element={<Navigate to="/catalog/used" replace />} />
+      <Route path="/vision" element={<Navigate to="/catalog/accessories" replace />} />
+      <Route path="/used" element={<Navigate to="/catalog/smartphones" replace />} />
+      <Route path="/samsung" element={<Navigate to="/catalog/smartphones" replace />} />
+      <Route path="/dyson" element={<Navigate to="/catalog/hairdryers" replace />} />
+      {/* Редиректы со старых URL каталога */}
+      <Route path="/catalog/iphone" element={<Navigate to="/catalog/smartphones" replace />} />
+      <Route path="/catalog/mac" element={<Navigate to="/catalog/laptops" replace />} />
+      <Route path="/catalog/ipad" element={<Navigate to="/catalog/tablets" replace />} />
+      <Route path="/catalog/watch" element={<Navigate to="/catalog/watches" replace />} />
+      <Route path="/catalog/airpods" element={<Navigate to="/catalog/headphones" replace />} />
+      <Route path="/catalog/samsung" element={<Navigate to="/catalog/smartphones" replace />} />
+      <Route path="/catalog/dyson" element={<Navigate to="/catalog/hairdryers" replace />} />
+      <Route path="/catalog/vision" element={<Navigate to="/catalog/accessories" replace />} />
 
       {/* Информационные */}
       <Route path="/delivery" element={<DeliveryPage />} />
@@ -72,6 +91,7 @@ function App() {
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/blog/:id" element={<BlogPostPage />} />
     </Routes>
+    </>
   )
 }
 

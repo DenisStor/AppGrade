@@ -7,6 +7,7 @@ export function FilterSidebar({
   filters,
   availableColors = [],
   availableMemory = [],
+  availableBrands = [],
   priceRange = [0, 500000],
   onFilterChange,
   onReset,
@@ -15,12 +16,28 @@ export function FilterSidebar({
   const hasActiveFilters =
     filters.colors.length > 0 ||
     filters.memory.length > 0 ||
+    filters.brands.length > 0 ||
     filters.inStock ||
     filters.priceRange[0] > priceRange[0] ||
     filters.priceRange[1] < priceRange[1]
 
   return (
     <aside className={`space-y-6 ${className}`}>
+      {/* Бренд */}
+      {availableBrands.length > 1 && (
+        <div>
+          <h3 className="text-sm font-semibold text-gray-dark mb-4">Бренд</h3>
+          <CheckboxFilter
+            options={availableBrands.map((b) => ({
+              value: b,
+              label: b,
+            }))}
+            selected={filters.brands}
+            onChange={(brands) => onFilterChange('brands', brands)}
+          />
+        </div>
+      )}
+
       {/* Цена */}
       <div>
         <h3 className="text-sm font-semibold text-gray-dark mb-4">Цена, ₽</h3>

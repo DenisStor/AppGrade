@@ -31,6 +31,7 @@ export default function CategoryPage() {
   useEffect(() => {
     const colors = searchParams.get('colors')?.split(',').filter(Boolean) || []
     const memory = searchParams.get('memory')?.split(',').map(Number).filter(Boolean) || []
+    const brands = searchParams.get('brands')?.split(',').filter(Boolean) || []
     const priceMin = Number(searchParams.get('priceMin')) || 0
     const priceMax = Number(searchParams.get('priceMax')) || 500000
     const inStock = searchParams.get('inStock') === 'true'
@@ -38,6 +39,7 @@ export default function CategoryPage() {
 
     setFilter('colors', colors)
     setFilter('memory', memory)
+    setFilter('brands', brands)
     setFilter('priceRange', [priceMin, priceMax])
     setFilter('inStock', inStock)
     setSortBy(sort)
@@ -49,6 +51,7 @@ export default function CategoryPage() {
 
     if (filters.colors.length) params.set('colors', filters.colors.join(','))
     if (filters.memory.length) params.set('memory', filters.memory.join(','))
+    if (filters.brands.length) params.set('brands', filters.brands.join(','))
     if (filters.priceRange[0] > 0) params.set('priceMin', filters.priceRange[0])
     if (filters.priceRange[1] < 500000) params.set('priceMax', filters.priceRange[1])
     if (filters.inStock) params.set('inStock', 'true')
@@ -79,6 +82,11 @@ export default function CategoryPage() {
       result = result.filter((product) =>
         product.variants.some((v) => filters.memory.includes(v.memory))
       )
+    }
+
+    // Фильтр по бренду
+    if (filters.brands.length) {
+      result = result.filter((product) => filters.brands.includes(product.brand))
     }
 
     // Фильтр по наличию
@@ -112,6 +120,14 @@ export default function CategoryPage() {
   }, [allProducts, filters, sortBy])
 
   // Доступные опции для фильтров
+  const availableBrands = useMemo(() => {
+    const brandSet = new Set()
+    allProducts.forEach((p) => {
+      if (p.brand) brandSet.add(p.brand)
+    })
+    return Array.from(brandSet).sort()
+  }, [allProducts])
+
   const availableColors = useMemo(() => {
     const colorMap = new Map()
     allProducts.forEach((p) => {
@@ -128,7 +144,9 @@ export default function CategoryPage() {
     const memorySet = new Set()
     allProducts.forEach((p) => {
       p.variants.forEach((v) => {
-        memorySet.add(v.memory)
+        if (v.memory !== null && v.memory !== undefined) {
+          memorySet.add(v.memory)
+        }
       })
     })
     return Array.from(memorySet).sort((a, b) => a - b)
@@ -143,6 +161,7 @@ export default function CategoryPage() {
   const activeFiltersCount =
     filters.colors.length +
     filters.memory.length +
+    filters.brands.length +
     (filters.inStock ? 1 : 0) +
     (filters.priceRange[0] > priceRange[0] || filters.priceRange[1] < priceRange[1] ? 1 : 0)
 
@@ -227,6 +246,12 @@ export default function CategoryPage() {
             filters.memory.filter((m) => m !== memory)
           )
         }
+        onRemoveBrand={(brand) =>
+          setFilter(
+            'brands',
+            filters.brands.filter((b) => b !== brand)
+          )
+        }
         onResetPrice={() => setFilter('priceRange', [priceRange[0], priceRange[1]])}
         onResetStock={() => setFilter('inStock', false)}
         onResetAll={resetFilters}
@@ -238,6 +263,7 @@ export default function CategoryPage() {
           <aside className="w-64 flex-shrink-0">
             <FilterSidebar
               filters={filters}
+              availableBrands={availableBrands}
               availableColors={availableColors}
               availableMemory={availableMemory}
               priceRange={priceRange}
@@ -273,6 +299,7 @@ export default function CategoryPage() {
         >
           <FilterSidebar
             filters={filters}
+            availableBrands={availableBrands}
             availableColors={availableColors}
             availableMemory={availableMemory}
             priceRange={priceRange}

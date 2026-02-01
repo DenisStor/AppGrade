@@ -1,12 +1,37 @@
+import iphone17ProOrange from '../../assets/products/iphone/iphone-compare-iphone-17-pro-202509.jpeg'
+
 export const iphoneProducts = [
   {
     id: 'iphone-17-pro-max',
     slug: 'iphone-17-pro-max',
-    category: 'iphone',
+    category: 'smartphones',
+    brand: 'Apple',
     name: 'iPhone 17 Pro Max',
     shortDescription: 'Титановый корпус. Чип A19 Pro. Камера 48 Мп.',
     badges: ['new'],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
     variants: [
+      {
+        id: 'iphone-17-pro-max-orange-256',
+        color: { id: 'orange', name: 'Оранжевый титан', hex: '#e07840' },
+        memory: 256,
+        price: 179990,
+        oldPrice: null,
+        inStock: true,
+        images: [iphone17ProOrange],
+      },
+      {
+        id: 'iphone-17-pro-max-orange-512',
+        color: { id: 'orange', name: 'Оранжевый титан', hex: '#e07840' },
+        memory: 512,
+        price: 199990,
+        oldPrice: null,
+        inStock: true,
+        images: [iphone17ProOrange],
+      },
       {
         id: 'iphone-17-pro-max-black-256',
         color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
@@ -99,10 +124,15 @@ export const iphoneProducts = [
   {
     id: 'iphone-17-pro',
     slug: 'iphone-17-pro',
-    category: 'iphone',
+    category: 'smartphones',
+    brand: 'Apple',
     name: 'iPhone 17 Pro',
     shortDescription: 'Титановый корпус. Чип A19 Pro. Камера 48 Мп.',
     badges: ['new'],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
     variants: [
       {
         id: 'iphone-17-pro-black-128',
@@ -152,10 +182,15 @@ export const iphoneProducts = [
   {
     id: 'iphone-17',
     slug: 'iphone-17',
-    category: 'iphone',
+    category: 'smartphones',
+    brand: 'Apple',
     name: 'iPhone 17',
     shortDescription: 'Чип A19. Dynamic Island. Камера 48 Мп.',
     badges: ['new'],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
     variants: [
       {
         id: 'iphone-17-black-128',
@@ -216,10 +251,15 @@ export const iphoneProducts = [
   {
     id: 'iphone-16-pro-max',
     slug: 'iphone-16-pro-max',
-    category: 'iphone',
+    category: 'smartphones',
+    brand: 'Apple',
     name: 'iPhone 16 Pro Max',
     shortDescription: 'Титановый корпус. Чип A18 Pro. Камера 48 Мп.',
     badges: ['hit'],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
     variants: [
       {
         id: 'iphone-16-pro-max-black-256',
@@ -269,10 +309,15 @@ export const iphoneProducts = [
   {
     id: 'iphone-15',
     slug: 'iphone-15',
-    category: 'iphone',
+    category: 'smartphones',
+    brand: 'Apple',
     name: 'iPhone 15',
     shortDescription: 'Чип A16. Dynamic Island. USB-C.',
     badges: ['sale'],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
     variants: [
       {
         id: 'iphone-15-black-128',
@@ -332,12 +377,3 @@ export const iphoneProducts = [
   },
 ]
 
-export const iphoneCategories = {
-  id: 'iphone',
-  name: 'iPhone',
-  slug: 'iphone',
-  description: 'Смартфоны Apple',
-  seoTitle: 'Купить iPhone в Калининграде — APPGRADE',
-  seoDescription:
-    'Официальные iPhone с гарантией. iPhone 17, iPhone 16, iPhone 15. Доставка по Калининграду.',
-}

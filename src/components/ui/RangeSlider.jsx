@@ -11,19 +11,41 @@ export function RangeSlider({
 }) {
   const [localValue, setLocalValue] = useState(value)
   const trackRef = useRef(null)
+  const debounceRef = useRef(null)
 
   useEffect(() => {
-    setLocalValue(value)
-  }, [value])
+    const clampedMin = Math.max(min, Math.min(value[0], max))
+    const clampedMax = Math.max(min, Math.min(value[1], max))
+    if (clampedMin !== localValue[0] || clampedMax !== localValue[1]) {
+      setLocalValue([clampedMin, clampedMax])
+    }
+  }, [value[0], value[1], min, max])
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
+    }
+  }, [])
+
+  const debouncedOnChange = useCallback((newValue) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current)
+    }
+    debounceRef.current = setTimeout(() => {
+      onChange?.(newValue)
+    }, 100)
+  }, [onChange])
 
   const handleMinChange = useCallback(
     (e) => {
       const newMin = Math.min(Number(e.target.value), localValue[1] - step)
       const newValue = [newMin, localValue[1]]
       setLocalValue(newValue)
-      onChange?.(newValue)
+      debouncedOnChange(newValue)
     },
-    [localValue, step, onChange]
+    [localValue[1], step, debouncedOnChange]
   )
 
   const handleMaxChange = useCallback(
@@ -31,9 +53,9 @@ export function RangeSlider({
       const newMax = Math.max(Number(e.target.value), localValue[0] + step)
       const newValue = [localValue[0], newMax]
       setLocalValue(newValue)
-      onChange?.(newValue)
+      debouncedOnChange(newValue)
     },
-    [localValue, step, onChange]
+    [localValue[0], step, debouncedOnChange]
   )
 
   const handleMinInputChange = useCallback(
@@ -42,9 +64,9 @@ export function RangeSlider({
       const newMin = Math.max(min, Math.min(Number(inputValue) || min, localValue[1] - step))
       const newValue = [newMin, localValue[1]]
       setLocalValue(newValue)
-      onChange?.(newValue)
+      debouncedOnChange(newValue)
     },
-    [min, localValue, step, onChange]
+    [min, localValue[1], step, debouncedOnChange]
   )
 
   const handleMaxInputChange = useCallback(
@@ -53,13 +75,15 @@ export function RangeSlider({
       const newMax = Math.min(max, Math.max(Number(inputValue) || max, localValue[0] + step))
       const newValue = [localValue[0], newMax]
       setLocalValue(newValue)
-      onChange?.(newValue)
+      debouncedOnChange(newValue)
     },
-    [max, localValue, step, onChange]
+    [max, localValue[0], step, debouncedOnChange]
   )
 
-  const minPercent = ((localValue[0] - min) / (max - min)) * 100
-  const maxPercent = ((localValue[1] - min) / (max - min)) * 100
+  const clampedMinValue = Math.max(min, Math.min(localValue[0], max))
+  const clampedMaxValue = Math.max(min, Math.min(localValue[1], max))
+  const minPercent = ((clampedMinValue - min) / (max - min)) * 100
+  const maxPercent = ((clampedMaxValue - min) / (max - min)) * 100
 
   return (
     <div className={className}>
@@ -70,7 +94,7 @@ export function RangeSlider({
             type="text"
             value={formatValue(localValue[0])}
             onChange={handleMinInputChange}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400"
+            className="w-full px-3 py-2.5 text-sm bg-gray-light/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-dark/20 focus:border-gray-400 transition-all"
           />
         </div>
         <div className="flex-1">
@@ -79,19 +103,19 @@ export function RangeSlider({
             type="text"
             value={formatValue(localValue[1])}
             onChange={handleMaxInputChange}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400"
+            className="w-full px-3 py-2.5 text-sm bg-gray-light/50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-dark/20 focus:border-gray-400 transition-all"
           />
         </div>
       </div>
 
-      <div className="relative h-6 px-2" ref={trackRef}>
-        <div className="absolute top-1/2 left-2 right-2 h-1 -translate-y-1/2 bg-gray-200 rounded-full" />
+      <div className="relative h-6" ref={trackRef}>
+        <div className="absolute top-1/2 left-0 right-0 h-1 -translate-y-1/2 bg-gray-200 rounded-full" />
 
         <div
           className="absolute top-1/2 h-1 -translate-y-1/2 bg-gray-dark rounded-full"
           style={{
-            left: `calc(${minPercent}% + 8px)`,
-            right: `calc(${100 - maxPercent}% + 8px)`,
+            left: `${minPercent}%`,
+            right: `${100 - maxPercent}%`,
           }}
         />
 
@@ -102,7 +126,7 @@ export function RangeSlider({
           step={step}
           value={localValue[0]}
           onChange={handleMinChange}
-          className="range-slider-thumb absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto"
+          className="range-slider-thumb absolute top-0 left-0 w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto"
         />
 
         <input
@@ -112,7 +136,7 @@ export function RangeSlider({
           step={step}
           value={localValue[1]}
           onChange={handleMaxChange}
-          className="range-slider-thumb absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto"
+          className="range-slider-thumb absolute top-0 left-0 w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto"
         />
       </div>
     </div>

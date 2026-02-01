@@ -1,21 +1,21 @@
 const variants = {
   new: {
-    bg: 'bg-blue-500',
+    bg: 'bg-gradient-to-r from-blue-500 to-blue-600',
     text: 'text-white',
     label: 'Новинка',
   },
   hit: {
-    bg: 'bg-orange-500',
+    bg: 'bg-gradient-to-r from-orange-500 to-orange-600',
     text: 'text-white',
     label: 'Хит',
   },
   sale: {
-    bg: 'bg-red-500',
+    bg: 'bg-gradient-to-r from-red-500 to-red-600',
     text: 'text-white',
     label: 'Скидка',
   },
   discount: {
-    bg: 'bg-green-500',
+    bg: 'bg-gradient-to-r from-green-500 to-green-600',
     text: 'text-white',
     label: '',
   },
@@ -30,7 +30,7 @@ export function Badge({ variant = 'new', label, className = '' }) {
   return (
     <span
       className={`
-        inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+        inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium shadow-sm
         ${config.bg} ${config.text} ${className}
       `}
     >

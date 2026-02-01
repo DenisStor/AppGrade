@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Menu, Search } from 'lucide-react'
+import { Menu, Search, ShoppingBag } from 'lucide-react'
 import { useScrollPosition } from '../../hooks/useScrollPosition'
 import { Navigation } from './Navigation'
 import { MobileMenu } from './MobileMenu'
 import { Container } from '../ui/Container'
 import { SearchInput } from '../search/SearchInput'
 import { useSearchStore } from '../../stores/useSearchStore'
+import { useCartStore } from '../../stores/useCartStore'
 import logo from '../../assets/logo.png'
 
 export function Header() {
@@ -14,6 +15,7 @@ export function Header() {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
   const { isScrolled } = useScrollPosition()
   const { query, setQuery, reset } = useSearchStore()
+  const cartCount = useCartStore((state) => state.getCount())
   const navigate = useNavigate()
 
   const handleMobileSearch = (e) => {
@@ -47,12 +49,25 @@ export function Header() {
               <img src={logo} alt="APPGRADE" className="h-5" />
             </Link>
 
-            <button
-              onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all"
-            >
-              <Search size={24} />
-            </button>
+            <div className="flex items-center">
+              <Link
+                to="/cart"
+                className="relative p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all"
+              >
+                <ShoppingBag size={24} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-blue-500 text-white text-[10px] font-semibold rounded-full px-1">
+                    {cartCount > 99 ? '99+' : cartCount}
+                  </span>
+                )}
+              </Link>
+              <button
+                onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all"
+              >
+                <Search size={24} />
+              </button>
+            </div>
           </Container>
 
           {/* Mobile Search Bar */}

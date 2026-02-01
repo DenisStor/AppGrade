@@ -7,6 +7,7 @@ export function ActiveFilters({
   availableMemory = [],
   onRemoveColor,
   onRemoveMemory,
+  onRemoveBrand,
   onResetPrice,
   onResetStock,
   onResetAll,
@@ -15,6 +16,7 @@ export function ActiveFilters({
   const hasFilters =
     filters.colors.length > 0 ||
     filters.memory.length > 0 ||
+    filters.brands?.length > 0 ||
     filters.inStock ||
     filters.priceRange[0] > 0 ||
     filters.priceRange[1] < 500000
@@ -27,8 +29,17 @@ export function ActiveFilters({
   }
 
   return (
-    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+    <div className={`flex flex-wrap items-center gap-3 ${className}`}>
       <span className="text-sm text-gray-medium">Фильтры:</span>
+
+      {/* Бренды */}
+      {filters.brands?.map((brand) => (
+        <Tag
+          key={brand}
+          label={brand}
+          onRemove={() => onRemoveBrand(brand)}
+        />
+      ))}
 
       {/* Цена */}
       {(filters.priceRange[0] > 0 || filters.priceRange[1] < 500000) && (

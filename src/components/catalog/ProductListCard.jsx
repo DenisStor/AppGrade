@@ -1,119 +1,193 @@
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Heart, ShoppingCart } from 'lucide-react'
+import { Heart, ShoppingCart, Check } from 'lucide-react'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 import { BadgeGroup } from '../ui/Badge'
 import { getMinPrice, formatPrice, getAvailableColors } from '../../data/products'
 import { useFavoritesStore } from '../../stores/useFavoritesStore'
+import { useCartStore } from '../../stores/useCartStore'
+import { useToast } from '../../hooks/useToast'
 
 export function ProductListCard({ product, category }) {
   const { toggleItem, isFavorite } = useFavoritesStore()
+  const { addItem: addToCart, isInCart } = useCartStore()
+  const { toast } = useToast()
+  const [isHeartAnimating, setIsHeartAnimating] = useState(false)
+  const [selectedColorId, setSelectedColorId] = useState(null)
+
+  const colors = getAvailableColors(product)
+
+  const selectedVariant = useMemo(() => {
+    if (selectedColorId) {
+      return product.variants?.find(v => v.colorId === selectedColorId) || product.variants?.[0]
+    }
+    return product.variants?.[0]
+  }, [product.variants, selectedColorId])
 
   const minPrice = getMinPrice(product)
-  const colors = getAvailableColors(product)
-  const firstVariant = product.variants?.[0]
-  const hasDiscount = firstVariant?.oldPrice && firstVariant.oldPrice > firstVariant.price
+  const hasDiscount = selectedVariant?.oldPrice && selectedVariant.oldPrice > selectedVariant.price
   const discount = hasDiscount
-    ? Math.round((1 - firstVariant.price / firstVariant.oldPrice) * 100)
+    ? Math.round((1 - selectedVariant.price / selectedVariant.oldPrice) * 100)
     : 0
 
+  const handleFavoriteClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsHeartAnimating(true)
+    toggleItem(product.id)
+    setTimeout(() => setIsHeartAnimating(false), 400)
+  }
+
+  const handleAddToCart = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (selectedVariant) {
+      addToCart(product, selectedVariant)
+      toast('Товар добавлен в корзину')
+    }
+  }
+
+  const inCart = selectedVariant && isInCart(product.id, selectedVariant.id)
+
+  const handleColorClick = (e, colorId) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setSelectedColorId(colorId)
+  }
+
   return (
-    <article className="group bg-white rounded-2xl p-4 transition-all duration-300 hover:shadow-liquid">
-      <Link
-        to={`/catalog/${category}/${product.slug}`}
-        className="block relative aspect-square mb-4 overflow-hidden rounded-xl bg-gray-light"
-      >
-        <ImageWithSkeleton
-          src={firstVariant?.images?.[0]}
-          alt={product.name}
-          className="w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-105"
-        />
-
-        {product.badges?.length > 0 && (
-          <BadgeGroup
-            badges={product.badges}
-            className="absolute top-3 left-3"
-          />
-        )}
-
-        <button
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            toggleItem(product.id)
-          }}
-          className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-200 ${
-            isFavorite(product.id)
-              ? 'bg-red-50 text-red-500'
-              : 'bg-white/80 text-gray-dark hover:bg-white'
-          }`}
-          aria-label={isFavorite(product.id) ? 'Удалить из избранного' : 'В избранное'}
-        >
-          <Heart
-            className="w-5 h-5"
-            fill={isFavorite(product.id) ? 'currentColor' : 'none'}
-          />
-        </button>
-      </Link>
-
-      <div className="space-y-2">
-        {/* Цвета */}
-        {colors.length > 1 && (
-          <div className="flex gap-1.5">
-            {colors.slice(0, 5).map((color) => (
-              <span
-                key={color.id}
-                className="w-4 h-4 rounded-full border border-gray-200"
-                style={{ backgroundColor: color.hex }}
-                title={color.name}
-              />
-            ))}
-            {colors.length > 5 && (
-              <span className="text-xs text-gray-medium">+{colors.length - 5}</span>
-            )}
+    <>
+      {/* Мобильная версия — компактная карточка */}
+      <article className="lg:hidden">
+        <Link to={`/catalog/${category}/${product.slug}`} className="block">
+          <div className="bg-gray-light rounded-2xl aspect-square flex items-center justify-center p-4">
+            <ImageWithSkeleton
+              src={selectedVariant?.images?.[0]}
+              alt={product.name}
+              className="w-3/4 h-3/4 object-contain"
+            />
           </div>
-        )}
-
-        {/* Название */}
-        <Link
-          to={`/catalog/${category}/${product.slug}`}
-          className="block"
-        >
-          <h3 className="text-sm font-medium text-gray-dark line-clamp-2 group-hover:text-gray-medium transition-colors">
+          <h3 className="text-sm font-semibold text-gray-dark mt-3 pb-2 text-center line-clamp-2">
             {product.name}
           </h3>
         </Link>
+      </article>
 
-        {/* Краткое описание */}
-        <p className="text-xs text-gray-medium line-clamp-1">
-          {product.shortDescription}
-        </p>
+      {/* Десктопная версия — полная карточка */}
+      <article className="hidden lg:flex group h-full flex-col bg-white rounded-3xl p-5 border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+        <Link
+          to={`/catalog/${category}/${product.slug}`}
+          className="block relative aspect-square mb-5 overflow-hidden rounded-2xl bg-gray-light"
+        >
+          <ImageWithSkeleton
+            src={selectedVariant?.images?.[0]}
+            alt={product.name}
+            className="w-full h-full object-contain p-3 transition-transform duration-300 group-hover:scale-105"
+          />
 
-        {/* Цена */}
-        <div className="pt-2">
-          <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-gray-dark">
-              {formatPrice(minPrice)}
-            </span>
+          {product.badges?.length > 0 && (
+            <BadgeGroup
+              badges={product.badges}
+              className="absolute top-3 left-3"
+            />
+          )}
+
+          <button
+            onClick={handleFavoriteClick}
+            className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+              isFavorite(product.id)
+                ? 'bg-red-50 text-red-500'
+                : 'bg-white/80 text-gray-dark hover:bg-white'
+            }`}
+            aria-label={isFavorite(product.id) ? 'Удалить из избранного' : 'В избранное'}
+          >
+            <Heart
+              className={`w-5 h-5 ${isHeartAnimating ? 'animate-heart-beat' : ''}`}
+              fill={isFavorite(product.id) ? 'currentColor' : 'none'}
+            />
+          </button>
+        </Link>
+
+        <div className="flex-1 flex flex-col space-y-2">
+          {/* Цвета */}
+          {colors.length > 1 && (
+            <div className="flex gap-1.5">
+              {colors.slice(0, 5).map((color) => (
+                <button
+                  key={color.id}
+                  onClick={(e) => handleColorClick(e, color.id)}
+                  className={`w-6 h-6 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
+                    selectedColorId === color.id
+                      ? 'border-gray-dark ring-2 ring-gray-dark/20'
+                      : 'border-gray-200 hover:border-gray-400'
+                  }`}
+                  style={{ backgroundColor: color.hex }}
+                  title={color.name}
+                  aria-label={`Выбрать цвет: ${color.name}`}
+                />
+              ))}
+              {colors.length > 5 && (
+                <span className="text-xs text-gray-medium self-center">+{colors.length - 5}</span>
+              )}
+            </div>
+          )}
+
+          {/* Название */}
+          <Link
+            to={`/catalog/${category}/${product.slug}`}
+            className="block"
+          >
+            <h3 className="text-base font-medium text-gray-dark line-clamp-2 group-hover:text-gray-medium transition-colors">
+              {product.name}
+            </h3>
+          </Link>
+
+          {/* Краткое описание */}
+          <p className="text-sm text-gray-medium line-clamp-2">
+            {product.shortDescription}
+          </p>
+
+          {/* Цена и кнопка — прижаты к низу */}
+          <div className="mt-auto pt-2">
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl font-bold text-gray-dark">
+                {formatPrice(minPrice)}
+              </span>
+              {hasDiscount && (
+                <span className="text-sm text-gray-medium line-through">
+                  {formatPrice(selectedVariant.oldPrice)}
+                </span>
+              )}
+            </div>
+
             {hasDiscount && (
-              <span className="text-sm text-gray-medium line-through">
-                {formatPrice(firstVariant.oldPrice)}
+              <span className="inline-block mt-1 px-2 py-0.5 bg-red-100 text-red-600 text-xs font-medium rounded">
+                -{discount}%
               </span>
             )}
+
+            {/* Кнопка */}
+            {inCart ? (
+              <Link
+                to="/cart"
+                onClick={(e) => e.stopPropagation()}
+                className="group/btn w-full mt-3 py-3 px-4 bg-white border border-gray-dark text-gray-dark text-sm font-medium rounded-xl hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              >
+                <Check className="w-4 h-4" />
+                В корзине
+              </Link>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                className="group/btn w-full mt-3 py-3 px-4 bg-gray-dark text-white text-sm font-medium rounded-xl hover:bg-black active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              >
+                <ShoppingCart className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
+                В корзину
+              </button>
+            )}
           </div>
-
-          {hasDiscount && (
-            <span className="inline-block mt-1 px-2 py-0.5 bg-red-100 text-red-600 text-xs font-medium rounded">
-              -{discount}%
-            </span>
-          )}
         </div>
-
-        {/* Кнопка */}
-        <button className="w-full mt-3 py-2.5 px-4 bg-gray-dark text-white text-sm font-medium rounded-lg hover:bg-gray-dark/90 transition-colors flex items-center justify-center gap-2">
-          <ShoppingCart className="w-4 h-4" />
-          В корзину
-        </button>
-      </div>
-    </article>
+      </article>
+    </>
   )
 }

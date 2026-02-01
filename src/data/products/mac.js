@@ -2,7 +2,7 @@ export const macProducts = [
   {
     id: 'macbook-pro-16-m4-pro',
     slug: 'macbook-pro-16-m4-pro',
-    category: 'mac',
+    category: 'laptops',
     name: 'MacBook Pro 16" M4 Pro',
     shortDescription: 'Чип M4 Pro. 18 ГБ памяти. 512 ГБ SSD.',
     badges: ['new'],
@@ -56,7 +56,7 @@ export const macProducts = [
   {
     id: 'macbook-pro-14-m4',
     slug: 'macbook-pro-14-m4',
-    category: 'mac',
+    category: 'laptops',
     name: 'MacBook Pro 14" M4',
     shortDescription: 'Чип M4. 16 ГБ памяти. 512 ГБ SSD.',
     badges: ['new'],
@@ -99,7 +99,7 @@ export const macProducts = [
   {
     id: 'macbook-air-15-m3',
     slug: 'macbook-air-15-m3',
-    category: 'mac',
+    category: 'laptops',
     name: 'MacBook Air 15" M3',
     shortDescription: 'Чип M3. 8 ГБ памяти. 256 ГБ SSD.',
     badges: ['hit'],
@@ -164,7 +164,7 @@ export const macProducts = [
   {
     id: 'macbook-air-13-m3',
     slug: 'macbook-air-13-m3',
-    category: 'mac',
+    category: 'laptops',
     name: 'MacBook Air 13" M3',
     shortDescription: 'Чип M3. 8 ГБ памяти. 256 ГБ SSD.',
     badges: [],
@@ -207,7 +207,7 @@ export const macProducts = [
   {
     id: 'imac-24-m4',
     slug: 'imac-24-m4',
-    category: 'mac',
+    category: 'laptops',
     name: 'iMac 24" M4',
     shortDescription: 'Чип M4. 4.5K Retina. 256 ГБ SSD.',
     badges: ['new'],
@@ -260,12 +260,3 @@ export const macProducts = [
   },
 ]
 
-export const macCategory = {
-  id: 'mac',
-  name: 'Mac',
-  slug: 'mac',
-  description: 'Компьютеры Apple',
-  seoTitle: 'Купить Mac в Калининграде — MacBook, iMac, Mac mini — APPGRADE',
-  seoDescription:
-    'MacBook Pro, MacBook Air, iMac с чипами M3 и M4. Официальная гарантия. Доставка по Калининграду.',
-}

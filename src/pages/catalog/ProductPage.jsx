@@ -9,6 +9,7 @@ import { Tabs } from '../../components/ui/Tabs'
 import { ProductGallery } from '../../components/product/ProductGallery'
 import { ColorSelector } from '../../components/product/ColorSelector'
 import { MemorySelector } from '../../components/product/MemorySelector'
+import { SimSelector } from '../../components/product/SimSelector'
 import { RelatedProducts } from '../../components/product/RelatedProducts'
 import { RecentlyViewed } from '../../components/product/RecentlyViewed'
 import { ProductJsonLd, BreadcrumbJsonLd } from '../../components/seo/JsonLd'
@@ -22,6 +23,7 @@ import {
 } from '../../data/products'
 import { useFavoritesStore } from '../../stores/useFavoritesStore'
 import { useRecentlyViewedStore } from '../../stores/useRecentlyViewedStore'
+import { useCartStore } from '../../stores/useCartStore'
 
 export default function ProductPage() {
   const { category, slug } = useParams()
@@ -30,9 +32,11 @@ export default function ProductPage() {
 
   const { toggleItem, isFavorite } = useFavoritesStore()
   const { addItem } = useRecentlyViewedStore()
+  const { addItem: addToCart, isInCart } = useCartStore()
 
   const [selectedColor, setSelectedColor] = useState(null)
   const [selectedMemory, setSelectedMemory] = useState(null)
+  const [selectedSim, setSelectedSim] = useState(null)
   const [isQuickBuyOpen, setIsQuickBuyOpen] = useState(false)
   const [quickBuyForm, setQuickBuyForm] = useState({ name: '', phone: '' })
 
@@ -46,6 +50,9 @@ export default function ProductPage() {
       setSelectedColor(firstInStock.color.id)
       setSelectedMemory(firstInStock.memory)
     }
+    if (product?.simOptions?.length) {
+      setSelectedSim(product.simOptions[0].id)
+    }
   }, [product])
 
   // Добавление в недавно просмотренные
@@ -58,10 +65,14 @@ export default function ProductPage() {
   // Текущий вариант
   const currentVariant = useMemo(() => {
     if (!product) return null
+    // Для товаров без памяти (например, Dyson) ищем только по цвету
+    if (memoryOptions.length === 0) {
+      return product.variants.find((v) => v.color.id === selectedColor)
+    }
     return product.variants.find(
       (v) => v.color.id === selectedColor && v.memory === selectedMemory
     )
-  }, [product, selectedColor, selectedMemory])
+  }, [product, selectedColor, selectedMemory, memoryOptions])
 
   // Доступность памяти для выбранного цвета
   const availableMemoryForColor = useMemo(() => {
@@ -74,7 +85,8 @@ export default function ProductPage() {
   // SEO
   useEffect(() => {
     if (product && currentVariant) {
-      document.title = `${product.name} ${formatMemory(currentVariant.memory)} — купить в APPGRADE`
+      const memoryPart = currentVariant.memory ? ` ${formatMemory(currentVariant.memory)}` : ''
+      document.title = `${product.name}${memoryPart} — купить в APPGRADE`
     }
   }, [product, currentVariant])
 
@@ -153,6 +165,11 @@ export default function ProductPage() {
               <BadgeGroup badges={product.badges} className="mb-2" />
               <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark">
                 {product.name}
+                {currentVariant && (
+                  <span className="block font-normal whitespace-nowrap">
+                    ({currentVariant.color.name})
+                  </span>
+                )}
               </h1>
               <p className="text-gray-medium mt-1">{product.shortDescription}</p>
             </div>
@@ -224,20 +241,45 @@ export default function ProductPage() {
               variants={product.variants}
             />
 
-            <MemorySelector
-              options={memoryOptions}
-              selected={selectedMemory}
-              onChange={setSelectedMemory}
-              availableForColor={availableMemoryForColor}
-            />
+            {memoryOptions.length > 0 && (
+              <MemorySelector
+                options={memoryOptions}
+                selected={selectedMemory}
+                onChange={setSelectedMemory}
+                availableForColor={availableMemoryForColor}
+              />
+            )}
+
+            {product.simOptions?.length > 0 && (
+              <SimSelector
+                options={product.simOptions}
+                selected={selectedSim}
+                onChange={setSelectedSim}
+              />
+            )}
           </div>
 
           {/* Кнопки */}
           <div className="space-y-3 mb-8">
-            <Button variant="primary" size="lg" className="w-full">
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              Добавить в корзину
-            </Button>
+            {currentVariant && isInCart(product.id, currentVariant.id) ? (
+              <Link to="/cart" className="block">
+                <Button variant="outline" size="lg" className="w-full">
+                  <Check className="w-5 h-5 mr-2" />
+                  В корзине
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                variant="primary"
+                size="lg"
+                className="w-full"
+                onClick={() => currentVariant && addToCart(product, currentVariant, selectedSim)}
+                disabled={!currentVariant}
+              >
+                <ShoppingCart className="w-5 h-5 mr-2" />
+                Добавить в корзину
+              </Button>
+            )}
             <Button
               variant="outline"
               size="lg"
