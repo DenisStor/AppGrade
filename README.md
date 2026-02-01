@@ -1,62 +1,35 @@
-# AppGrade
+# AppGrade — Магазин техники Apple
 
-Магазин электроники Apple-тематики — современный SPA на React.
+SPA магазин электроники на React 19 + Vite + Tailwind CSS.
+
+## Быстрый старт
+
+```bash
+npm install
+npm run dev
+```
+
+## Команды
+
+| Команда | Описание |
+|---------|----------|
+| `npm run dev` | Dev-сервер (localhost:5173) |
+| `npm run build` | Сборка в dist/ |
+| `npm run preview` | Превью сборки |
 
 ## Технологии
 
-| Технология | Версия | Назначение |
-|------------|--------|-----------|
-| React | 19 | UI-библиотека |
-| Vite | 7 | Сборщик |
-| Tailwind CSS | 3.4 | Стилизация |
-| Swiper | 12 | Карусели |
-| Lucide React | — | Иконки |
+- React 19
+- React Router 7
+- Vite 7
+- Tailwind CSS 3
+- Swiper 12
+- Lucide Icons
 
-## Запуск
+## Документация
 
-```bash
-# Установка зависимостей
-npm install
+Подробная документация в [CLAUDE.md](./CLAUDE.md)
 
-# Dev-сервер
-npm run dev
+## Лицензия
 
-# Сборка
-npm run build
-
-# Превью сборки
-npm run preview
-```
-
-## Структура
-
-```
-src/
-├── main.jsx              # Точка входа
-├── App.jsx               # Корневой компонент
-├── index.css             # Глобальные стили
-├── pages/                # Страницы
-├── components/           # Компоненты
-│   ├── ui/               # UI-компоненты
-│   ├── Header/           # Шапка
-│   ├── Hero/             # Баннер
-│   ├── Categories/       # Категории
-│   ├── ProductCard/      # Карточки товаров
-│   ├── Benefits/         # Преимущества
-│   ├── InfoBlocks/       # Инфо-блоки
-│   └── Footer/           # Подвал
-├── data/                 # Статические данные
-├── hooks/                # Кастомные хуки
-└── assets/               # Изображения
-```
-
-## Особенности
-
-- Glassmorphism дизайн
-- Mobile-first подход
-- Адаптивная верстка
-- Шрифт SF Pro Display
-
-## Автор
-
-Denis Storozev
+MIT
