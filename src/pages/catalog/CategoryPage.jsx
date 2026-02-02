@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Package } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { ImageWithSkeleton } from '../../components/ui/ImageWithSkeleton'
 import {
@@ -93,7 +93,7 @@ function BrandCard({ brand, category, categoryName }) {
   return (
     <Link
       to={`/catalog/${category}/${brand.slug}`}
-      className="group block bg-white rounded-3xl p-6 border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+      className="group block bg-white p-6 border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
     >
       {/* Превью товаров */}
       <div className="flex items-center justify-center gap-2 mb-6 h-32">
@@ -101,7 +101,7 @@ function BrandCard({ brand, category, categoryName }) {
           previewImages.map((img, idx) => (
             <div
               key={idx}
-              className="w-20 h-20 bg-gray-light rounded-xl flex items-center justify-center p-2"
+              className="w-28 h-28 bg-gray-light flex items-center justify-center"
             >
               <ImageWithSkeleton
                 src={img}
@@ -111,21 +111,23 @@ function BrandCard({ brand, category, categoryName }) {
             </div>
           ))
         ) : (
-          <div className="w-20 h-20 bg-gray-light rounded-xl" />
+          <div className="w-28 h-28 bg-gray-light flex items-center justify-center">
+            <Package className="w-8 h-8 text-gray-300" />
+          </div>
         )}
       </div>
 
       {/* Информация */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-dark group-hover:text-gray-medium transition-colors">
+          <h3 className="text-xl font-bold text-black group-hover:text-gray-dark transition-colors">
             {brand.name}
           </h3>
           <p className="text-sm text-gray-medium mt-1">
             {productCount} {productCount === 1 ? 'товар' : productCount < 5 ? 'товара' : 'товаров'}
           </p>
           {minPrice > 0 && (
-            <p className="text-sm text-gray-medium mt-1">
+            <p className="text-sm font-medium text-gray-dark mt-1">
               от {formatPrice(minPrice)}
             </p>
           )}
