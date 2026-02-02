@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { PRICE } from '../../data/constants'
 
 export function RangeSlider({
   min = 0,
-  max = 500000,
+  max = PRICE.MAX,
   step = 1000,
-  value = [0, 500000],
+  value = [0, PRICE.MAX],
   onChange,
   formatValue = (v) => v.toLocaleString('ru-RU'),
   className = '',

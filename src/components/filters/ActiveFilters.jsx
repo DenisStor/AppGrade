@@ -1,5 +1,6 @@
 import { X } from 'lucide-react'
 import { formatMemory, formatPrice } from '../../data/products'
+import { PRICE } from '../../data/constants'
 
 export function ActiveFilters({
   filters,
@@ -19,7 +20,7 @@ export function ActiveFilters({
     filters.brands?.length > 0 ||
     filters.inStock ||
     filters.priceRange[0] > 0 ||
-    filters.priceRange[1] < 500000
+    filters.priceRange[1] < PRICE.MAX
 
   if (!hasFilters) return null
 
@@ -42,7 +43,7 @@ export function ActiveFilters({
       ))}
 
       {/* Цена */}
-      {(filters.priceRange[0] > 0 || filters.priceRange[1] < 500000) && (
+      {(filters.priceRange[0] > 0 || filters.priceRange[1] < PRICE.MAX) && (
         <Tag
           label={`${formatPrice(filters.priceRange[0])} — ${formatPrice(filters.priceRange[1])}`}
           onRemove={onResetPrice}

@@ -25,8 +25,6 @@ const features = [
   }
 ]
 
-const tags = ['Сертифицированный партнер', 'Trade-in', 'Рассрочка 0%']
-
 export function AboutUs() {
   return (
     <section className="pb-14 md:pb-20">
@@ -44,29 +42,19 @@ export function AboutUs() {
               выбирать и приобретать технику Apple. Мы ценим доверие каждого покупателя
               и стремимся предоставить лучший сервис.
             </p>
-            <p className="text-gray-medium text-base lg:text-lg mb-6">
+            <p className="text-gray-medium text-base lg:text-lg">
               Наш магазин предлагает полный ассортимент оригинальной продукции Apple
               с официальной гарантией. Мы работаем напрямую с авторизованными
               дистрибьюторами, что гарантирует подлинность каждого устройства.
             </p>
-            <div className="flex flex-wrap gap-3">
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="border border-gray-300 rounded-full px-5 py-2.5 text-sm text-gray-dark"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
           </div>
 
           {/* Правая колонка - изображение */}
-          <div className="order-first lg:order-last">
+          <div className="lg:order-last">
             <img
               src={aboutImage}
               alt="Магазин AppleGO"
-              className="w-full h-64 lg:h-full object-cover rounded-2xl"
+              className="w-full h-64 lg:h-full object-cover"
             />
           </div>
         </div>
@@ -76,7 +64,7 @@ export function AboutUs() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="bg-gray-light rounded-2xl p-5 lg:p-6"
+              className="liquid-glass p-5 lg:p-6 hover:shadow-liquid-hover hover:scale-[1.02] transition-all duration-liquid"
             >
               <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center mb-4">
                 <feature.icon className="w-6 h-6 text-white" />

@@ -22,20 +22,167 @@ React 19 + Vite + Tailwind CSS + React Router 7 + Zustand
 main.jsx (BrowserRouter)
     → App.jsx (Routes)
         → CatalogLayout (Outlet для каталога)
-            → CategoryPage / ProductPage
+            → CategoryPage / BrandPage / ProductPage
         → Информационные страницы
     → Zustand stores (корзина, избранное, фильтры)
 ```
 
-### Структура каталога
+### Структура каталога (4-уровневая)
 
 ```
-/catalog                    → CatalogPage (все категории)
-/catalog/:category          → CategoryPage (товары категории)
-/catalog/:category/:slug    → ProductPage (карточка товара)
+/catalog                           → CatalogPage (все категории)
+/catalog/:category                 → CategoryPage (бренды категории)
+/catalog/:category/:brand          → BrandPage (товары бренда)
+/catalog/:category/:brand/:slug    → ProductPage (карточка товара)
 ```
 
-Категории: `smartphones`, `laptops`, `tablets`, `watches`, `headphones`, `accessories`
+**Пример:** `/catalog/smartphones/apple/iphone-17-pro-max`
+
+**Категории:** `smartphones`, `laptops`, `tablets`, `watches`, `headphones`, `hairdryers`, `stylers`, `accessories`
+
+**Бренды:** `apple`, `samsung`, `dyson`
+
+## Компоненты
+
+Полная документация: [docs/COMPONENTS.md](./docs/COMPONENTS.md)
+
+### UI (19)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| Button | ui/Button.jsx | Кнопка с вариантами и ripple |
+| Modal | ui/Modal.jsx | Модальное окно |
+| Drawer | ui/Drawer.jsx | Боковая панель |
+| Tabs | ui/Tabs.jsx | Табы (underline/pills) |
+| Badge | ui/Badge.jsx | Бейдж (new/hit/sale) |
+| Breadcrumbs | ui/Breadcrumbs.jsx | Хлебные крошки |
+| Toast | ui/Toast.jsx | Уведомления |
+| RangeSlider | ui/RangeSlider.jsx | Слайдер диапазона |
+| Container | ui/Container.jsx | Контейнер |
+| SectionHeader | ui/SectionHeader.jsx | Заголовок секции |
+| SectionDivider | ui/SectionDivider.jsx | Разделитель |
+| Skeleton | ui/Skeleton.jsx | Скелетон загрузки |
+| CardSkeleton | ui/CardSkeleton.jsx | Скелетон карточки |
+| ImageWithSkeleton | ui/ImageWithSkeleton.jsx | Изображение со скелетоном |
+| AnimatedSection | ui/AnimatedSection.jsx | Секция с анимацией |
+| StaggeredList | ui/StaggeredList.jsx | Список с stagger-анимацией |
+
+### Layout (9)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| Header | Header/Header.jsx | Главный хедер |
+| TopBar | Header/TopBar.jsx | Верхняя панель |
+| Navigation | Header/Navigation.jsx | Навигация |
+| MobileMenu | Header/MobileMenu.jsx | Мобильное меню |
+| Footer | Footer/Footer.jsx | Подвал |
+| FooterColumn | Footer/FooterColumn.jsx | Колонка подвала |
+| FooterContacts | Footer/FooterContacts.jsx | Контакты |
+| FooterSubscribe | Footer/FooterSubscribe.jsx | Подписка |
+| FooterBottom | Footer/FooterBottom.jsx | Копирайт |
+
+### Homepage (10)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| Hero | Hero/Hero.jsx | Главный баннер |
+| Categories | Categories/Categories.jsx | Секция категорий |
+| CategoryCard | Categories/CategoryCard.jsx | Карточка категории |
+| Benefits | Benefits/Benefits.jsx | Преимущества |
+| BenefitCard | Benefits/BenefitCard.jsx | Карточка преимущества |
+| News | News/News.jsx | Новости |
+| NewsCard | News/NewsCard.jsx | Карточка новости |
+| FAQ | FAQ/FAQ.jsx | FAQ-аккордеон |
+| AboutUs | AboutUs/AboutUs.jsx | О нас |
+| ContactSection | ContactSection/ContactSection.jsx | Контакты |
+
+### Catalog (3)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| ProductGrid | catalog/ProductGrid.jsx | Сетка товаров |
+| ProductListCard | catalog/ProductListCard.jsx | Карточка товара |
+| SortDropdown | catalog/SortDropdown.jsx | Сортировка |
+
+### Product (9)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| ColorSelector | product/ColorSelector.jsx | Выбор цвета |
+| MemorySelector | product/MemorySelector.jsx | Выбор памяти |
+| SimSelector | product/SimSelector.jsx | Выбор SIM |
+| ProductGallery | product/ProductGallery.jsx | Галерея |
+| ProductConfig | product/ProductConfig.jsx | Конфигуратор |
+| ProductActions | product/ProductActions.jsx | Кнопки действий |
+| ProductBenefits | product/ProductBenefits.jsx | Преимущества |
+| RelatedProducts | product/RelatedProducts.jsx | Похожие товары |
+| RecentlyViewed | product/RecentlyViewed.jsx | Недавно просмотренные |
+| QuickBuyModal | product/QuickBuyModal.jsx | Быстрый заказ |
+
+### Filters (3)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| FilterSidebar | filters/FilterSidebar.jsx | Панель фильтров |
+| CheckboxFilter | filters/CheckboxFilter.jsx | Чекбокс-фильтр |
+| ColorFilter | filters/ColorFilter.jsx | Фильтр по цвету |
+| ActiveFilters | filters/ActiveFilters.jsx | Активные фильтры |
+
+### Search (2)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| SearchInput | search/SearchInput.jsx | Поле поиска |
+| SearchDropdown | search/SearchDropdown.jsx | Результаты поиска |
+
+### SEO (1)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| JsonLd | seo/JsonLd.jsx | Schema.org разметка |
+
+## Хуки
+
+Полная документация: [docs/HOOKS.md](./docs/HOOKS.md)
+
+| Хук | Сигнатура | Описание |
+|-----|-----------|----------|
+| useProductVariant | `useProductVariant(product)` | Управление вариантом товара |
+| useDebounce | `useDebounce(value, delay=300)` | Дебаунс значения |
+| useMediaQuery | `useMediaQuery(query)` | CSS медиа-запросы |
+| useMatchMedia | `useMatchMedia(query)` | Базовый matchMedia |
+| useScrollPosition | `useScrollPosition(threshold=10)` | Позиция скролла |
+| useInView | `useInView(options)` | Видимость элемента |
+| useToast | `useToast()` | Уведомления |
+| useReducedMotion | `useReducedMotion()` | Prefers-reduced-motion |
+
+```js
+// Пример использования
+import { useProductVariant } from '../hooks/useProductVariant'
+const { selectedColor, currentVariant, setSelectedColor } = useProductVariant(product)
+
+import { useDebounce } from '../hooks/useDebounce'
+const debouncedQuery = useDebounce(searchQuery, 300)
+
+import { useToast } from '../hooks/useToast'
+const { toast } = useToast()
+toast('Добавлено в корзину', 'success')
+```
+
+## Data-файлы
+
+| Файл | Экспорты | Описание |
+|------|----------|----------|
+| config.js | `CONTACTS`, `COMPANY` | Контакты магазина |
+| navigation.js | `NAV_MAIN`, `NAV_MOBILE`, `FOOTER_SECTIONS` | Меню навигации |
+| categories.js | `CATEGORIES` | Категории товаров |
+| benefits.js | `BENEFITS` | Преимущества |
+| news.js | `NEWS` | Новости |
+| faq.js | `FAQ` | Вопросы-ответы |
+| constants.js | `PRICE`, `SORT_OPTIONS` | Константы |
+| infoPages.js | `INFO_PAGES` | Информационные страницы |
+| redirects.js | `REDIRECTS` | Редиректы URL |
+| social.jsx | `SOCIAL_LINKS` | Соцсети |
 
 ## Система товаров
 
@@ -47,6 +194,7 @@ main.jsx (BrowserRouter)
   id: 'iphone-17-pro-max',
   slug: 'iphone-17-pro-max',
   category: 'smartphones',
+  brand: 'Apple',  // Обязательно для 4-уровневой структуры URL
   name: 'iPhone 17 Pro Max',
   shortDescription: 'Краткое описание',
   badges: ['new', 'hit', 'sale'],
@@ -71,14 +219,26 @@ main.jsx (BrowserRouter)
 
 ```js
 import {
-  getProductsByCategory,  // (categorySlug) → products[]
-  getProductBySlug,       // (slug) → product
-  getAvailableColors,     // (product) → colors[]
-  getAvailableMemory,     // (product) → [128, 256, 512]
-  getMinPrice,            // (product) → number
-  formatPrice,            // (price) → '169 990 ₽'
-  formatMemory,           // (1024) → '1 ТБ'
-  searchProducts,         // (query) → products[]
+  // Товары
+  getProductsByCategory,           // (categorySlug) → products[]
+  getProductsByCategoryAndBrand,   // (categorySlug, brandSlug) → products[]
+  getProductBySlug,                // (slug) → product
+
+  // Бренды
+  brands,                          // { apple: {...}, samsung: {...}, dyson: {...} }
+  getBrandsByCategory,             // (categorySlug) → brand[]
+  getBrandBySlug,                  // (slug) → brand | null
+  getBrandSlug,                    // (brandName) → slug | null
+
+  // Варианты
+  getAvailableColors,              // (product) → colors[]
+  getAvailableMemory,              // (product) → [128, 256, 512]
+
+  // Утилиты
+  getMinPrice,                     // (product) → number
+  formatPrice,                     // (price) → '169 990 ₽'
+  formatMemory,                    // (1024) → '1 ТБ'
+  searchProducts,                  // (query) → products[]
 } from '../data/products'
 ```
 
@@ -107,30 +267,27 @@ import { useRecentlyViewedStore } from '../stores'
 const { items, addItem } = useRecentlyViewedStore()
 ```
 
-## Компоненты каталога
+## Страницы
 
-```
-src/components/catalog/
-├── ProductGrid.jsx       # Сетка карточек (3 колонки на desktop)
-├── ProductListCard.jsx   # Карточка товара в каталоге
-├── FilterSidebar.jsx     # Боковая панель фильтров
-└── ActiveFilters.jsx     # Активные фильтры (чипы)
+### Каталог
 
-src/components/product/
-├── ColorSelector.jsx     # Выбор цвета
-├── MemorySelector.jsx    # Выбор памяти
-└── SimSelector.jsx       # Выбор SIM
-```
+| Маршрут | Страница | Описание |
+|---------|----------|----------|
+| `/catalog` | CatalogPage | Все категории |
+| `/catalog/:category` | CategoryPage | Бренды категории |
+| `/catalog/:category/:brand` | BrandPage | Товары бренда |
+| `/catalog/:category/:brand/:slug` | ProductPage | Карточка товара |
 
-## Конфигурация
+### Информационные
 
-```js
-// src/data/config.js — контакты магазина
-import { CONTACTS, COMPANY } from '../data/config'
-
-// src/data/navigation.js — меню
-import { NAV_MAIN, NAV_MOBILE, FOOTER_SECTIONS } from '../data/navigation'
-```
+| Маршрут | Страница | Описание |
+|---------|----------|----------|
+| `/about` | InfoPage | О компании |
+| `/delivery` | InfoPage | Доставка |
+| `/warranty` | InfoPage | Гарантия |
+| `/returns` | InfoPage | Возврат |
+| `/contacts` | InfoPage | Контакты |
+| `/faq` | InfoPage | FAQ |
 
 ## Стилизация
 
@@ -153,6 +310,38 @@ import { NAV_MAIN, NAV_MOBILE, FOOTER_SECTIONS } from '../data/navigation'
   transition-all hover:shadow-xl hover:-translate-y-1">
 ```
 
+## Troubleshooting
+
+### Товар не отображается в каталоге
+
+1. Проверить `category` и `brand` в объекте товара
+2. Убедиться, что товар экспортирован в `src/data/products/index.js`
+3. Проверить, что хотя бы один вариант имеет `inStock: true`
+
+### Фильтры не работают
+
+1. Проверить, что `useProductStore` импортирован из `../stores`
+2. Убедиться, что `resetFilters()` вызывается при смене категории/бренда
+3. Проверить структуру `filters` в компоненте
+
+### Изображения не загружаются
+
+1. Для локальных: использовать `import img from '../assets/...'`
+2. Для URL: проверить CORS и доступность ресурса
+3. Проверить, что `images` в варианте — массив
+
+### Корзина не сохраняется
+
+1. Проверить localStorage в DevTools
+2. Убедиться, что `persist` настроен в `useCartStore`
+3. Очистить localStorage и перезагрузить страницу
+
+### Роутинг 404 на продакшене
+
+1. Настроить редиректы на сервере (SPA)
+2. Для Vercel/Netlify: добавить `vercel.json` / `_redirects`
+3. Проверить базовый путь в `vite.config.js`
+
 ## Добавление нового товара
 
 1. Добавить данные в `src/data/products/{brand}.js`
@@ -172,3 +361,8 @@ import { NAV_MAIN, NAV_MOBILE, FOOTER_SECTIONS } from '../data/navigation'
 - Иконки: Lucide React
 - Карусели: Swiper
 - Навигация: `<Link to="...">` вместо `<a href>`
+
+## Документация
+
+- [Компоненты](./docs/COMPONENTS.md) — полное описание всех компонентов с props
+- [Хуки](./docs/HOOKS.md) — документация кастомных хуков

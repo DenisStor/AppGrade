@@ -8,7 +8,7 @@ import { useFavoritesStore } from '../../stores/useFavoritesStore'
 import { useCartStore } from '../../stores/useCartStore'
 import { useToast } from '../../hooks/useToast'
 
-export function ProductListCard({ product, category }) {
+export function ProductListCard({ product, category, brand }) {
   const { toggleItem, isFavorite } = useFavoritesStore()
   const { addItem: addToCart, isInCart } = useCartStore()
   const { toast } = useToast()
@@ -59,7 +59,7 @@ export function ProductListCard({ product, category }) {
     <>
       {/* Мобильная версия — компактная карточка */}
       <article className="lg:hidden">
-        <Link to={`/catalog/${category}/${product.slug}`} className="block">
+        <Link to={`/catalog/${category}/${brand}/${product.slug}`} className="block">
           <div className="bg-gray-light rounded-2xl aspect-square flex items-center justify-center p-4">
             <ImageWithSkeleton
               src={selectedVariant?.images?.[0]}
@@ -76,7 +76,7 @@ export function ProductListCard({ product, category }) {
       {/* Десктопная версия — полная карточка */}
       <article className="hidden lg:flex group h-full flex-col bg-white rounded-3xl p-5 border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <Link
-          to={`/catalog/${category}/${product.slug}`}
+          to={`/catalog/${category}/${brand}/${product.slug}`}
           className="block relative aspect-square mb-5 overflow-hidden rounded-2xl bg-gray-light"
         >
           <ImageWithSkeleton
@@ -134,7 +134,7 @@ export function ProductListCard({ product, category }) {
 
           {/* Название */}
           <Link
-            to={`/catalog/${category}/${product.slug}`}
+            to={`/catalog/${category}/${brand}/${product.slug}`}
             className="block"
           >
             <h3 className="text-base font-medium text-gray-dark line-clamp-2 group-hover:text-gray-medium transition-colors">

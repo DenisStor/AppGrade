@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
-import { getMinPrice, formatPrice } from '../../data/products'
+import { getMinPrice, formatPrice, getBrandSlug } from '../../data/products'
 
 export function SearchDropdown({ results = [], query, onClose }) {
   const navigate = useNavigate()
@@ -21,10 +21,12 @@ export function SearchDropdown({ results = [], query, onClose }) {
           const variant = product.variants?.[0]
           const price = getMinPrice(product)
 
+          const brandSlug = getBrandSlug(product.brand)
+
           return (
             <Link
               key={product.id}
-              to={`/catalog/${product.category}/${product.slug}`}
+              to={`/catalog/${product.category}/${brandSlug}/${product.slug}`}
               onClick={onClose}
               className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
             >

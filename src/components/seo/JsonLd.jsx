@@ -1,7 +1,10 @@
 import { CONTACTS, COMPANY } from '../../data/config'
+import { getBrandSlug } from '../../data/products'
 
-export function ProductJsonLd({ product, variant, category }) {
+export function ProductJsonLd({ product, variant, category, brand }) {
   if (!product || !variant) return null
+
+  const brandSlug = brand || getBrandSlug(product.brand)
 
   const schema = {
     '@context': 'https://schema.org',
@@ -11,11 +14,11 @@ export function ProductJsonLd({ product, variant, category }) {
     image: variant.images?.[0],
     brand: {
       '@type': 'Brand',
-      name: 'Apple',
+      name: product.brand || 'Apple',
     },
     offers: {
       '@type': 'Offer',
-      url: `https://appgrade.ru/catalog/${category}/${product.slug}`,
+      url: `https://appgrade.ru/catalog/${category}/${brandSlug}/${product.slug}`,
       priceCurrency: 'RUB',
       price: variant.price,
       availability: variant.inStock

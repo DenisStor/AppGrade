@@ -3,32 +3,9 @@ import { Container } from '../ui/Container'
 import { FooterContacts } from './FooterContacts'
 import { FooterColumn } from './FooterColumn'
 import { FooterBottom } from './FooterBottom'
-import { Send, MessageCircle } from 'lucide-react'
-import { CONTACTS } from '../../data/config'
 import { FOOTER_SECTIONS } from '../../data/navigation'
+import { SOCIAL_LINKS } from '../../data/social.jsx'
 import logo from '../../assets/logo.png'
-
-const SOCIAL_LINKS = [
-  {
-    name: 'Telegram',
-    href: CONTACTS.telegram,
-    icon: Send,
-  },
-  {
-    name: 'VK',
-    href: CONTACTS.vk,
-    icon: () => (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-        <path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.587-1.496c.596-.189 1.362 1.26 2.174 1.82.614.422 1.08.33 1.08.33l2.17-.03s1.135-.07.597-.964c-.044-.073-.314-.661-1.618-1.869-1.366-1.265-1.183-1.06.462-3.246.999-1.328 1.398-2.139 1.273-2.485-.119-.33-.856-.243-.856-.243l-2.443.015s-.181-.025-.315.056c-.131.079-.216.262-.216.262s-.387 1.028-.903 1.903c-1.089 1.85-1.525 1.948-1.703 1.833-.414-.266-.31-1.07-.31-1.64 0-1.783.27-2.525-.527-2.718-.265-.064-.46-.106-1.138-.113-.869-.009-1.605.003-2.02.207-.277.135-.49.439-.36.456.161.021.525.098.718.36.25.34.24 1.1.24 1.1s.145 2.098-.332 2.357c-.327.178-.775-.185-1.737-1.848-.493-.853-.866-1.796-.866-1.796s-.072-.176-.2-.27c-.154-.115-.37-.151-.37-.151l-2.322.015s-.348.01-.476.161c-.113.134-.009.412-.009.412s1.817 4.246 3.873 6.386c1.885 1.962 4.025 1.834 4.025 1.834h.97z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'WhatsApp',
-    href: CONTACTS.whatsapp,
-    icon: MessageCircle,
-  },
-]
 
 export function Footer() {
   return (

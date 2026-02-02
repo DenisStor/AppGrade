@@ -10,6 +10,68 @@ export const allProducts = [
   ...dysonProducts,
 ]
 
+// Конфигурация брендов
+export const brands = {
+  apple: {
+    id: 'apple',
+    slug: 'apple',
+    name: 'Apple',
+    logo: 'https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png',
+  },
+  samsung: {
+    id: 'samsung',
+    slug: 'samsung',
+    name: 'Samsung',
+    logo: 'https://images.samsung.com/is/image/samsung/assets/global/about-us/brand/logo/mo/360_197_1.png',
+  },
+  dyson: {
+    id: 'dyson',
+    slug: 'dyson',
+    name: 'Dyson',
+    logo: 'https://dyson-h.assetsadobe2.com/is/content/content/dam/dyson/icons/logo.svg',
+  },
+}
+
+// Маппинг имя бренда → slug
+const brandSlugMap = {
+  'Apple': 'apple',
+  'Samsung': 'samsung',
+  'Dyson': 'dyson',
+}
+
+// Получить бренды категории
+export const getBrandsByCategory = (categorySlug) => {
+  const products = getProductsByCategory(categorySlug)
+  const brandSlugs = new Set()
+
+  products.forEach((p) => {
+    if (p.brand) {
+      const slug = brandSlugMap[p.brand]
+      if (slug) brandSlugs.add(slug)
+    }
+  })
+
+  return Array.from(brandSlugs)
+    .map((slug) => brands[slug])
+    .filter(Boolean)
+}
+
+// Получить товары бренда в категории
+export const getProductsByCategoryAndBrand = (categorySlug, brandSlug) => {
+  const brand = brands[brandSlug]
+  if (!brand) return []
+
+  return allProducts.filter(
+    (p) => p.category === categorySlug && p.brand === brand.name
+  )
+}
+
+// Получить бренд по slug
+export const getBrandBySlug = (slug) => brands[slug] || null
+
+// Получить slug бренда по имени
+export const getBrandSlug = (brandName) => brandSlugMap[brandName] || null
+
 // Новая мультибрендовая система категорий
 export const categories = {
   smartphones: {
@@ -127,11 +189,6 @@ export const getRelatedProducts = (productId, limit = 4) => {
 export const getMinPrice = (product) => {
   if (!product?.variants?.length) return 0
   return Math.min(...product.variants.map((v) => v.price))
-}
-
-export const getMaxPrice = (product) => {
-  if (!product?.variants?.length) return 0
-  return Math.max(...product.variants.map((v) => v.price))
 }
 
 export const hasDiscount = (product) => {

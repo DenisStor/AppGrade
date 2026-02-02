@@ -1,6 +1,7 @@
 import { ProductListCard } from './ProductListCard'
+import { getBrandSlug } from '../../data/products'
 
-export function ProductGrid({ products = [], category, className = '' }) {
+export function ProductGrid({ products = [], category, brand, className = '' }) {
   if (!products.length) return null
 
   return (
@@ -12,6 +13,7 @@ export function ProductGrid({ products = [], category, className = '' }) {
           key={product.id}
           product={product}
           category={category || product.category}
+          brand={brand || getBrandSlug(product.brand)}
         />
       ))}
     </div>

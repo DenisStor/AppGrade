@@ -1,4 +1,5 @@
-import { Check, X } from 'lucide-react'
+import { Check } from 'lucide-react'
+import { isLightColor } from '../../utils/color'
 
 export function ColorSelector({
   colors = [],
@@ -24,11 +25,7 @@ export function ColorSelector({
         {colors.map((color) => {
           const isSelected = color.id === selected
           const isAvailable = getColorAvailability(color.id)
-          const isLight =
-            color.hex.toLowerCase() === '#ffffff' ||
-            color.hex.toLowerCase() === '#f5f5f0' ||
-            color.hex.toLowerCase() === '#f0e4d3' ||
-            color.hex.toLowerCase() === '#e3e4e5'
+          const isLight = isLightColor(color.hex)
 
           return (
             <button

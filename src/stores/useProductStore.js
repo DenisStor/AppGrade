@@ -1,8 +1,9 @@
 import { create } from 'zustand'
+import { PRICE } from '../data/constants'
 
 export const useProductStore = create((set) => ({
   filters: {
-    priceRange: [0, 500000],
+    priceRange: [0, PRICE.MAX],
     colors: [],
     memory: [],
     brands: [],
@@ -28,7 +29,7 @@ export const useProductStore = create((set) => ({
   resetFilters: () =>
     set({
       filters: {
-        priceRange: [0, 500000],
+        priceRange: [0, PRICE.MAX],
         colors: [],
         memory: [],
         brands: [],

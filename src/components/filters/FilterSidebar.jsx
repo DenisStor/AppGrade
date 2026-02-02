@@ -1,20 +1,19 @@
 import { RangeSlider } from '../ui/RangeSlider'
-import { ColorFilter } from './ColorFilter'
 import { CheckboxFilter } from './CheckboxFilter'
 import { formatMemory } from '../../data/products'
+import { PRICE } from '../../data/constants'
 
 export function FilterSidebar({
   filters,
-  availableColors = [],
   availableMemory = [],
   availableBrands = [],
-  priceRange = [0, 500000],
+  priceRange = [0, PRICE.MAX],
   onFilterChange,
   onReset,
+  hideBrandFilter = false,
   className = '',
 }) {
   const hasActiveFilters =
-    filters.colors.length > 0 ||
     filters.memory.length > 0 ||
     filters.brands.length > 0 ||
     filters.inStock ||
@@ -24,7 +23,7 @@ export function FilterSidebar({
   return (
     <aside className={`space-y-6 ${className}`}>
       {/* Бренд */}
-      {availableBrands.length > 1 && (
+      {!hideBrandFilter && availableBrands.length > 1 && (
         <div>
           <h3 className="text-sm font-semibold text-gray-dark mb-4">Бренд</h3>
           <CheckboxFilter
@@ -49,18 +48,6 @@ export function FilterSidebar({
           onChange={(value) => onFilterChange('priceRange', value)}
         />
       </div>
-
-      {/* Цвет */}
-      {availableColors.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-gray-dark mb-4">Цвет</h3>
-          <ColorFilter
-            colors={availableColors}
-            selected={filters.colors}
-            onChange={(colors) => onFilterChange('colors', colors)}
-          />
-        </div>
-      )}
 
       {/* Память */}
       {availableMemory.length > 0 && (

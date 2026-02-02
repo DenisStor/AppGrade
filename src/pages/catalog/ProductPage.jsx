@@ -1,86 +1,52 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Heart, Share2, ShoppingCart, Check, Truck, Shield, CreditCard } from 'lucide-react'
+import { Heart, Share2, Check } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { Badge, BadgeGroup } from '../../components/ui/Badge'
-import { Button } from '../../components/ui/Button'
-import { Modal } from '../../components/ui/Modal'
 import { Tabs } from '../../components/ui/Tabs'
 import { ProductGallery } from '../../components/product/ProductGallery'
-import { ColorSelector } from '../../components/product/ColorSelector'
-import { MemorySelector } from '../../components/product/MemorySelector'
-import { SimSelector } from '../../components/product/SimSelector'
+import { ProductConfig } from '../../components/product/ProductConfig'
+import { ProductActions } from '../../components/product/ProductActions'
+import { ProductBenefits } from '../../components/product/ProductBenefits'
+import { QuickBuyModal } from '../../components/product/QuickBuyModal'
 import { RelatedProducts } from '../../components/product/RelatedProducts'
 import { RecentlyViewed } from '../../components/product/RecentlyViewed'
 import { ProductJsonLd, BreadcrumbJsonLd } from '../../components/seo/JsonLd'
-import {
-  getProductBySlug,
-  getCategoryBySlug,
-  getAvailableColors,
-  getAvailableMemory,
-  formatPrice,
-  formatMemory,
-} from '../../data/products'
+import { getProductBySlug, getCategoryBySlug, getBrandBySlug, formatPrice, formatMemory } from '../../data/products'
 import { useFavoritesStore } from '../../stores/useFavoritesStore'
 import { useRecentlyViewedStore } from '../../stores/useRecentlyViewedStore'
 import { useCartStore } from '../../stores/useCartStore'
+import { useProductVariant } from '../../hooks/useProductVariant'
 
 export default function ProductPage() {
-  const { category, slug } = useParams()
+  const { category, brand, slug } = useParams()
   const product = getProductBySlug(slug)
   const categoryData = getCategoryBySlug(category)
+  const brandData = getBrandBySlug(brand)
 
   const { toggleItem, isFavorite } = useFavoritesStore()
   const { addItem } = useRecentlyViewedStore()
   const { addItem: addToCart, isInCart } = useCartStore()
 
-  const [selectedColor, setSelectedColor] = useState(null)
-  const [selectedMemory, setSelectedMemory] = useState(null)
-  const [selectedSim, setSelectedSim] = useState(null)
   const [isQuickBuyOpen, setIsQuickBuyOpen] = useState(false)
-  const [quickBuyForm, setQuickBuyForm] = useState({ name: '', phone: '' })
 
-  const colors = useMemo(() => getAvailableColors(product), [product])
-  const memoryOptions = useMemo(() => getAvailableMemory(product), [product])
-
-  // Инициализация выбранных опций
-  useEffect(() => {
-    if (product?.variants?.length) {
-      const firstInStock = product.variants.find((v) => v.inStock) || product.variants[0]
-      setSelectedColor(firstInStock.color.id)
-      setSelectedMemory(firstInStock.memory)
-    }
-    if (product?.simOptions?.length) {
-      setSelectedSim(product.simOptions[0].id)
-    }
-  }, [product])
+  const {
+    selectedColor,
+    selectedMemory,
+    selectedSim,
+    setSelectedColor,
+    setSelectedMemory,
+    setSelectedSim,
+    currentVariant,
+    colors,
+    memoryOptions,
+    availableMemoryForColor,
+  } = useProductVariant(product)
 
   // Добавление в недавно просмотренные
   useEffect(() => {
-    if (product) {
-      addItem(product.id)
-    }
+    if (product) addItem(product.id)
   }, [product, addItem])
-
-  // Текущий вариант
-  const currentVariant = useMemo(() => {
-    if (!product) return null
-    // Для товаров без памяти (например, Dyson) ищем только по цвету
-    if (memoryOptions.length === 0) {
-      return product.variants.find((v) => v.color.id === selectedColor)
-    }
-    return product.variants.find(
-      (v) => v.color.id === selectedColor && v.memory === selectedMemory
-    )
-  }, [product, selectedColor, selectedMemory, memoryOptions])
-
-  // Доступность памяти для выбранного цвета
-  const availableMemoryForColor = useMemo(() => {
-    if (!product || !selectedColor) return []
-    return product.variants
-      .filter((v) => v.color.id === selectedColor)
-      .map((v) => ({ memory: v.memory, inStock: v.inStock }))
-  }, [product, selectedColor])
 
   // SEO
   useEffect(() => {
@@ -104,20 +70,13 @@ export default function ProductPage() {
   const breadcrumbs = [
     { label: 'Каталог', href: '/catalog' },
     { label: categoryData?.name || category, href: `/catalog/${category}` },
+    { label: brandData?.name || brand, href: `/catalog/${category}/${brand}` },
     { label: product.name },
   ]
 
   const discount = currentVariant?.oldPrice
     ? Math.round((1 - currentVariant.price / currentVariant.oldPrice) * 100)
     : 0
-
-  const handleQuickBuySubmit = (e) => {
-    e.preventDefault()
-    // TODO: Интеграция с API
-    alert(`Заявка отправлена!\nИмя: ${quickBuyForm.name}\nТелефон: ${quickBuyForm.phone}`)
-    setIsQuickBuyOpen(false)
-    setQuickBuyForm({ name: '', phone: '' })
-  }
 
   const tabs = [
     {
@@ -146,20 +105,16 @@ export default function ProductPage() {
 
   return (
     <div className="section-padding py-6 lg:py-10">
-      <ProductJsonLd product={product} variant={currentVariant} category={category} />
+      <ProductJsonLd product={product} variant={currentVariant} category={category} brand={brand} />
       <BreadcrumbJsonLd items={breadcrumbs} />
 
       <Breadcrumbs items={breadcrumbs} className="mb-6" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        {/* Галерея */}
-        <ProductGallery
-          images={currentVariant?.images || []}
-          productName={product.name}
-        />
+        <ProductGallery images={currentVariant?.images || []} productName={product.name} />
 
-        {/* Информация */}
         <div>
+          {/* Заголовок и действия */}
           <div className="flex items-start justify-between gap-4 mb-4">
             <div>
               <BadgeGroup badges={product.badges} className="mb-2" />
@@ -183,10 +138,7 @@ export default function ProductPage() {
                 }`}
                 aria-label={isFavorite(product.id) ? 'Удалить из избранного' : 'В избранное'}
               >
-                <Heart
-                  className="w-5 h-5"
-                  fill={isFavorite(product.id) ? 'currentColor' : 'none'}
-                />
+                <Heart className="w-5 h-5" fill={isFavorite(product.id) ? 'currentColor' : 'none'} />
               </button>
               <button
                 onClick={() => navigator.share?.({ url: window.location.href })}
@@ -223,148 +175,40 @@ export default function ProductPage() {
             )}
           </div>
 
-          {/* Конфигуратор */}
-          <div className="space-y-6 mb-8">
-            <ColorSelector
-              colors={colors}
-              selected={selectedColor}
-              onChange={(colorId) => {
-                setSelectedColor(colorId)
-                // Проверяем, доступна ли текущая память для нового цвета
-                const variantsForColor = product.variants.filter(
-                  (v) => v.color.id === colorId
-                )
-                if (!variantsForColor.find((v) => v.memory === selectedMemory)) {
-                  setSelectedMemory(variantsForColor[0]?.memory)
-                }
-              }}
-              variants={product.variants}
-            />
+          <ProductConfig
+            product={product}
+            colors={colors}
+            memoryOptions={memoryOptions}
+            selectedColor={selectedColor}
+            selectedMemory={selectedMemory}
+            selectedSim={selectedSim}
+            onColorChange={setSelectedColor}
+            onMemoryChange={setSelectedMemory}
+            onSimChange={setSelectedSim}
+            availableMemoryForColor={availableMemoryForColor}
+          />
 
-            {memoryOptions.length > 0 && (
-              <MemorySelector
-                options={memoryOptions}
-                selected={selectedMemory}
-                onChange={setSelectedMemory}
-                availableForColor={availableMemoryForColor}
-              />
-            )}
+          <ProductActions
+            product={product}
+            currentVariant={currentVariant}
+            selectedSim={selectedSim}
+            isInCart={isInCart}
+            onAddToCart={addToCart}
+            onQuickBuy={() => setIsQuickBuyOpen(true)}
+          />
 
-            {product.simOptions?.length > 0 && (
-              <SimSelector
-                options={product.simOptions}
-                selected={selectedSim}
-                onChange={setSelectedSim}
-              />
-            )}
-          </div>
-
-          {/* Кнопки */}
-          <div className="space-y-3 mb-8">
-            {currentVariant && isInCart(product.id, currentVariant.id) ? (
-              <Link to="/cart" className="block">
-                <Button variant="outline" size="lg" className="w-full">
-                  <Check className="w-5 h-5 mr-2" />
-                  В корзине
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                variant="primary"
-                size="lg"
-                className="w-full"
-                onClick={() => currentVariant && addToCart(product, currentVariant, selectedSim)}
-                disabled={!currentVariant}
-              >
-                <ShoppingCart className="w-5 h-5 mr-2" />
-                Добавить в корзину
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full"
-              onClick={() => setIsQuickBuyOpen(true)}
-            >
-              Купить в 1 клик
-            </Button>
-          </div>
-
-          {/* Преимущества */}
-          <div className="grid grid-cols-3 gap-4 p-4 bg-gray-light rounded-xl">
-            <div className="text-center">
-              <Truck className="w-6 h-6 mx-auto mb-2 text-gray-dark" />
-              <p className="text-xs text-gray-medium">Бесплатная доставка</p>
-            </div>
-            <div className="text-center">
-              <Shield className="w-6 h-6 mx-auto mb-2 text-gray-dark" />
-              <p className="text-xs text-gray-medium">Гарантия 1 год</p>
-            </div>
-            <div className="text-center">
-              <CreditCard className="w-6 h-6 mx-auto mb-2 text-gray-dark" />
-              <p className="text-xs text-gray-medium">Рассрочка 0%</p>
-            </div>
-          </div>
+          <ProductBenefits />
         </div>
       </div>
 
-      {/* Вкладки */}
       <div className="mt-12 lg:mt-16">
         <Tabs tabs={tabs} defaultTab="description" />
       </div>
 
-      {/* Похожие товары */}
       <RelatedProducts productId={product.id} className="mt-12 lg:mt-16" />
-
-      {/* Недавно просмотренные */}
       <RecentlyViewed currentProductId={product.id} className="mt-12 lg:mt-16" />
 
-      {/* Модалка "Купить в 1 клик" */}
-      <Modal
-        isOpen={isQuickBuyOpen}
-        onClose={() => setIsQuickBuyOpen(false)}
-        title="Купить в 1 клик"
-        size="sm"
-      >
-        <form onSubmit={handleQuickBuySubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-dark mb-1">
-              Ваше имя
-            </label>
-            <input
-              type="text"
-              required
-              value={quickBuyForm.name}
-              onChange={(e) =>
-                setQuickBuyForm((prev) => ({ ...prev, name: e.target.value }))
-              }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400"
-              placeholder="Иван"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-dark mb-1">
-              Телефон
-            </label>
-            <input
-              type="tel"
-              required
-              value={quickBuyForm.phone}
-              onChange={(e) =>
-                setQuickBuyForm((prev) => ({ ...prev, phone: e.target.value }))
-              }
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400"
-              placeholder="+7 (___) ___-__-__"
-            />
-          </div>
-          <p className="text-sm text-gray-medium">
-            Мы перезвоним вам для подтверждения заказа
-          </p>
-          <Button type="submit" variant="primary" size="lg" className="w-full">
-            Отправить заявку
-          </Button>
-        </form>
-      </Modal>
+      <QuickBuyModal isOpen={isQuickBuyOpen} onClose={() => setIsQuickBuyOpen(false)} />
     </div>
   )
 }

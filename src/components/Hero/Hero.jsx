@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Autoplay } from 'swiper/modules'
+import { CAROUSEL } from '../../data/constants'
 import 'swiper/css'
 import 'swiper/css/pagination'
 
@@ -44,7 +45,7 @@ export function Hero() {
       <Swiper
         modules={[Pagination, Autoplay]}
         pagination={{ clickable: true }}
-        autoplay={{ delay: 20000 }}
+        autoplay={{ delay: CAROUSEL.AUTOPLAY_DELAY }}
         loop={BANNERS.length > 1}
         grabCursor={true}
         className={`w-full hero-swiper ${!isLoaded ? 'hidden' : ''}`}
