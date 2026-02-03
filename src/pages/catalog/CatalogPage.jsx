@@ -61,6 +61,13 @@ const catalogCategories = [
     image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/accessories-card-40-202409?wid=680&hei=528&fmt=png-alpha',
     href: '/catalog/accessories',
   },
+  {
+    id: 'gaming',
+    name: 'Игровые консоли',
+    description: 'PlayStation 5, DualSense',
+    image: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$',
+    href: '/catalog/gaming',
+  },
 ]
 
 export default function CatalogPage() {
@@ -87,7 +94,7 @@ export default function CatalogPage() {
           >
             {/* Мобильная версия — Apple Store стиль */}
             <div className="lg:hidden">
-              <div className="bg-gray-light rounded-2xl aspect-square flex items-center justify-center p-4">
+              <div className="bg-gray-light aspect-square flex items-center justify-center p-4">
                 <img
                   src={category.image}
                   alt={category.name}
@@ -103,7 +110,7 @@ export default function CatalogPage() {
             </div>
 
             {/* Десктопная версия — текущий стиль с градиентом */}
-            <div className="hidden lg:block relative bg-gray-light rounded-2xl overflow-hidden aspect-[4/3] transition-all duration-300 hover:shadow-liquid">
+            <div className="hidden lg:block relative bg-gray-light overflow-hidden aspect-[4/3] transition-all duration-300 hover:shadow-liquid">
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
 
               <img

@@ -21,7 +21,7 @@ export function ProductGallery({ images = [], productName = '' }) {
 
   if (images.length === 1) {
     return (
-      <div className="aspect-square bg-gray-light rounded-2xl overflow-hidden">
+      <div className="aspect-square bg-gray-light overflow-hidden">
         <ImageWithSkeleton
           src={images[0]}
           alt={productName}
@@ -33,12 +33,12 @@ export function ProductGallery({ images = [], productName = '' }) {
 
   return (
     <div className="space-y-4">
-      {/* Основной слайдер */}
+      {/* Основное изображение сверху */}
       <Swiper
         modules={[Thumbs, Zoom]}
         thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
         zoom={true}
-        className="aspect-square bg-gray-light rounded-2xl overflow-hidden"
+        className="aspect-square bg-gray-light overflow-hidden"
       >
         {images.map((src, index) => (
           <SwiperSlide key={index}>
@@ -53,19 +53,19 @@ export function ProductGallery({ images = [], productName = '' }) {
         ))}
       </Swiper>
 
-      {/* Миниатюры */}
+      {/* Миниатюры снизу — минималистичный стиль */}
       <Swiper
         modules={[Thumbs, FreeMode]}
         onSwiper={setThumbsSwiper}
-        spaceBetween={12}
+        direction="horizontal"
+        spaceBetween={8}
         slidesPerView={4}
         freeMode={true}
         watchSlidesProgress={true}
-        className="product-thumbs"
       >
         {images.map((src, index) => (
           <SwiperSlide key={index}>
-            <div className="aspect-square bg-gray-light rounded-xl overflow-hidden cursor-pointer transition-all hover:ring-2 hover:ring-gray-300 [.swiper-slide-thumb-active_&]:ring-2 [.swiper-slide-thumb-active_&]:ring-gray-dark">
+            <div className="aspect-square bg-gray-light overflow-hidden cursor-pointer border-2 border-transparent [.swiper-slide-thumb-active_&]:border-gray-300">
               <ImageWithSkeleton
                 src={src}
                 alt={`Миниатюра ${index + 1}`}

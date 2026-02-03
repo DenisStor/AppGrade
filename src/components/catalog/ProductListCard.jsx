@@ -55,12 +55,14 @@ export function ProductListCard({ product, category, brand }) {
     setSelectedColorId(colorId)
   }
 
+  const productUrl = `/catalog/${category}/${brand}/${product.slug}`
+
   return (
     <>
       {/* Мобильная версия — компактная карточка */}
       <article className="lg:hidden">
-        <Link to={`/catalog/${category}/${brand}/${product.slug}`} className="block">
-          <div className="bg-gray-light rounded-2xl aspect-square flex items-center justify-center p-4">
+        <Link to={productUrl} className="block">
+          <div className="bg-gray-light aspect-square flex items-center justify-center p-4">
             <ImageWithSkeleton
               src={selectedVariant?.images?.[0]}
               alt={product.name}
@@ -73,11 +75,12 @@ export function ProductListCard({ product, category, brand }) {
         </Link>
       </article>
 
-      {/* Десктопная версия — полная карточка */}
-      <article className="hidden lg:flex group h-full flex-col bg-white rounded-3xl p-5 border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      {/* Десктопная версия — flexbox с фиксированными высотами */}
+      <article className="hidden lg:flex group flex-col h-full bg-white p-5 border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+        {/* Изображение */}
         <Link
-          to={`/catalog/${category}/${brand}/${product.slug}`}
-          className="block relative aspect-square mb-5 overflow-hidden rounded-2xl bg-gray-light"
+          to={productUrl}
+          className="block relative aspect-square overflow-hidden bg-gray-light mb-4"
         >
           <ImageWithSkeleton
             src={selectedVariant?.images?.[0]}
@@ -108,8 +111,8 @@ export function ProductListCard({ product, category, brand }) {
           </button>
         </Link>
 
-        <div className="flex-1 flex flex-col space-y-2">
-          {/* Цвета */}
+        {/* Цвета — фиксированная высота */}
+        <div className="h-6 mb-3">
           {colors.length > 1 && (
             <div className="flex gap-1.5">
               {colors.slice(0, 5).map((color) => (
@@ -131,61 +134,59 @@ export function ProductListCard({ product, category, brand }) {
               )}
             </div>
           )}
+        </div>
 
-          {/* Название */}
-          <Link
-            to={`/catalog/${category}/${brand}/${product.slug}`}
-            className="block"
-          >
-            <h3 className="text-base font-medium text-gray-dark line-clamp-2 group-hover:text-gray-medium transition-colors">
-              {product.name}
-            </h3>
-          </Link>
+        {/* Название — минимальная высота для 2 строк */}
+        <Link to={productUrl} className="block min-h-[3rem] mb-1">
+          <h3 className="text-base font-medium text-gray-dark line-clamp-2 group-hover:text-gray-medium transition-colors">
+            {product.name}
+          </h3>
+        </Link>
 
-          {/* Краткое описание */}
-          <p className="text-sm text-gray-medium line-clamp-2">
-            {product.shortDescription}
-          </p>
+        {/* Описание — фиксированная высота для 2 строк */}
+        <p className="text-sm text-gray-medium line-clamp-2 h-10 mb-3">
+          {product.shortDescription}
+        </p>
 
-          {/* Цена и кнопка — прижаты к низу */}
-          <div className="mt-auto pt-2">
-            <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-gray-dark">
-                {formatPrice(minPrice)}
-              </span>
-              {hasDiscount && (
-                <span className="text-sm text-gray-medium line-through">
-                  {formatPrice(selectedVariant.oldPrice)}
-                </span>
-              )}
-            </div>
-
+        {/* Цена + скидка — фиксированная высота */}
+        <div className="h-14 mb-3">
+          <div className="flex items-baseline gap-2">
+            <span className="text-xl font-bold text-gray-dark">
+              {formatPrice(minPrice)}
+            </span>
             {hasDiscount && (
-              <span className="inline-block mt-1 px-2 py-0.5 bg-red-100 text-red-600 text-xs font-medium rounded">
-                -{discount}%
+              <span className="text-sm text-gray-medium line-through">
+                {formatPrice(selectedVariant.oldPrice)}
               </span>
-            )}
-
-            {/* Кнопка */}
-            {inCart ? (
-              <Link
-                to="/cart"
-                onClick={(e) => e.stopPropagation()}
-                className="group/btn w-full mt-3 py-3 px-4 bg-white border border-gray-dark text-gray-dark text-sm font-medium rounded-xl hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-              >
-                <Check className="w-4 h-4" />
-                В корзине
-              </Link>
-            ) : (
-              <button
-                onClick={handleAddToCart}
-                className="group/btn w-full mt-3 py-3 px-4 bg-gray-dark text-white text-sm font-medium rounded-xl hover:bg-black active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-              >
-                <ShoppingCart className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
-                В корзину
-              </button>
             )}
           </div>
+          {hasDiscount && (
+            <span className="inline-block mt-1 px-2 py-0.5 bg-red-100 text-red-600 text-xs font-medium rounded">
+              -{discount}%
+            </span>
+          )}
+        </div>
+
+        {/* Кнопка — прибита к низу через mt-auto */}
+        <div className="mt-auto">
+          {inCart ? (
+            <Link
+              to="/cart"
+              onClick={(e) => e.stopPropagation()}
+              className="group/btn w-full py-3 px-4 bg-white border border-gray-dark text-gray-dark text-sm font-medium hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            >
+              <Check className="w-4 h-4" />
+              В корзине
+            </Link>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              className="group/btn w-full py-3 px-4 bg-gray-dark text-white text-sm font-medium hover:bg-black active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            >
+              <ShoppingCart className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
+              В корзину
+            </button>
+          )}
         </div>
       </article>
     </>

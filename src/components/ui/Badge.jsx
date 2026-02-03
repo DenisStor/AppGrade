@@ -19,6 +19,11 @@ const variants = {
     text: 'text-white',
     label: '',
   },
+  used: {
+    bg: 'bg-gradient-to-r from-purple-500 to-purple-600',
+    text: 'text-white',
+    label: 'Б/У',
+  },
 }
 
 export function Badge({ variant = 'new', label, className = '' }) {

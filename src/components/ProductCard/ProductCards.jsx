@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import buPhoto from '../../assets/bu-photo.png'
+import buPhoto from '../../assets/bu-devices.png'
 import servicePhoto from '../../assets/service-photo.png'
 import { Button } from '../ui/Button'
 
@@ -19,10 +19,10 @@ export function ProductCards() {
             alt="Проверенное б/у"
             className="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-110 transition-all duration-300"
           />
-          <div className="absolute bottom-6 left-6 text-white">
-            <h3 className="text-3xl lg:text-4xl font-bold">Проверенное б/у</h3>
-            <p className="text-xl lg:text-2xl mt-2">от 15 990 ₽</p>
-            <Button variant="outline-white" className="mt-4">
+          <div className="absolute bottom-5 left-5 text-white">
+            <h3 className="text-xl lg:text-2xl font-bold">Проверенное б/у</h3>
+            <p className="text-base lg:text-lg mt-1">от 15 990 ₽</p>
+            <Button variant="outline-white" size="sm" className="mt-3">
               Смотреть каталог
             </Button>
           </div>
@@ -34,10 +34,10 @@ export function ProductCards() {
             alt="Сервис"
             className="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-110 transition-all duration-300"
           />
-          <div className="absolute bottom-6 left-6 text-white">
-            <h3 className="text-3xl lg:text-4xl font-bold">Сервис</h3>
-            <p className="text-xl lg:text-2xl mt-2">от 990 ₽</p>
-            <Button variant="outline-white" className="mt-4">
+          <div className="absolute bottom-5 left-5 text-white">
+            <h3 className="text-xl lg:text-2xl font-bold">Сервис</h3>
+            <p className="text-base lg:text-lg mt-1">от 990 ₽</p>
+            <Button variant="outline-white" size="sm" className="mt-3">
               Подробнее
             </Button>
           </div>

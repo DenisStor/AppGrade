@@ -54,7 +54,7 @@ main.jsx (BrowserRouter)
 | Modal | ui/Modal.jsx | Модальное окно |
 | Drawer | ui/Drawer.jsx | Боковая панель |
 | Tabs | ui/Tabs.jsx | Табы (underline/pills) |
-| Badge | ui/Badge.jsx | Бейдж (new/hit/sale) |
+| Badge | ui/Badge.jsx | Бейдж (new/hit/sale/used) |
 | Breadcrumbs | ui/Breadcrumbs.jsx | Хлебные крошки |
 | Toast | ui/Toast.jsx | Уведомления |
 | RangeSlider | ui/RangeSlider.jsx | Слайдер диапазона |
@@ -119,11 +119,12 @@ main.jsx (BrowserRouter)
 | RecentlyViewed | product/RecentlyViewed.jsx | Недавно просмотренные |
 | QuickBuyModal | product/QuickBuyModal.jsx | Быстрый заказ |
 
-### Filters (3)
+### Filters (4)
 
 | Компонент | Путь | Описание |
 |-----------|------|----------|
 | FilterSidebar | filters/FilterSidebar.jsx | Панель фильтров |
+| UsedFilterSidebar | filters/UsedFilterSidebar.jsx | Фильтры для б/у товаров |
 | CheckboxFilter | filters/CheckboxFilter.jsx | Чекбокс-фильтр |
 | ColorFilter | filters/ColorFilter.jsx | Фильтр по цвету |
 | ActiveFilters | filters/ActiveFilters.jsx | Активные фильтры |
@@ -140,6 +141,19 @@ main.jsx (BrowserRouter)
 | Компонент | Путь | Описание |
 |-----------|------|----------|
 | JsonLd | seo/JsonLd.jsx | Schema.org разметка |
+
+### Service (8)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| ServiceHero | Service/ServiceHero.jsx | Split-screen баннер |
+| ServiceFeatures | Service/ServiceFeatures.jsx | Фичи сервиса (Быстро, Как дома, На связи) |
+| WhyUs | Service/WhyUs.jsx | Преимущества сервиса |
+| ServicePricing | Service/ServicePricing.jsx | Прайс-лист услуг |
+| HowWeWork | Service/HowWeWork.jsx | Этапы работы (01-04) |
+| RepairForm | Service/RepairForm.jsx | Форма записи на ремонт |
+| LoanerPhone | Service/LoanerPhone.jsx | Блок про подменный iPhone |
+| MobileService | Service/MobileService.jsx | Выездной сервис |
 
 ## Хуки
 
@@ -183,6 +197,8 @@ toast('Добавлено в корзину', 'success')
 | infoPages.js | `INFO_PAGES` | Информационные страницы |
 | redirects.js | `REDIRECTS` | Редиректы URL |
 | social.jsx | `SOCIAL_LINKS` | Соцсети |
+| service.js | `SERVICE_FEATURES`, `WHY_US`, `SERVICE_PRICING`, `HOW_WE_WORK` | Данные сервиса |
+| products/used.js | `usedProducts`, `CONDITIONS` | Б/У товары |
 
 ## Система товаров
 
@@ -239,6 +255,11 @@ import {
   formatPrice,                     // (price) → '169 990 ₽'
   formatMemory,                    // (1024) → '1 ТБ'
   searchProducts,                  // (query) → products[]
+
+  // Б/У товары
+  usedProducts,                    // массив б/у товаров
+  getUsedProducts,                 // () → usedProducts[]
+  CONDITIONS,                      // { perfect, excellent, good }
 } from '../data/products'
 ```
 
@@ -277,6 +298,25 @@ const { items, addItem } = useRecentlyViewedStore()
 | `/catalog/:category` | CategoryPage | Бренды категории |
 | `/catalog/:category/:brand` | BrandPage | Товары бренда |
 | `/catalog/:category/:brand/:slug` | ProductPage | Карточка товара |
+
+### Сервис
+
+| Маршрут | Страница | Описание |
+|---------|----------|----------|
+| `/service` | ServicePage | Страница ремонта и сервиса |
+
+### Б/У товары
+
+| Маршрут | Страница | Описание |
+|---------|----------|----------|
+| `/used` | UsedPage | Каталог проверенных б/у товаров |
+
+### Корзина и поиск
+
+| Маршрут | Страница | Описание |
+|---------|----------|----------|
+| `/cart` | CartPage | Корзина |
+| `/search` | SearchPage | Результаты поиска |
 
 ### Информационные
 

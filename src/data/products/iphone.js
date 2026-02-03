@@ -21,7 +21,12 @@ export const iphoneProducts = [
         price: 179990,
         oldPrice: null,
         inStock: true,
-        images: [iphone17ProOrange],
+        images: [
+          iphone17ProOrange,
+          'https://placehold.co/800x800/f5f5f7/86868b?text=Вид+сбоку',
+          'https://placehold.co/800x800/f5f5f7/86868b?text=Вид+сзади',
+          'https://placehold.co/800x800/f5f5f7/86868b?text=Экран',
+        ],
       },
       {
         id: 'iphone-17-pro-max-orange-512',
@@ -30,7 +35,12 @@ export const iphoneProducts = [
         price: 199990,
         oldPrice: null,
         inStock: true,
-        images: [iphone17ProOrange],
+        images: [
+          iphone17ProOrange,
+          'https://placehold.co/800x800/f5f5f7/86868b?text=Вид+сбоку',
+          'https://placehold.co/800x800/f5f5f7/86868b?text=Вид+сзади',
+          'https://placehold.co/800x800/f5f5f7/86868b?text=Экран',
+        ],
       },
       {
         id: 'iphone-17-pro-max-black-256',
@@ -41,6 +51,9 @@ export const iphoneProducts = [
         inStock: true,
         images: [
           'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
         ],
       },
       {
@@ -52,6 +65,9 @@ export const iphoneProducts = [
         inStock: true,
         images: [
           'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
         ],
       },
       {
@@ -63,6 +79,9 @@ export const iphoneProducts = [
         inStock: false,
         images: [
           'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
         ],
       },
       {
@@ -74,6 +93,9 @@ export const iphoneProducts = [
         inStock: true,
         images: [
           'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409_GEO_EMEA?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409_GEO_EMEA?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
         ],
       },
       {
@@ -85,6 +107,9 @@ export const iphoneProducts = [
         inStock: true,
         images: [
           'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409_GEO_EMEA?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409_GEO_EMEA?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
         ],
       },
       {
@@ -96,6 +121,9 @@ export const iphoneProducts = [
         inStock: true,
         images: [
           'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-naturaltitanium?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-naturaltitanium?wid=800&hei=800&fmt=png-alpha',
         ],
       },
       {
@@ -107,6 +135,9 @@ export const iphoneProducts = [
         inStock: true,
         images: [
           'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-deserttitanium?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
+          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-deserttitanium?wid=800&hei=800&fmt=png-alpha',
         ],
       },
     ],

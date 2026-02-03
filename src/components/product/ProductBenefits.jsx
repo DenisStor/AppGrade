@@ -8,7 +8,7 @@ const BENEFITS = [
 
 export function ProductBenefits() {
   return (
-    <div className="grid grid-cols-3 gap-4 p-4 bg-gray-light rounded-xl">
+    <div className="grid grid-cols-3 gap-4 p-4 bg-gray-light">
       {BENEFITS.map(({ icon: Icon, label }) => (
         <div key={label} className="text-center">
           <Icon className="w-6 h-6 mx-auto mb-2 text-gray-dark" />

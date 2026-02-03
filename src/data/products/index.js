@@ -2,6 +2,7 @@ import { iphoneProducts } from './iphone'
 import { macProducts } from './mac'
 import { samsungProducts } from './samsung'
 import { dysonProducts } from './dyson'
+import { usedProducts, CONDITIONS } from './used'
 
 export const allProducts = [
   ...iphoneProducts,
@@ -9,6 +10,11 @@ export const allProducts = [
   ...samsungProducts,
   ...dysonProducts,
 ]
+
+// Б/У товары
+export { usedProducts, CONDITIONS }
+
+export const getUsedProducts = () => usedProducts
 
 // Конфигурация брендов
 export const brands = {
@@ -145,6 +151,15 @@ export const categories = {
     seoTitle: 'Купить аксессуары в Калининграде — APPGRADE',
     seoDescription:
       'Аксессуары Apple и Samsung с гарантией. Доставка по Калининграду.',
+  },
+  gaming: {
+    id: 'gaming',
+    name: 'Игровые консоли',
+    slug: 'gaming',
+    description: 'PlayStation 5, DualSense и другие',
+    seoTitle: 'Купить игровую консоль в Калининграде — APPGRADE',
+    seoDescription:
+      'PlayStation 5 с гарантией. Доставка по Калининграду.',
   },
 }
 

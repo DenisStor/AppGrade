@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { ScrollToTop } from './components/ScrollToTop'
 import { ToastContainer } from './components/ui/Toast'
 import { REDIRECTS } from './data/redirects'
 import Home from './pages/Home'
@@ -16,10 +17,15 @@ import InfoPage from './pages/info/InfoPage'
 import BlogPostPage from './pages/info/BlogPostPage'
 // Корзина
 import CartPage from './pages/cart/CartPage'
+// Сервис
+import ServicePage from './pages/service/ServicePage'
+// Б/У
+import UsedPage from './pages/used/UsedPage'
 
 function App() {
   return (
     <>
+    <ScrollToTop />
     <ToastContainer />
     <Routes>
       <Route path="/" element={<Home />} />
@@ -37,6 +43,12 @@ function App() {
 
       {/* Корзина */}
       <Route path="/cart" element={<CartPage />} />
+
+      {/* Сервис */}
+      <Route path="/service" element={<ServicePage />} />
+
+      {/* Б/У товары */}
+      <Route path="/used" element={<UsedPage />} />
 
       {/* Редиректы со старых URL */}
       {REDIRECTS.map(({ from, to }) => (
