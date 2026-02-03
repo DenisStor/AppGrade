@@ -1,17 +1,34 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
+import { api } from '../../services/api'
+import { useToast } from '../../hooks/useToast'
 
-export function QuickBuyModal({ isOpen, onClose }) {
+export function QuickBuyModal({ isOpen, onClose, product, variant }) {
   const [form, setForm] = useState({ name: '', phone: '' })
+  const [isLoading, setIsLoading] = useState(false)
+  const { toast } = useToast()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault()
-    // TODO: Интеграция с API
-    alert(`Заявка отправлена!\nИмя: ${form.name}\nТелефон: ${form.phone}`)
-    onClose()
-    setForm({ name: '', phone: '' })
-  }
+    setIsLoading(true)
+    try {
+      await api.submitQuickBuy({
+        name: form.name,
+        phone: form.phone,
+        productId: product?.id,
+        variantId: variant?.id,
+      })
+      toast('Заявка отправлена! Мы скоро свяжемся с вами', 'success')
+      onClose()
+      setForm({ name: '', phone: '' })
+    } catch (error) {
+      toast('Ошибка отправки. Попробуйте позже', 'error')
+      console.error('Ошибка быстрой покупки:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [form, product, variant, onClose, toast])
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Купить в 1 клик" size="sm">
@@ -45,8 +62,8 @@ export function QuickBuyModal({ isOpen, onClose }) {
         <p className="text-sm text-gray-medium">
           Мы перезвоним вам для подтверждения заказа
         </p>
-        <Button type="submit" variant="primary" size="lg" className="w-full">
-          Отправить заявку
+        <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading}>
+          {isLoading ? 'Отправка...' : 'Отправить заявку'}
         </Button>
       </form>
     </Modal>

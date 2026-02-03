@@ -1,16 +1,33 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Phone, MapPin, Clock, ArrowRight } from 'lucide-react'
 import { CONTACTS } from '../../data/config'
+import { api } from '../../services/api'
+import { useToast } from '../../hooks/useToast'
 
 export function ContactSection() {
   const [agreed, setAgreed] = useState(false)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const { toast } = useToast()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault()
-    // TODO: отправка формы
-  }
+    if (!agreed) return
+    setIsLoading(true)
+    try {
+      await api.submitContactForm({ name, phone })
+      toast('Заявка отправлена! Мы скоро свяжемся с вами', 'success')
+      setName('')
+      setPhone('')
+      setAgreed(false)
+    } catch (error) {
+      toast('Ошибка отправки. Попробуйте позже', 'error')
+      console.error('Ошибка отправки формы:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [name, phone, agreed, toast])
 
   return (
     <section className="lg:min-h-[400px]">
@@ -119,10 +136,14 @@ export function ContactSection() {
 
               <button
                 type="submit"
-                disabled={!agreed}
+                disabled={!agreed || isLoading}
                 className="w-full lg:w-auto px-6 py-3 bg-white text-black font-semibold text-sm uppercase tracking-wider hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
-                <ArrowRight className="w-4 h-4" />
+                {isLoading ? (
+                  <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                ) : (
+                  <ArrowRight className="w-4 h-4" />
+                )}
               </button>
             </div>
 

@@ -163,8 +163,7 @@ main.jsx (BrowserRouter)
 |-----|-----------|----------|
 | useProductVariant | `useProductVariant(product)` | Управление вариантом товара |
 | useDebounce | `useDebounce(value, delay=300)` | Дебаунс значения |
-| useMediaQuery | `useMediaQuery(query)` | CSS медиа-запросы |
-| useMatchMedia | `useMatchMedia(query)` | Базовый matchMedia |
+| useMatchMedia | `useMatchMedia(query)` | CSS медиа-запросы |
 | useScrollPosition | `useScrollPosition(threshold=10)` | Позиция скролла |
 | useInView | `useInView(options)` | Видимость элемента |
 | useToast | `useToast()` | Уведомления |

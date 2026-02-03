@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown } from 'lucide-react'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { useMatchMedia } from '../../hooks/useMatchMedia'
 
 export function FooterColumn({ title, links }) {
   const [isOpen, setIsOpen] = useState(false)
-  const isMobile = useMediaQuery('(max-width: 767px)')
+  const isMobile = useMatchMedia('(max-width: 767px)')
 
   const content = (
     <ul className="space-y-3">

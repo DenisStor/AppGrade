@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react'
-import { useParams, useSearchParams, Link } from 'react-router-dom'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useParams, Link } from 'react-router-dom'
 import { SlidersHorizontal } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { Drawer } from '../../components/ui/Drawer'
@@ -13,52 +13,31 @@ import {
   getBrandBySlug,
   getMinPrice,
 } from '../../data/products'
-import { useProductStore } from '../../stores/useProductStore'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { useMatchMedia } from '../../hooks/useMatchMedia'
+import {
+  useFilterSync,
+  parseBrandPageUrl,
+  buildBrandPageUrl,
+  BRAND_PAGE_INITIAL_FILTERS,
+} from '../../hooks/useFilterSync'
 import { PRICE } from '../../data/constants'
+import { formatProductCount } from '../../utils/pluralize'
 
 export default function BrandPage() {
   const { category, brand } = useParams()
-  const [searchParams, setSearchParams] = useSearchParams()
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const isDesktop = useMatchMedia('(min-width: 1024px)')
 
-  const { filters, sortBy, setSortBy, setFilter, resetFilters } = useProductStore()
+  const buildUrl = useCallback(buildBrandPageUrl, [])
+  const { filters, sortBy, setSortBy, setFilter, resetFilters } = useFilterSync(
+    BRAND_PAGE_INITIAL_FILTERS,
+    parseBrandPageUrl,
+    buildUrl
+  )
 
   const categoryData = getCategoryBySlug(category)
   const brandData = getBrandBySlug(brand)
   const allProducts = getProductsByCategoryAndBrand(category, brand)
-
-  // Синхронизация с URL
-  useEffect(() => {
-    const colors = searchParams.get('colors')?.split(',').filter(Boolean) || []
-    const memory = searchParams.get('memory')?.split(',').map(Number).filter(Boolean) || []
-    const priceMin = Number(searchParams.get('priceMin')) || 0
-    const priceMax = Number(searchParams.get('priceMax')) || PRICE.MAX
-    const inStock = searchParams.get('inStock') === 'true'
-    const sort = searchParams.get('sort') || 'popular'
-
-    setFilter('colors', colors)
-    setFilter('memory', memory)
-    setFilter('brands', []) // Бренд уже выбран через URL
-    setFilter('priceRange', [priceMin, priceMax])
-    setFilter('inStock', inStock)
-    setSortBy(sort)
-  }, [])
-
-  // Обновление URL при изменении фильтров
-  useEffect(() => {
-    const params = new URLSearchParams()
-
-    if (filters.colors.length) params.set('colors', filters.colors.join(','))
-    if (filters.memory.length) params.set('memory', filters.memory.join(','))
-    if (filters.priceRange[0] > 0) params.set('priceMin', filters.priceRange[0])
-    if (filters.priceRange[1] < PRICE.MAX) params.set('priceMax', filters.priceRange[1])
-    if (filters.inStock) params.set('inStock', 'true')
-    if (sortBy !== 'popular') params.set('sort', sortBy)
-
-    setSearchParams(params, { replace: true })
-  }, [filters, sortBy, setSearchParams])
 
   // Фильтрация товаров
   const filteredProducts = useMemo(() => {
@@ -186,12 +165,7 @@ export default function BrandPage() {
             {brandData.name} {categoryData.name}
           </h1>
           <p className="text-gray-medium mt-1">
-            {filteredProducts.length}{' '}
-            {filteredProducts.length === 1
-              ? 'товар'
-              : filteredProducts.length < 5
-              ? 'товара'
-              : 'товаров'}
+            {formatProductCount(filteredProducts.length)}
           </p>
         </div>
 

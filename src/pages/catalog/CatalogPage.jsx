@@ -2,73 +2,7 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
-import { categories } from '../../data/products'
-
-const catalogCategories = [
-  {
-    id: 'smartphones',
-    name: 'Смартфоны',
-    description: 'iPhone, Samsung Galaxy',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-card-40-iphone16pro-202409?wid=680&hei=528&fmt=png-alpha',
-    href: '/catalog/smartphones',
-  },
-  {
-    id: 'laptops',
-    name: 'Ноутбуки',
-    description: 'MacBook Pro, MacBook Air, iMac',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mac-card-40-macbook-pro-202410?wid=680&hei=528&fmt=png-alpha',
-    href: '/catalog/laptops',
-  },
-  {
-    id: 'tablets',
-    name: 'Планшеты',
-    description: 'iPad Pro, iPad Air, iPad',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/ipad-card-40-ipad-pro-202405?wid=680&hei=528&fmt=png-alpha',
-    href: '/catalog/tablets',
-  },
-  {
-    id: 'watches',
-    name: 'Умные часы',
-    description: 'Apple Watch, Samsung Watch',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/watch-card-40-watch-s9-702702202309?wid=680&hei=528&fmt=png-alpha',
-    href: '/catalog/watches',
-  },
-  {
-    id: 'headphones',
-    name: 'Наушники',
-    description: 'AirPods, Galaxy Buds',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-card-40-airpods-pro-202409?wid=680&hei=528&fmt=png-alpha',
-    href: '/catalog/headphones',
-  },
-  {
-    id: 'hairdryers',
-    name: 'Фены',
-    description: 'Dyson Supersonic',
-    image: 'https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/332966-01.png?$responsive$&cropPathE=desktop&fit=stretch,1&wid=480',
-    href: '/catalog/hairdryers',
-  },
-  {
-    id: 'stylers',
-    name: 'Стайлеры',
-    description: 'Dyson Airwrap, Corrale',
-    image: 'https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/400714-01.png?$responsive$&cropPathE=desktop&fit=stretch,1&wid=480',
-    href: '/catalog/stylers',
-  },
-  {
-    id: 'accessories',
-    name: 'Аксессуары',
-    description: 'Чехлы, зарядки, кабели',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/accessories-card-40-202409?wid=680&hei=528&fmt=png-alpha',
-    href: '/catalog/accessories',
-  },
-  {
-    id: 'gaming',
-    name: 'Игровые консоли',
-    description: 'PlayStation 5, DualSense',
-    image: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$',
-    href: '/catalog/gaming',
-  },
-]
+import { CATALOG_CATEGORIES } from '../../data/products'
 
 export default function CatalogPage() {
   useEffect(() => {
@@ -86,7 +20,7 @@ export default function CatalogPage() {
       </h1>
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-6">
-        {catalogCategories.map((category) => (
+        {CATALOG_CATEGORIES.map((category) => (
           <Link
             key={category.id}
             to={category.href}

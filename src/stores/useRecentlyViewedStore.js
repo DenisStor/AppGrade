@@ -19,6 +19,13 @@ export const useRecentlyViewedStore = create(
     }),
     {
       name: 'recently-viewed',
+      version: 1,
+      migrate: (persisted, version) => {
+        if (version === 0) {
+          return { ...persisted, items: persisted.items || [] }
+        }
+        return persisted
+      },
     }
   )
 )

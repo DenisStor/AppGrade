@@ -33,6 +33,13 @@ export const useFavoritesStore = create(
     }),
     {
       name: 'favorites',
+      version: 1,
+      migrate: (persisted, version) => {
+        if (version === 0) {
+          return { ...persisted, items: persisted.items || [] }
+        }
+        return persisted
+      },
     }
   )
 )

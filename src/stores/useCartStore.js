@@ -62,6 +62,15 @@ export const useCartStore = create(
 
       getCount: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
     }),
-    { name: 'cart' }
+    {
+      name: 'cart',
+      version: 1,
+      migrate: (persisted, version) => {
+        if (version === 0) {
+          return { ...persisted, items: persisted.items || [] }
+        }
+        return persisted
+      },
+    }
   )
 )

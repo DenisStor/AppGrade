@@ -78,90 +78,102 @@ export const getBrandBySlug = (slug) => brands[slug] || null
 // Получить slug бренда по имени
 export const getBrandSlug = (brandName) => brandSlugMap[brandName] || null
 
-// Новая мультибрендовая система категорий
+// Мультибрендовая система категорий
 export const categories = {
   smartphones: {
     id: 'smartphones',
     name: 'Смартфоны',
     slug: 'smartphones',
-    description: 'iPhone, Samsung Galaxy и другие смартфоны',
+    description: 'iPhone, Samsung Galaxy',
+    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-card-40-iphone16pro-202409?wid=680&hei=528&fmt=png-alpha',
+    href: '/catalog/smartphones',
     seoTitle: 'Купить смартфон в Калининграде — APPGRADE',
-    seoDescription:
-      'iPhone, Samsung Galaxy с гарантией. Доставка по Калининграду.',
+    seoDescription: 'iPhone, Samsung Galaxy с гарантией. Доставка по Калининграду.',
   },
   laptops: {
     id: 'laptops',
     name: 'Ноутбуки',
     slug: 'laptops',
     description: 'MacBook Pro, MacBook Air, iMac',
+    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mac-card-40-macbook-pro-202410?wid=680&hei=528&fmt=png-alpha',
+    href: '/catalog/laptops',
     seoTitle: 'Купить ноутбук в Калининграде — APPGRADE',
-    seoDescription:
-      'MacBook Pro, MacBook Air, iMac с гарантией. Доставка по Калининграду.',
+    seoDescription: 'MacBook Pro, MacBook Air, iMac с гарантией. Доставка по Калининграду.',
   },
   tablets: {
     id: 'tablets',
     name: 'Планшеты',
     slug: 'tablets',
-    description: 'iPad и другие планшеты',
+    description: 'iPad Pro, iPad Air, iPad',
+    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/ipad-card-40-ipad-pro-202405?wid=680&hei=528&fmt=png-alpha',
+    href: '/catalog/tablets',
     seoTitle: 'Купить планшет в Калининграде — APPGRADE',
-    seoDescription:
-      'iPad с гарантией. Доставка по Калининграду.',
+    seoDescription: 'iPad с гарантией. Доставка по Калининграду.',
   },
   watches: {
     id: 'watches',
     name: 'Умные часы',
     slug: 'watches',
-    description: 'Apple Watch, Samsung Watch и другие',
+    description: 'Apple Watch, Samsung Watch',
+    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/watch-card-40-watch-s9-702702202309?wid=680&hei=528&fmt=png-alpha',
+    href: '/catalog/watches',
     seoTitle: 'Купить умные часы в Калининграде — APPGRADE',
-    seoDescription:
-      'Apple Watch с гарантией. Доставка по Калининграду.',
+    seoDescription: 'Apple Watch с гарантией. Доставка по Калининграду.',
   },
   headphones: {
     id: 'headphones',
     name: 'Наушники',
     slug: 'headphones',
-    description: 'AirPods, Galaxy Buds и другие',
+    description: 'AirPods, Galaxy Buds',
+    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-card-40-airpods-pro-202409?wid=680&hei=528&fmt=png-alpha',
+    href: '/catalog/headphones',
     seoTitle: 'Купить наушники в Калининграде — APPGRADE',
-    seoDescription:
-      'AirPods с гарантией. Доставка по Калининграду.',
+    seoDescription: 'AirPods с гарантией. Доставка по Калининграду.',
   },
   hairdryers: {
     id: 'hairdryers',
     name: 'Фены',
     slug: 'hairdryers',
     description: 'Dyson Supersonic',
+    image: 'https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/332966-01.png?$responsive$&cropPathE=desktop&fit=stretch,1&wid=480',
+    href: '/catalog/hairdryers',
     seoTitle: 'Купить фен Dyson в Калининграде — APPGRADE',
-    seoDescription:
-      'Фены Dyson Supersonic с гарантией. Доставка по Калининграду.',
+    seoDescription: 'Фены Dyson Supersonic с гарантией. Доставка по Калининграду.',
   },
   stylers: {
     id: 'stylers',
     name: 'Стайлеры',
     slug: 'stylers',
     description: 'Dyson Airwrap, Corrale',
+    image: 'https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/400714-01.png?$responsive$&cropPathE=desktop&fit=stretch,1&wid=480',
+    href: '/catalog/stylers',
     seoTitle: 'Купить стайлер Dyson в Калининграде — APPGRADE',
-    seoDescription:
-      'Стайлеры Dyson Airwrap, Corrale с гарантией. Доставка по Калининграду.',
+    seoDescription: 'Стайлеры Dyson Airwrap, Corrale с гарантией. Доставка по Калининграду.',
   },
   accessories: {
     id: 'accessories',
     name: 'Аксессуары',
     slug: 'accessories',
-    description: 'Чехлы, кабели и другие аксессуары',
+    description: 'Чехлы, зарядки, кабели',
+    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/accessories-card-40-202409?wid=680&hei=528&fmt=png-alpha',
+    href: '/catalog/accessories',
     seoTitle: 'Купить аксессуары в Калининграде — APPGRADE',
-    seoDescription:
-      'Аксессуары Apple и Samsung с гарантией. Доставка по Калининграду.',
+    seoDescription: 'Аксессуары Apple и Samsung с гарантией. Доставка по Калининграду.',
   },
   gaming: {
     id: 'gaming',
     name: 'Игровые консоли',
     slug: 'gaming',
-    description: 'PlayStation 5, DualSense и другие',
+    description: 'PlayStation 5, DualSense',
+    image: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$',
+    href: '/catalog/gaming',
     seoTitle: 'Купить игровую консоль в Калининграде — APPGRADE',
-    seoDescription:
-      'PlayStation 5 с гарантией. Доставка по Калининграду.',
+    seoDescription: 'PlayStation 5 с гарантией. Доставка по Калининграду.',
   },
 }
+
+// Массив категорий для каталога (с сохранением порядка)
+export const CATALOG_CATEGORIES = Object.values(categories)
 
 export const getProductsByCategory = (categorySlug) => {
   return allProducts.filter((p) => p.category === categorySlug)

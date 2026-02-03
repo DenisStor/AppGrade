@@ -1,26 +1,25 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { ScrollToTop } from './components/ScrollToTop'
 import { ToastContainer } from './components/ui/Toast'
+import { PageSkeleton } from './components/ui/PageSkeleton'
 import { REDIRECTS } from './data/redirects'
 import Home from './pages/Home'
 // Layouts
 import CatalogLayout from './layouts/CatalogLayout'
-// Каталог
+// Каталог (синхронные — часто посещаемые)
 import CatalogPage from './pages/catalog/CatalogPage'
 import CategoryPage from './pages/catalog/CategoryPage'
 import BrandPage from './pages/catalog/BrandPage'
 import ProductPage from './pages/catalog/ProductPage'
-// Поиск
-import SearchPage from './pages/SearchPage'
 // Информационные
 import InfoPage from './pages/info/InfoPage'
 import BlogPostPage from './pages/info/BlogPostPage'
-// Корзина
-import CartPage from './pages/cart/CartPage'
-// Сервис
-import ServicePage from './pages/service/ServicePage'
-// Б/У
-import UsedPage from './pages/used/UsedPage'
+// Lazy-loaded страницы
+const SearchPage = lazy(() => import('./pages/SearchPage'))
+const CartPage = lazy(() => import('./pages/cart/CartPage'))
+const ServicePage = lazy(() => import('./pages/service/ServicePage'))
+const UsedPage = lazy(() => import('./pages/used/UsedPage'))
 
 function App() {
   return (
@@ -38,17 +37,27 @@ function App() {
         <Route path=":category/:brand/:slug" element={<ProductPage />} />
       </Route>
 
-      {/* Поиск */}
-      <Route path="/search" element={<SearchPage />} />
-
-      {/* Корзина */}
-      <Route path="/cart" element={<CartPage />} />
-
-      {/* Сервис */}
-      <Route path="/service" element={<ServicePage />} />
-
-      {/* Б/У товары */}
-      <Route path="/used" element={<UsedPage />} />
+      {/* Lazy-loaded страницы */}
+      <Route path="/search" element={
+        <Suspense fallback={<PageSkeleton />}>
+          <SearchPage />
+        </Suspense>
+      } />
+      <Route path="/cart" element={
+        <Suspense fallback={<PageSkeleton />}>
+          <CartPage />
+        </Suspense>
+      } />
+      <Route path="/service" element={
+        <Suspense fallback={<PageSkeleton />}>
+          <ServicePage />
+        </Suspense>
+      } />
+      <Route path="/used" element={
+        <Suspense fallback={<PageSkeleton />}>
+          <UsedPage />
+        </Suspense>
+      } />
 
       {/* Редиректы со старых URL */}
       {REDIRECTS.map(({ from, to }) => (

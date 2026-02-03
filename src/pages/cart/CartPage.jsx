@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import { Header } from '../../components/Header/Header'
 import { Footer } from '../../components/Footer/Footer'
 import { Button } from '../../components/ui/Button'
 import { Modal } from '../../components/ui/Modal'
-import { ImageWithSkeleton } from '../../components/ui/ImageWithSkeleton'
-import { useCartStore } from '../../stores/useCartStore'
-import { formatPrice, formatMemory } from '../../data/products'
+import { CartItem } from '../../components/cart/CartItem'
 import { CartRecommendations } from '../../components/cart/CartRecommendations'
+import { useCartStore } from '../../stores/useCartStore'
+import { formatPrice } from '../../data/products'
+import { api } from '../../services/api'
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore()
@@ -16,12 +17,26 @@ export default function CartPage() {
   const [orderForm, setOrderForm] = useState({ name: '', phone: '' })
   const [isOrderSuccess, setIsOrderSuccess] = useState(false)
 
-  const handleOrderSubmit = (e) => {
+  const handleOrderSubmit = useCallback(async (e) => {
     e.preventDefault()
-    // TODO: Интеграция с API
-    setIsOrderSuccess(true)
-    clearCart()
-  }
+    try {
+      await api.submitOrder({
+        name: orderForm.name,
+        phone: orderForm.phone,
+        items: items.map(i => ({
+          productId: i.productId,
+          variantId: i.variantId,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+        total: getTotal(),
+      })
+      setIsOrderSuccess(true)
+      clearCart()
+    } catch (error) {
+      console.error('Ошибка оформления заказа:', error)
+    }
+  }, [orderForm, items, getTotal, clearCart])
 
   const handleCloseModal = () => {
     setIsOrderModalOpen(false)
@@ -222,69 +237,6 @@ export default function CartPage() {
           </form>
         )}
       </Modal>
-    </div>
-  )
-}
-
-function CartItem({ item, onRemove, onUpdateQuantity }) {
-  const memoryLabel = item.memory ? formatMemory(item.memory) : ''
-  const colorLabel = item.color?.name || ''
-  const simLabel = item.sim ? `${item.sim}` : ''
-
-  const options = [colorLabel, memoryLabel, simLabel].filter(Boolean).join(' • ')
-
-  return (
-    <div className="flex gap-4 p-4 bg-gray-light rounded-2xl">
-      {/* Изображение */}
-      <div className="w-24 h-24 shrink-0 bg-white rounded-xl overflow-hidden">
-        <ImageWithSkeleton
-          src={item.image}
-          alt={item.name}
-          className="w-full h-full object-contain p-2"
-        />
-      </div>
-
-      {/* Информация */}
-      <div className="flex-1 min-w-0">
-        <h3 className="font-medium text-gray-dark truncate">{item.name}</h3>
-        {options && (
-          <p className="text-sm text-gray-medium mt-1">{options}</p>
-        )}
-
-        {/* Цена и количество */}
-        <div className="flex items-center justify-between mt-3">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => onUpdateQuantity(item.quantity - 1)}
-              className="w-8 h-8 flex items-center justify-center bg-white rounded-lg hover:bg-gray-200 transition-colors"
-              aria-label="Уменьшить количество"
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <span className="w-8 text-center font-medium">{item.quantity}</span>
-            <button
-              onClick={() => onUpdateQuantity(item.quantity + 1)}
-              className="w-8 h-8 flex items-center justify-center bg-white rounded-lg hover:bg-gray-200 transition-colors"
-              aria-label="Увеличить количество"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-
-          <span className="font-bold text-gray-dark">
-            {formatPrice(item.price * item.quantity)}
-          </span>
-        </div>
-      </div>
-
-      {/* Удалить */}
-      <button
-        onClick={onRemove}
-        className="self-start p-2 text-gray-medium hover:text-red-500 transition-colors"
-        aria-label="Удалить товар"
-      >
-        <Trash2 className="w-5 h-5" />
-      </button>
     </div>
   )
 }

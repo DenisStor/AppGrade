@@ -8,8 +8,7 @@
 |-----|------------|
 | [useProductVariant](#useproductvariant) | Управление вариантом товара |
 | [useDebounce](#usedebounce) | Дебаунс значения |
-| [useMediaQuery](#usemediaquery) | CSS медиа-запросы |
-| [useMatchMedia](#usematchmedia) | Базовый хук для matchMedia |
+| [useMatchMedia](#usematchmedia) | CSS медиа-запросы |
 | [useScrollPosition](#usescrollposition) | Позиция скролла |
 | [useInView](#useinview) | Видимость элемента (Intersection Observer) |
 | [useToast](#usetoast) | Уведомления |
@@ -147,45 +146,6 @@ function Search() {
   }, [debouncedQuery])
 
   return <input value={query} onChange={(e) => setQuery(e.target.value)} />
-}
-```
-
----
-
-## useMediaQuery
-
-Отслеживает CSS медиа-запрос (обёртка над useMatchMedia).
-
-**Путь:** `src/hooks/useMediaQuery.js`
-
-### Сигнатура
-
-```js
-const matches = useMediaQuery(query)
-```
-
-### Параметры
-
-| Параметр | Тип | Описание |
-|----------|-----|----------|
-| `query` | string | CSS медиа-запрос |
-
-### Возвращает
-
-| Тип | Описание |
-|-----|----------|
-| boolean | Соответствует ли запросу |
-
-### Пример
-
-```jsx
-import { useMediaQuery } from '../hooks/useMediaQuery'
-
-function Component() {
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const isMobile = useMediaQuery('(max-width: 768px)')
-
-  return isDesktop ? <DesktopView /> : <MobileView />
 }
 ```
 
@@ -432,7 +392,6 @@ function AnimatedComponent() {
 ```js
 import { useProductVariant } from '../hooks/useProductVariant'
 import { useDebounce } from '../hooks/useDebounce'
-import { useMediaQuery } from '../hooks/useMediaQuery'
 import { useMatchMedia } from '../hooks/useMatchMedia'
 import { useScrollPosition } from '../hooks/useScrollPosition'
 import { useInView } from '../hooks/useInView'

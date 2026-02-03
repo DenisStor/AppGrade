@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { SlidersHorizontal, Shield, Clock, CheckCircle } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { Drawer } from '../../components/ui/Drawer'
@@ -9,73 +8,30 @@ import { ProductListCard } from '../../components/catalog/ProductListCard'
 import {
   usedProducts,
   getMinPrice,
-  categories,
-  CONDITIONS,
   getBrandSlug,
 } from '../../data/products'
-import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { useMatchMedia } from '../../hooks/useMatchMedia'
+import {
+  useFilterSync,
+  parseUsedPageUrl,
+  buildUsedPageUrl,
+  USED_PAGE_INITIAL_FILTERS,
+} from '../../hooks/useFilterSync'
 import { PRICE } from '../../data/constants'
+import { formatProductCount } from '../../utils/pluralize'
 import { Header } from '../../components/Header/Header'
 import { Footer } from '../../components/Footer/Footer'
 
 export default function UsedPage() {
-  const [searchParams, setSearchParams] = useSearchParams()
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const isDesktop = useMatchMedia('(min-width: 1024px)')
 
-  // Локальное состояние фильтров для б/у страницы
-  const [filters, setFilters] = useState({
-    priceRange: [0, PRICE.MAX],
-    categories: [],
-    conditions: [],
-    inStock: false,
-  })
-  const [sortBy, setSortBy] = useState('popular')
-
-  // Синхронизация с URL при загрузке
-  useEffect(() => {
-    const cats = searchParams.get('categories')?.split(',').filter(Boolean) || []
-    const conds = searchParams.get('conditions')?.split(',').filter(Boolean) || []
-    const priceMin = Number(searchParams.get('priceMin')) || 0
-    const priceMax = Number(searchParams.get('priceMax')) || PRICE.MAX
-    const inStock = searchParams.get('inStock') === 'true'
-    const sort = searchParams.get('sort') || 'popular'
-
-    setFilters({
-      priceRange: [priceMin, priceMax],
-      categories: cats,
-      conditions: conds,
-      inStock,
-    })
-    setSortBy(sort)
-  }, [])
-
-  // Обновление URL при изменении фильтров
-  useEffect(() => {
-    const params = new URLSearchParams()
-
-    if (filters.categories.length) params.set('categories', filters.categories.join(','))
-    if (filters.conditions.length) params.set('conditions', filters.conditions.join(','))
-    if (filters.priceRange[0] > 0) params.set('priceMin', filters.priceRange[0])
-    if (filters.priceRange[1] < PRICE.MAX) params.set('priceMax', filters.priceRange[1])
-    if (filters.inStock) params.set('inStock', 'true')
-    if (sortBy !== 'popular') params.set('sort', sortBy)
-
-    setSearchParams(params, { replace: true })
-  }, [filters, sortBy, setSearchParams])
-
-  const setFilter = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
-  }
-
-  const resetFilters = () => {
-    setFilters({
-      priceRange: [0, PRICE.MAX],
-      categories: [],
-      conditions: [],
-      inStock: false,
-    })
-  }
+  const buildUrl = useCallback(buildUsedPageUrl, [])
+  const { filters, sortBy, setSortBy, setFilter, resetFilters } = useFilterSync(
+    USED_PAGE_INITIAL_FILTERS,
+    parseUsedPageUrl,
+    buildUrl
+  )
 
   // Фильтрация товаров
   const filteredProducts = useMemo(() => {
@@ -203,12 +159,7 @@ export default function UsedPage() {
           <div className="flex items-center justify-between mb-6 lg:mb-8">
             <div>
               <p className="text-gray-medium">
-                {filteredProducts.length}{' '}
-                {filteredProducts.length === 1
-                  ? 'товар'
-                  : filteredProducts.length < 5
-                  ? 'товара'
-                  : 'товаров'}
+                {formatProductCount(filteredProducts.length)}
               </p>
             </div>
 
