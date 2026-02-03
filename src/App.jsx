@@ -14,12 +14,13 @@ import BrandPage from './pages/catalog/BrandPage'
 import ProductPage from './pages/catalog/ProductPage'
 // Информационные
 import InfoPage from './pages/info/InfoPage'
-import BlogPostPage from './pages/info/BlogPostPage'
+import BlogPostPage from './pages/blog/BlogPostPage'
 // Lazy-loaded страницы
 const SearchPage = lazy(() => import('./pages/SearchPage'))
 const CartPage = lazy(() => import('./pages/cart/CartPage'))
 const ServicePage = lazy(() => import('./pages/service/ServicePage'))
 const UsedPage = lazy(() => import('./pages/used/UsedPage'))
+const BlogPage = lazy(() => import('./pages/blog/BlogPage'))
 
 function App() {
   return (
@@ -64,9 +65,16 @@ function App() {
         <Route key={from} path={from} element={<Navigate to={to} replace />} />
       ))}
 
+      {/* Блог */}
+      <Route path="/blog" element={
+        <Suspense fallback={<PageSkeleton />}>
+          <BlogPage />
+        </Suspense>
+      } />
+      <Route path="/blog/:id" element={<BlogPostPage />} />
+
       {/* Информационные страницы */}
       <Route path="/:slug" element={<InfoPage />} />
-      <Route path="/blog/:id" element={<BlogPostPage />} />
     </Routes>
     </>
   )

@@ -10,5 +10,4 @@ export const INFO_PAGES = {
   credit: { title: 'Рассрочка' },
   privacy: { title: 'Политика конфиденциальности' },
   terms: { title: 'Пользовательское соглашение' },
-  blog: { title: 'Блог' },
 }

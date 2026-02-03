@@ -37,7 +37,7 @@ export function RepairForm() {
   }
 
   return (
-    <section className="py-12 lg:py-20 bg-gray-light">
+    <section id="repair-form" className="py-12 lg:py-20 bg-gray-light">
       <Container>
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-10">

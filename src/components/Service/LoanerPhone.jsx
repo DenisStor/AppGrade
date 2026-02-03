@@ -8,8 +8,8 @@ export function LoanerPhone() {
     <section className="py-12 lg:py-20">
       <Container>
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <div>
-            <span className="inline-block px-4 py-1.5 bg-gray-dark text-white text-sm font-medium mb-6">
+          <div className="lg:self-stretch lg:flex lg:flex-col">
+            <span className="inline-block px-4 py-1.5 bg-gray-dark text-white text-sm font-medium mb-6 lg:self-start">
               На связи
             </span>
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-dark mb-6">
@@ -19,13 +19,13 @@ export function LoanerPhone() {
               Понимаем, как сложно остаться без телефона даже на несколько часов.
               Поэтому предоставляем подменный iPhone на время сложного ремонта — абсолютно бесплатно.
             </p>
-            <p className="text-lg text-gray-medium mb-8">
+            <p className="text-lg text-gray-medium lg:mb-8">
               Вы сможете перенести SIM-карту, войти в свои аккаунты и продолжить
               работать как обычно. Верните подменный телефон, когда заберёте свой.
             </p>
-            <Button className="gap-2">
+            <Button className="hidden lg:inline-flex gap-2 group transition-transform duration-300 hover:scale-105 lg:mt-auto lg:self-start">
               Подробнее
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
           </div>
           <div className="relative">
@@ -37,6 +37,11 @@ export function LoanerPhone() {
               />
             </div>
           </div>
+          {/* Кнопка под фото на мобилках */}
+          <Button className="lg:hidden gap-2 w-full justify-center group transition-transform duration-300 hover:scale-105">
+            Подробнее
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </Button>
         </div>
       </Container>
     </section>

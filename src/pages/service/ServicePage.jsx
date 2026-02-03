@@ -6,6 +6,7 @@ import { ServiceHero } from '../../components/Service/ServiceHero'
 import { ServiceFeatures } from '../../components/Service/ServiceFeatures'
 import { LoanerPhone } from '../../components/Service/LoanerPhone'
 import { ServicePricing } from '../../components/Service/ServicePricing'
+import { ServiceIntro } from '../../components/Service/ServiceIntro'
 import { MobileService } from '../../components/Service/MobileService'
 import { HowWeWork } from '../../components/Service/HowWeWork'
 import { RepairForm } from '../../components/Service/RepairForm'
@@ -17,8 +18,9 @@ export default function ServicePage() {
       <main className="flex-1">
         <ServiceHero />
         <AnimatedSection>
-          <MobileService />
+          <ServiceIntro />
         </AnimatedSection>
+        <SectionDivider />
         <AnimatedSection delay={100}>
           <ServiceFeatures />
         </AnimatedSection>
@@ -26,8 +28,12 @@ export default function ServicePage() {
         <AnimatedSection delay={150}>
           <LoanerPhone />
         </AnimatedSection>
+        <SectionDivider />
         <AnimatedSection delay={200}>
           <ServicePricing />
+        </AnimatedSection>
+        <AnimatedSection>
+          <MobileService />
         </AnimatedSection>
         <SectionDivider />
         <AnimatedSection delay={250}>

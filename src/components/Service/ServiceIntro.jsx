@@ -1,11 +1,11 @@
 import { ArrowRight } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { Button } from '../ui/Button'
-import serviceImg from '../../assets/mobile-service.jpg'
+import serviceImg from '../../assets/service-intro.jpg'
 
-export function MobileService() {
-  const scrollToForm = () => {
-    document.getElementById('repair-form')?.scrollIntoView({ behavior: 'smooth' })
+export function ServiceIntro() {
+  const scrollToPricing = () => {
+    document.getElementById('service-pricing')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -14,21 +14,21 @@ export function MobileService() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <div className="lg:self-stretch lg:flex lg:flex-col">
             <span className="inline-block px-4 py-1.5 bg-gray-dark text-white text-sm font-medium mb-6 lg:self-start">
-              Выездной сервис
+              Ремонт iPhone
             </span>
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-dark mb-6">
-              Сервис на выезд
+              Сервис от 990 ₽
             </h2>
             <p className="text-lg text-gray-medium mb-4">
-              Поход в сервис отнимает немало времени. Не отвлекайтесь от важных дел.
+              Бесплатная диагностика за 30 минут — вы узнаете точную причину
+              поломки и стоимость ремонта без каких-либо обязательств.
             </p>
             <p className="text-lg text-gray-medium lg:mb-8">
-              Наш мастер приедет к вам домой или в офис в удобное время.
-              Диагностика и большинство ремонтов выполняются на месте —
-              вам не придётся никуда ехать и ждать в очереди.
+              Используем только оригинальные запчасти и даём гарантию на все
+              выполненные работы. Большинство ремонтов выполняется в день обращения.
             </p>
-            <Button onClick={scrollToForm} className="hidden lg:inline-flex gap-2 group transition-transform duration-300 hover:scale-105 lg:mt-auto lg:self-start">
-              Заказать выезд
+            <Button onClick={scrollToPricing} className="hidden lg:inline-flex gap-2 group transition-transform duration-300 hover:scale-105 lg:mt-auto lg:self-start">
+              Посмотреть цены
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
           </div>
@@ -36,14 +36,13 @@ export function MobileService() {
             <div className="aspect-[4/3] overflow-hidden">
               <img
                 src={serviceImg}
-                alt="Выездной ремонт"
+                alt="Сервис APPGRADE"
                 className="w-full h-full object-cover"
               />
             </div>
           </div>
-          {/* Кнопка под фото на мобилках */}
-          <Button onClick={scrollToForm} className="lg:hidden gap-2 w-full justify-center group transition-transform duration-300 hover:scale-105">
-            Заказать выезд
+          <Button onClick={scrollToPricing} className="lg:hidden gap-2 w-full justify-center group transition-transform duration-300 hover:scale-105">
+            Подробнее
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Button>
         </div>

@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ShoppingBag } from 'lucide-react'
 import { Container } from '../ui/Container'
-import { SearchInput } from '../search/SearchInput'
 import { NAV_MAIN } from '../../data/navigation'
 import { useCartStore } from '../../stores/useCartStore'
 import logo from '../../assets/logo.png'
@@ -31,7 +30,6 @@ export function Navigation() {
 
       {/* Actions */}
       <div className="flex items-center gap-4">
-        <SearchInput variant="header" />
         <Link
           to="/cart"
           className="relative p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all"

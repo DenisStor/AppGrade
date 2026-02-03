@@ -17,6 +17,7 @@ const INFO_LINKS = [
 const EXTRA_NAV_LINKS = [
   { label: 'Каталог', href: '/catalog' },
   { label: 'Сервис', href: '/service' },
+  { label: 'Блог', href: '/blog' },
   { label: 'О нас', href: '/about' },
 ]
 
@@ -28,6 +29,7 @@ export const NAV_TOP = INFO_LINKS
 export const NAV_MOBILE = [
   ...CATALOG_LINKS,
   ...INFO_LINKS,
+  { label: 'Блог', href: '/blog' },
   { label: 'О нас', href: '/about' },
 ]
 
