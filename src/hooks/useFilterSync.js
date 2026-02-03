@@ -56,6 +56,7 @@ export function parseBrandPageUrl(searchParams) {
     filters: {
       colors: parseArray(searchParams.get('colors')),
       memory: parseNumberArray(searchParams.get('memory')),
+      brands: [], // Бренд определяется URL-путём, фильтр всегда пустой
       priceRange: [
         parseNumber(searchParams.get('priceMin'), 0),
         parseNumber(searchParams.get('priceMax'), PRICE.MAX),
@@ -121,6 +122,7 @@ export function buildUsedPageUrl(filters, sortBy) {
 export const BRAND_PAGE_INITIAL_FILTERS = {
   colors: [],
   memory: [],
+  brands: [],
   priceRange: [0, PRICE.MAX],
   inStock: false,
 }
