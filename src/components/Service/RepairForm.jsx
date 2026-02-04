@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Container } from '../ui/Container'
 import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
@@ -124,9 +125,9 @@ export function RepairForm() {
 
             <p className="text-center text-xs text-gray-medium mt-4">
               Нажимая кнопку, вы соглашаетесь с{' '}
-              <a href="/privacy" className="underline hover:text-gray-dark">
+              <Link to="/privacy" className="underline hover:text-gray-dark">
                 политикой конфиденциальности
-              </a>
+              </Link>
             </p>
           </form>
         </div>

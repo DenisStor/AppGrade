@@ -44,13 +44,13 @@ export default function CatalogPage() {
             </div>
 
             {/* Десктопная версия — текущий стиль с градиентом */}
-            <div className="hidden lg:block relative bg-gray-light overflow-hidden aspect-[4/3] transition-all duration-300 hover:shadow-liquid">
+            <div className={`hidden lg:block relative overflow-hidden aspect-[4/3] transition-all duration-300 hover:shadow-liquid ${category.imageContain ? 'bg-white' : 'bg-gray-light'}`}>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
 
               <img
                 src={category.image}
                 alt={category.name}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className={`absolute inset-0 w-full h-full transition-transform duration-500 group-hover:scale-105 ${category.imageContain ? 'object-contain p-4' : 'object-cover'}`}
                 onError={(e) => {
                   e.target.style.display = 'none'
                 }}

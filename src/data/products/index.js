@@ -3,6 +3,13 @@ import { macProducts } from './mac'
 import { samsungProducts } from './samsung'
 import { dysonProducts } from './dyson'
 import { usedProducts, CONDITIONS } from './used'
+import headphonesImg from '../../assets/categories/headphones.jpg'
+import watchesImg from '../../assets/categories/watches.jpg'
+import hairdryers from '../../assets/categories/hairdryers.jpg'
+import smartphonesImg from '../../assets/categories/smartphones.jpg'
+import laptopsImg from '../../assets/categories/laptops.jpg'
+import tabletsImg from '../../assets/categories/tablets.jpg'
+import accessoriesImg from '../../assets/categories/accessories.jpg'
 
 export const allProducts = [
   ...iphoneProducts,
@@ -85,7 +92,7 @@ export const categories = {
     name: 'Смартфоны',
     slug: 'smartphones',
     description: 'iPhone, Samsung Galaxy',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-card-40-iphone16pro-202409?wid=680&hei=528&fmt=png-alpha',
+    image: smartphonesImg,
     href: '/catalog/smartphones',
     seoTitle: 'Купить смартфон в Калининграде — APPGRADE',
     seoDescription: 'iPhone, Samsung Galaxy с гарантией. Доставка по Калининграду.',
@@ -95,7 +102,7 @@ export const categories = {
     name: 'Ноутбуки',
     slug: 'laptops',
     description: 'MacBook Pro, MacBook Air, iMac',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mac-card-40-macbook-pro-202410?wid=680&hei=528&fmt=png-alpha',
+    image: laptopsImg,
     href: '/catalog/laptops',
     seoTitle: 'Купить ноутбук в Калининграде — APPGRADE',
     seoDescription: 'MacBook Pro, MacBook Air, iMac с гарантией. Доставка по Калининграду.',
@@ -105,7 +112,7 @@ export const categories = {
     name: 'Планшеты',
     slug: 'tablets',
     description: 'iPad Pro, iPad Air, iPad',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/ipad-card-40-ipad-pro-202405?wid=680&hei=528&fmt=png-alpha',
+    image: tabletsImg,
     href: '/catalog/tablets',
     seoTitle: 'Купить планшет в Калининграде — APPGRADE',
     seoDescription: 'iPad с гарантией. Доставка по Калининграду.',
@@ -115,7 +122,7 @@ export const categories = {
     name: 'Умные часы',
     slug: 'watches',
     description: 'Apple Watch, Samsung Watch',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/watch-card-40-watch-s9-702702202309?wid=680&hei=528&fmt=png-alpha',
+    image: watchesImg,
     href: '/catalog/watches',
     seoTitle: 'Купить умные часы в Калининграде — APPGRADE',
     seoDescription: 'Apple Watch с гарантией. Доставка по Калининграду.',
@@ -125,7 +132,7 @@ export const categories = {
     name: 'Наушники',
     slug: 'headphones',
     description: 'AirPods, Galaxy Buds',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-card-40-airpods-pro-202409?wid=680&hei=528&fmt=png-alpha',
+    image: headphonesImg,
     href: '/catalog/headphones',
     seoTitle: 'Купить наушники в Калининграде — APPGRADE',
     seoDescription: 'AirPods с гарантией. Доставка по Калининграду.',
@@ -135,7 +142,7 @@ export const categories = {
     name: 'Фены',
     slug: 'hairdryers',
     description: 'Dyson Supersonic',
-    image: 'https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/332966-01.png?$responsive$&cropPathE=desktop&fit=stretch,1&wid=480',
+    image: hairdryers,
     href: '/catalog/hairdryers',
     seoTitle: 'Купить фен Dyson в Калининграде — APPGRADE',
     seoDescription: 'Фены Dyson Supersonic с гарантией. Доставка по Калининграду.',
@@ -155,7 +162,8 @@ export const categories = {
     name: 'Аксессуары',
     slug: 'accessories',
     description: 'Чехлы, зарядки, кабели',
-    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/accessories-card-40-202409?wid=680&hei=528&fmt=png-alpha',
+    image: accessoriesImg,
+    imageContain: true,
     href: '/catalog/accessories',
     seoTitle: 'Купить аксессуары в Калининграде — APPGRADE',
     seoDescription: 'Аксессуары Apple и Samsung с гарантией. Доставка по Калининграду.',

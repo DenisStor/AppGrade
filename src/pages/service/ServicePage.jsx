@@ -28,7 +28,6 @@ export default function ServicePage() {
         <AnimatedSection delay={150}>
           <LoanerPhone />
         </AnimatedSection>
-        <SectionDivider />
         <AnimatedSection delay={200}>
           <ServicePricing />
         </AnimatedSection>

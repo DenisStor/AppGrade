@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Thumbs, FreeMode, Zoom } from 'swiper/modules'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
@@ -8,25 +8,26 @@ import 'swiper/css/thumbs'
 import 'swiper/css/free-mode'
 import 'swiper/css/zoom'
 
+const PLACEHOLDER_LABELS = ['Вид сбоку', 'Вид сзади', 'Экран'];
+const MIN_IMAGES = 4;
+
 export function ProductGallery({ images = [], productName = '' }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
+
+  const allImages = useMemo(() => {
+    const result = [...images];
+    let i = 0;
+    while (result.length < MIN_IMAGES) {
+      const label = PLACEHOLDER_LABELS[i++] || `Фото ${result.length + 1}`;
+      result.push(`https://placehold.co/800x800/f5f5f7/86868b?text=${encodeURIComponent(label)}`);
+    }
+    return result;
+  }, [images]);
 
   if (!images.length) {
     return (
       <div className="aspect-square bg-gray-light rounded-2xl flex items-center justify-center">
         <span className="text-gray-medium">Нет изображения</span>
-      </div>
-    )
-  }
-
-  if (images.length === 1) {
-    return (
-      <div className="aspect-square bg-gray-light overflow-hidden">
-        <ImageWithSkeleton
-          src={images[0]}
-          alt={productName}
-          className="w-full h-full object-contain p-8"
-        />
       </div>
     )
   }
@@ -40,7 +41,7 @@ export function ProductGallery({ images = [], productName = '' }) {
         zoom={true}
         className="aspect-square bg-gray-light overflow-hidden"
       >
-        {images.map((src, index) => (
+        {allImages.map((src, index) => (
           <SwiperSlide key={index}>
             <div className="swiper-zoom-container w-full h-full flex items-center justify-center p-8">
               <ImageWithSkeleton
@@ -63,7 +64,7 @@ export function ProductGallery({ images = [], productName = '' }) {
         freeMode={true}
         watchSlidesProgress={true}
       >
-        {images.map((src, index) => (
+        {allImages.map((src, index) => (
           <SwiperSlide key={index}>
             <div className="aspect-square bg-gray-light overflow-hidden cursor-pointer border-2 border-transparent [.swiper-slide-thumb-active_&]:border-gray-300">
               <ImageWithSkeleton

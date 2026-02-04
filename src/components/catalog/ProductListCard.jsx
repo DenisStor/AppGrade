@@ -62,11 +62,11 @@ export function ProductListCard({ product, category, brand }) {
       {/* Мобильная версия — компактная карточка */}
       <article className="lg:hidden">
         <Link to={productUrl} className="block">
-          <div className="bg-gray-light aspect-square flex items-center justify-center p-4">
+          <div className="aspect-square flex items-center justify-center">
             <ImageWithSkeleton
               src={selectedVariant?.images?.[0]}
               alt={product.name}
-              className="w-3/4 h-3/4 object-contain"
+              className="w-full h-full object-contain"
             />
           </div>
           <h3 className="text-sm font-semibold text-gray-dark mt-3 pb-2 text-center line-clamp-2">
@@ -80,12 +80,12 @@ export function ProductListCard({ product, category, brand }) {
         {/* Изображение */}
         <Link
           to={productUrl}
-          className="block relative aspect-square overflow-hidden bg-gray-light mb-4"
+          className="block relative aspect-square overflow-hidden mb-4"
         >
           <ImageWithSkeleton
             src={selectedVariant?.images?.[0]}
             alt={product.name}
-            className="w-full h-full object-contain p-3 transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
           />
 
           {product.badges?.length > 0 && (

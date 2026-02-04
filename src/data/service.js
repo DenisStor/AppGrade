@@ -3,6 +3,20 @@ import serviceFast from '../assets/service-fast.jpg'
 import serviceHome from '../assets/service-home.jpg'
 import serviceContact from '../assets/service-contact.jpg'
 import iphoneImg from '../assets/categories/iphone.png'
+import iphone11 from '../assets/iphone-models/iphone-11.jpg'
+import iphone12 from '../assets/iphone-models/iphone-12.png'
+import iphone12ProMax from '../assets/iphone-models/iphone-12-pro-max.png'
+import iphone13 from '../assets/iphone-models/iphone-13.jpg'
+import iphone13ProMax from '../assets/iphone-models/iphone-13-pro-max.jpg'
+import iphone14 from '../assets/iphone-models/iphone-14.png'
+import iphone14ProMax from '../assets/iphone-models/iphone-14-pro-max.jpg'
+import iphone15 from '../assets/iphone-models/iphone-15.png'
+import iphone15Pro from '../assets/iphone-models/iphone-15-pro.jpg'
+import iphone16 from '../assets/iphone-models/iphone-16.jpg'
+import iphone16Pro from '../assets/iphone-models/iphone-16-pro.jpg'
+import iphone16ProMax from '../assets/iphone-models/iphone-16-pro-max.png'
+import iphone17 from '../assets/iphone-models/iphone-17.png'
+import iphone17Pro from '../assets/iphone-models/iphone-17-pro.png'
 
 export const SERVICE_FEATURES = [
   {
@@ -48,23 +62,23 @@ export const WHY_US = [
 
 export const IPHONE_MODELS = [
   { id: 'all', name: 'Все модели', image: iphoneImg },
-  { id: '17-pro-max', name: 'iPhone 17 Pro Max', image: iphoneImg },
-  { id: '17-pro', name: 'iPhone 17 Pro', image: iphoneImg },
-  { id: '17', name: 'iPhone 17', image: iphoneImg },
-  { id: '16-pro-max', name: 'iPhone 16 Pro Max', image: iphoneImg },
-  { id: '16-pro', name: 'iPhone 16 Pro', image: iphoneImg },
-  { id: '16', name: 'iPhone 16', image: iphoneImg },
-  { id: '15-pro-max', name: 'iPhone 15 Pro Max', image: iphoneImg },
-  { id: '15-pro', name: 'iPhone 15 Pro', image: iphoneImg },
-  { id: '15', name: 'iPhone 15', image: iphoneImg },
-  { id: '14-pro-max', name: 'iPhone 14 Pro Max', image: iphoneImg },
-  { id: '14-pro', name: 'iPhone 14 Pro', image: iphoneImg },
-  { id: '14', name: 'iPhone 14', image: iphoneImg },
-  { id: '13-pro-max', name: 'iPhone 13 Pro Max', image: iphoneImg },
-  { id: '13-pro', name: 'iPhone 13 Pro', image: iphoneImg },
-  { id: '13', name: 'iPhone 13', image: iphoneImg },
-  { id: '12', name: 'iPhone 12', image: iphoneImg },
-  { id: '11', name: 'iPhone 11', image: iphoneImg },
+  { id: '17-pro-max', name: 'iPhone 17 Pro Max', image: iphone17Pro },
+  { id: '17-pro', name: 'iPhone 17 Pro', image: iphone17Pro },
+  { id: '17', name: 'iPhone 17', image: iphone17 },
+  { id: '16-pro-max', name: 'iPhone 16 Pro Max', image: iphone16ProMax },
+  { id: '16-pro', name: 'iPhone 16 Pro', image: iphone16Pro },
+  { id: '16', name: 'iPhone 16', image: iphone16 },
+  { id: '15-pro-max', name: 'iPhone 15 Pro Max', image: iphone15Pro },
+  { id: '15-pro', name: 'iPhone 15 Pro', image: iphone15Pro },
+  { id: '15', name: 'iPhone 15', image: iphone15 },
+  { id: '14-pro-max', name: 'iPhone 14 Pro Max', image: iphone14ProMax },
+  { id: '14-pro', name: 'iPhone 14 Pro', image: iphone14ProMax },
+  { id: '14', name: 'iPhone 14', image: iphone14 },
+  { id: '13-pro-max', name: 'iPhone 13 Pro Max', image: iphone13ProMax },
+  { id: '13-pro', name: 'iPhone 13 Pro', image: iphone13ProMax },
+  { id: '13', name: 'iPhone 13', image: iphone13 },
+  { id: '12', name: 'iPhone 12', image: iphone12 },
+  { id: '11', name: 'iPhone 11', image: iphone11 },
 ]
 
 export const SERVICE_PRICING = [
