@@ -149,13 +149,13 @@ export function ProductListCard({ product, category, brand }) {
         </p>
 
         {/* Цена + скидка — фиксированная высота */}
-        <div className="h-14 mb-3">
-          <div className="flex items-baseline gap-2">
-            <span className="text-xl font-bold text-gray-dark">
+        <div className="min-h-14 mb-3">
+          <div className="flex items-baseline gap-x-2 flex-wrap">
+            <span className="text-xl font-bold text-gray-dark whitespace-nowrap">
               {formatPrice(minPrice)}
             </span>
             {hasDiscount && (
-              <span className="text-sm text-gray-medium line-through">
+              <span className="text-sm text-gray-medium line-through whitespace-nowrap">
                 {formatPrice(selectedVariant.oldPrice)}
               </span>
             )}

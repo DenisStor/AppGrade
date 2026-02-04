@@ -25,10 +25,10 @@ const features = [
   }
 ]
 
-export function AboutUs() {
+export function AboutUs({ showDivider = true }) {
   return (
     <section className="pb-14 md:pb-20">
-      <SectionDivider className="mb-14 md:mb-20" />
+      {showDivider && <SectionDivider className="mb-14 md:mb-20" />}
       <div className="section-padding">
         {/* Верхняя часть - 2 колонки */}
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-12 lg:mb-16">

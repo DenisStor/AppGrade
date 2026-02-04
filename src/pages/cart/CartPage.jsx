@@ -101,7 +101,7 @@ export default function CartPage() {
 
           {/* Итого - на мобильном второй, на десктопе справа на всю высоту */}
           <div className="lg:col-span-1 lg:row-span-2 order-2">
-            <div className="bg-gray-light rounded-2xl p-6 sticky top-24">
+            <div className="bg-gray-light p-6 sticky top-24">
               <h2 className="text-lg font-semibold text-gray-dark mb-4">
                 Итого
               </h2>

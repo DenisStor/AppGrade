@@ -21,6 +21,7 @@ const CartPage = lazy(() => import('./pages/cart/CartPage'))
 const ServicePage = lazy(() => import('./pages/service/ServicePage'))
 const UsedPage = lazy(() => import('./pages/used/UsedPage'))
 const BlogPage = lazy(() => import('./pages/blog/BlogPage'))
+const AboutPage = lazy(() => import('./pages/info/AboutPage'))
 
 function App() {
   return (
@@ -64,6 +65,13 @@ function App() {
       {REDIRECTS.map(({ from, to }) => (
         <Route key={from} path={from} element={<Navigate to={to} replace />} />
       ))}
+
+      {/* О компании */}
+      <Route path="/about" element={
+        <Suspense fallback={<PageSkeleton />}>
+          <AboutPage />
+        </Suspense>
+      } />
 
       {/* Блог */}
       <Route path="/blog" element={

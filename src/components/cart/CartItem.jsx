@@ -10,8 +10,8 @@ export function CartItem({ item, onRemove, onUpdateQuantity }) {
   const options = [colorLabel, memoryLabel, simLabel].filter(Boolean).join(' • ')
 
   return (
-    <div className="flex gap-4 p-4 bg-gray-light rounded-2xl">
-      <div className="w-24 h-24 shrink-0 bg-white rounded-xl overflow-hidden">
+    <div className="flex gap-4 p-4 bg-gray-light">
+      <div className="w-24 h-24 shrink-0 bg-white overflow-hidden">
         <ImageWithSkeleton
           src={item.image}
           alt={item.name}

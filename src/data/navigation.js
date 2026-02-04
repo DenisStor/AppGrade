@@ -1,6 +1,6 @@
 // Базовые ссылки (единый источник)
 const CATALOG_LINKS = [
-  { label: 'iPhone', href: '/catalog/smartphones' },
+  { label: 'iPhone', href: '/catalog/smartphones/apple' },
   { label: 'Mac', href: '/catalog/laptops' },
   { label: 'iPad', href: '/catalog/tablets' },
   { label: 'Watch', href: '/catalog/watches' },
