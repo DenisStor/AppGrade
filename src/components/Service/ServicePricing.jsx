@@ -1,15 +1,39 @@
-import { useState } from 'react'
-import { Check } from 'lucide-react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { FreeMode } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/free-mode'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { SectionHeader } from '../ui/SectionHeader'
 import { SERVICE_PRICING, IPHONE_MODELS } from '../../data/service'
 
 export function ServicePricing() {
   const [selectedModel, setSelectedModel] = useState('all')
+  const scrollRef = useRef(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    setCanScrollLeft(el.scrollLeft > 0)
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1)
+  }, [])
+
+  useEffect(() => {
+    checkScroll()
+    const el = scrollRef.current
+    if (!el) return
+    el.addEventListener('scroll', checkScroll, { passive: true })
+    window.addEventListener('resize', checkScroll)
+    return () => {
+      el.removeEventListener('scroll', checkScroll)
+      window.removeEventListener('resize', checkScroll)
+    }
+  }, [checkScroll])
+
+  const scroll = (direction) => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollBy({ left: direction * 250, behavior: 'smooth' })
+  }
 
   const getPrice = (service) => {
     if (service.prices[selectedModel]) {
@@ -26,45 +50,51 @@ export function ServicePricing() {
           subtitle="Популярные услуги ремонта iPhone"
           className="mb-8"
         />
-      </Container>
 
-      {/* Карусель моделей — во всю ширину с левым отступом Container */}
-      <div className="mb-6 overflow-x-clip" style={{ paddingLeft: 'max(1rem, calc((100% - 1200px) / 2 + 2rem))' }}>
-        <Swiper
-          modules={[FreeMode]}
-          freeMode={true}
-          slidesPerView="auto"
-          spaceBetween={10}
-          grabCursor={true}
-          className="!overflow-visible"
-        >
-          {IPHONE_MODELS.map((model) => (
-            <SwiperSlide key={model.id} className="!w-[110px] !h-auto">
+        <div className="relative mb-8">
+          {canScrollLeft && (
+            <>
+              <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-gray-light to-transparent z-10 pointer-events-none" />
               <button
-                onClick={() => setSelectedModel(model.id)}
-                className={`flex flex-col items-center gap-1.5 p-3 transition-all w-full h-full ${
-                  selectedModel === model.id
-                    ? 'bg-white shadow-sm border border-gray-200'
-                    : 'bg-gray-50 border border-transparent hover:bg-gray-100'
-                }`}
+                onClick={() => scroll(-1)}
+                className="absolute left-1 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
               >
-                <img
-                  src={model.image}
-                  alt={model.name}
-                  className="w-16 h-16 object-contain"
-                />
-                <span className="text-xs font-medium text-gray-dark text-center leading-tight line-clamp-2">
-                  {model.name}
-                </span>
+                <ChevronLeft className="w-4 h-4 text-gray-dark" />
               </button>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+            </>
+          )}
+          <div
+            ref={scrollRef}
+            className="overflow-x-auto scrollbar-hide"
+          >
+            <div className="inline-flex bg-gray-200/70 rounded-full p-1 gap-1">
+              {IPHONE_MODELS.map((model) => (
+                <button
+                  key={model.id}
+                  onClick={() => setSelectedModel(model.id)}
+                  className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap
+                    ${selectedModel === model.id ? 'bg-gray-dark text-white shadow-sm' : 'text-gray-medium hover:text-gray-dark'}`}
+                >
+                  {model.name}
+                </button>
+              ))}
+            </div>
+          </div>
+          {canScrollRight && (
+            <>
+              <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-gray-light to-transparent z-10 pointer-events-none" />
+              <button
+                onClick={() => scroll(1)}
+                className="absolute right-1 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
+              >
+                <ChevronRight className="w-4 h-4 text-gray-dark" />
+              </button>
+            </>
+          )}
+        </div>
 
-      <Container>
         {/* Таблица цен */}
-        <div className="bg-white overflow-hidden">
+        <div className="bg-white overflow-hidden rounded-3xl">
           <div className="divide-y divide-gray-100">
             {SERVICE_PRICING.map((service) => {
               const price = getPrice(service)

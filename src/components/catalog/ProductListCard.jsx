@@ -76,11 +76,11 @@ export function ProductListCard({ product, category, brand }) {
       </article>
 
       {/* Десктопная версия — flexbox с фиксированными высотами */}
-      <article className="hidden lg:flex group flex-col h-full bg-white p-5 border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      <article className="hidden lg:flex group flex-col h-full bg-white p-5 rounded-card border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         {/* Изображение */}
         <Link
           to={productUrl}
-          className="block relative aspect-square overflow-hidden mb-4"
+          className="block relative aspect-square rounded-card overflow-hidden mb-4"
         >
           <ImageWithSkeleton
             src={selectedVariant?.images?.[0]}
@@ -161,7 +161,7 @@ export function ProductListCard({ product, category, brand }) {
             )}
           </div>
           {hasDiscount && (
-            <span className="inline-block mt-1 px-2 py-0.5 bg-red-100 text-red-600 text-xs font-medium rounded">
+            <span className="inline-block mt-1 px-2 py-0.5 bg-red-100 text-red-600 text-xs font-medium rounded-md">
               -{discount}%
             </span>
           )}
@@ -173,7 +173,7 @@ export function ProductListCard({ product, category, brand }) {
             <Link
               to="/cart"
               onClick={(e) => e.stopPropagation()}
-              className="group/btn w-full py-3 px-4 bg-white border border-gray-dark text-gray-dark text-sm font-medium hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              className="group/btn w-full py-3 px-4 rounded-btn bg-white border border-gray-dark text-gray-dark text-sm font-medium hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               <Check className="w-4 h-4" />
               В корзине
@@ -181,7 +181,7 @@ export function ProductListCard({ product, category, brand }) {
           ) : (
             <button
               onClick={handleAddToCart}
-              className="group/btn w-full py-3 px-4 bg-gray-dark text-white text-sm font-medium hover:bg-black active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              className="group/btn w-full py-3 px-4 rounded-btn bg-gray-dark text-white text-sm font-medium hover:bg-black active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               <ShoppingCart className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
               В корзину

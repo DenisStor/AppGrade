@@ -54,7 +54,7 @@ export function AboutUs({ showDivider = true }) {
             <img
               src={aboutImage}
               alt="Магазин AppleGO"
-              className="w-full h-64 lg:h-full object-cover"
+              className="w-full h-64 lg:h-full object-cover rounded-card"
             />
           </div>
         </div>
@@ -64,7 +64,7 @@ export function AboutUs({ showDivider = true }) {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="liquid-glass p-5 lg:p-6 hover:shadow-liquid-hover hover:scale-[1.02] transition-all duration-liquid"
+              className="liquid-glass rounded-card p-5 lg:p-6 hover:shadow-liquid-hover hover:scale-[1.02] transition-all duration-liquid"
             >
               <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center mb-4">
                 <feature.icon className="w-6 h-6 text-white" />

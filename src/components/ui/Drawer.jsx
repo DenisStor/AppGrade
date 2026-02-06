@@ -34,8 +34,8 @@ export function Drawer({
   if (!isOpen) return null
 
   const sideClasses = {
-    left: 'left-0 animate-slide-in-left',
-    right: 'right-0 animate-slide-in-right',
+    left: 'left-0 rounded-r-2xl animate-slide-in-left',
+    right: 'right-0 rounded-l-2xl animate-slide-in-right',
   }
 
   return createPortal(

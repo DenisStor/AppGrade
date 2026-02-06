@@ -47,7 +47,7 @@ export function Button({
     <button
       className={`
         inline-flex items-center justify-center
-        font-semibold
+        font-semibold rounded-btn
         transition-all duration-200
         disabled:opacity-50 disabled:cursor-not-allowed
         relative overflow-hidden

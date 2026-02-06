@@ -9,7 +9,7 @@ export function LoanerPhone() {
       <Container>
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <div className="lg:self-stretch lg:flex lg:flex-col">
-            <span className="inline-block px-4 py-1.5 bg-gray-dark text-white text-sm font-medium mb-6 lg:self-start">
+            <span className="inline-block px-4 py-1.5 bg-gray-dark text-white text-sm font-medium rounded-full mb-6 lg:self-start">
               На связи
             </span>
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-dark mb-6">
@@ -29,7 +29,7 @@ export function LoanerPhone() {
             </Button>
           </div>
           <div className="relative">
-            <div className="aspect-[4/3] bg-gray-light overflow-hidden">
+            <div className="aspect-[4/3] bg-gray-light overflow-hidden rounded-3xl">
               <img
                 src={loanerPhoneImg}
                 alt="Подменный iPhone"

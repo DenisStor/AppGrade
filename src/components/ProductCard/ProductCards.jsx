@@ -13,7 +13,7 @@ export function ProductCards() {
       </div>
       <div className="grid md:grid-cols-2 gap-6 px-6 lg:px-60">
         {/* Проверенное б/у */}
-        <Link to="/used" className="group aspect-[2/1] relative overflow-hidden hover:scale-[1.02] transition-transform duration-300 block">
+        <Link to="/used" className="group aspect-[2/1] relative overflow-hidden rounded-card hover:scale-[1.02] transition-transform duration-300 block">
           <img
             src={buPhoto}
             alt="Проверенное б/у"
@@ -28,7 +28,7 @@ export function ProductCards() {
           </div>
         </Link>
         {/* Сервис */}
-        <Link to="/service" className="group aspect-[2/1] relative overflow-hidden hover:scale-[1.02] transition-transform duration-300 block">
+        <Link to="/service" className="group aspect-[2/1] relative overflow-hidden rounded-card hover:scale-[1.02] transition-transform duration-300 block">
           <img
             src={servicePhoto}
             alt="Сервис"

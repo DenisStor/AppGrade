@@ -50,7 +50,7 @@ export function RepairForm() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="bg-white p-6 lg:p-10">
+          <form onSubmit={handleSubmit} className="bg-white p-6 lg:p-10 rounded-card">
             <div className="grid sm:grid-cols-2 gap-4 mb-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-dark mb-2">
@@ -63,7 +63,7 @@ export function RepairForm() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Иван"
-                  className="w-full px-4 py-3 border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors"
+                  className="w-full px-4 py-3 rounded-input border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors"
                   required
                 />
               </div>
@@ -78,7 +78,7 @@ export function RepairForm() {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+7 (999) 123-45-67"
-                  className="w-full px-4 py-3 border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors"
+                  className="w-full px-4 py-3 rounded-input border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors"
                   required
                 />
               </div>
@@ -95,7 +95,7 @@ export function RepairForm() {
                 value={formData.device}
                 onChange={handleChange}
                 placeholder="iPhone 15 Pro Max"
-                className="w-full px-4 py-3 border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors"
+                className="w-full px-4 py-3 rounded-input border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors"
               />
             </div>
 
@@ -110,7 +110,7 @@ export function RepairForm() {
                 onChange={handleChange}
                 placeholder="Разбился экран, не заряжается..."
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors resize-none"
+                className="w-full px-4 py-3 rounded-input border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors resize-none"
               />
             </div>
 

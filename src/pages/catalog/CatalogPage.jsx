@@ -28,7 +28,7 @@ export default function CatalogPage() {
           >
             {/* Мобильная версия — Apple Store стиль */}
             <div className="lg:hidden">
-              <div className="bg-gray-light aspect-square flex items-center justify-center p-4">
+              <div className="bg-gray-light aspect-square flex items-center justify-center p-4 rounded-xl">
                 <img
                   src={category.image}
                   alt={category.name}
@@ -44,7 +44,7 @@ export default function CatalogPage() {
             </div>
 
             {/* Десктопная версия — текущий стиль с градиентом */}
-            <div className={`hidden lg:block relative overflow-hidden aspect-[4/3] transition-all duration-300 hover:shadow-liquid ${category.imageContain ? 'bg-white' : 'bg-gray-light'}`}>
+            <div className={`hidden lg:block relative overflow-hidden rounded-card aspect-[4/3] transition-all duration-300 hover:shadow-liquid ${category.imageContain ? 'bg-white' : 'bg-gray-light'}`}>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
 
               <img

@@ -4,7 +4,7 @@ import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 export function NewsCard({ id, image, date, title }) {
   return (
     <Link to={`/blog/${id}`} className="block group cursor-pointer">
-      <div className="aspect-[2/1] overflow-hidden mb-4">
+      <div className="aspect-[2/1] rounded-card overflow-hidden mb-4">
         <ImageWithSkeleton
           src={image}
           alt={title}

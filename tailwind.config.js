@@ -27,6 +27,9 @@ export default {
       borderRadius: {
         liquid: '20px',
         'liquid-lg': '28px',
+        card: '16px',
+        btn: '12px',
+        input: '12px',
       },
       transitionDuration: {
         liquid: '350ms',
