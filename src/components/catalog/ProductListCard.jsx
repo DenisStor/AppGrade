@@ -19,7 +19,7 @@ export function ProductListCard({ product, category, brand }) {
 
   const selectedVariant = useMemo(() => {
     if (selectedColorId) {
-      return product.variants?.find(v => v.colorId === selectedColorId) || product.variants?.[0]
+      return product.variants?.find(v => v.color.id === selectedColorId) || product.variants?.[0]
     }
     return product.variants?.[0]
   }, [product.variants, selectedColorId])

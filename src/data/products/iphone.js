@@ -150,7 +150,7 @@ export const iphoneProducts = [
     },
     description:
       'iPhone 17 Pro Max — самый мощный iPhone с титановым корпусом, чипом A19 Pro и улучшенной камерой ProMotion.',
-    relatedIds: ['iphone-17-pro', 'case-iphone-17'],
+    relatedIds: ['iphone-17-pro', 'iphone-17'],
   },
   {
     id: 'iphone-17-pro',
@@ -208,7 +208,7 @@ export const iphoneProducts = [
     },
     description:
       'iPhone 17 Pro — компактный флагман с титановым корпусом, чипом A19 Pro и профессиональной камерой.',
-    relatedIds: ['iphone-17-pro-max', 'case-iphone-17'],
+    relatedIds: ['iphone-17-pro-max', 'iphone-17'],
   },
   {
     id: 'iphone-17',
@@ -277,7 +277,7 @@ export const iphoneProducts = [
     },
     description:
       'iPhone 17 — стильный и производительный смартфон с чипом A19, Dynamic Island и улучшенной камерой.',
-    relatedIds: ['iphone-17-plus', 'case-iphone-17'],
+    relatedIds: ['iphone-17-pro', 'iphone-17-pro-max'],
   },
   {
     id: 'iphone-16-pro-max',
@@ -335,7 +335,7 @@ export const iphoneProducts = [
     },
     description:
       'iPhone 16 Pro Max — флагман прошлого поколения с отличным соотношением цена/качество.',
-    relatedIds: ['iphone-16-pro', 'case-iphone-16'],
+    relatedIds: ['iphone-17-pro-max', 'iphone-15'],
   },
   {
     id: 'iphone-15',
@@ -404,7 +404,7 @@ export const iphoneProducts = [
     },
     description:
       'iPhone 15 — надёжный выбор с современными возможностями по выгодной цене.',
-    relatedIds: ['iphone-15-plus', 'case-iphone-15'],
+    relatedIds: ['iphone-16-pro-max', 'iphone-17'],
   },
 ]
 

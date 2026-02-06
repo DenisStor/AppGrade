@@ -38,7 +38,7 @@ main.jsx (BrowserRouter)
 
 **Пример:** `/catalog/smartphones/apple/iphone-17-pro-max`
 
-**Категории:** `smartphones`, `laptops`, `tablets`, `watches`, `headphones`, `hairdryers`, `stylers`, `accessories`
+**Категории:** `smartphones`, `laptops`, `tablets`, `watches`, `headphones`, `hairdryers`, `stylers`, `accessories`, `gaming`
 
 **Бренды:** `apple`, `samsung`, `dyson`
 
@@ -46,7 +46,7 @@ main.jsx (BrowserRouter)
 
 Полная документация: [docs/COMPONENTS.md](./docs/COMPONENTS.md)
 
-### UI (19)
+### UI (18)
 
 | Компонент | Путь | Описание |
 |-----------|------|----------|
@@ -56,13 +56,14 @@ main.jsx (BrowserRouter)
 | Tabs | ui/Tabs.jsx | Табы (underline/pills) |
 | Badge | ui/Badge.jsx | Бейдж (new/hit/sale/used) |
 | Breadcrumbs | ui/Breadcrumbs.jsx | Хлебные крошки |
-| Toast | ui/Toast.jsx | Уведомления |
+| Toast / ToastContainer | ui/Toast.jsx | Уведомления и контейнер |
 | RangeSlider | ui/RangeSlider.jsx | Слайдер диапазона |
 | Container | ui/Container.jsx | Контейнер |
 | SectionHeader | ui/SectionHeader.jsx | Заголовок секции |
 | SectionDivider | ui/SectionDivider.jsx | Разделитель |
 | Skeleton | ui/Skeleton.jsx | Скелетон загрузки |
 | CardSkeleton | ui/CardSkeleton.jsx | Скелетон карточки |
+| PageSkeleton | ui/PageSkeleton.jsx | Скелетон страницы (Suspense fallback) |
 | ImageWithSkeleton | ui/ImageWithSkeleton.jsx | Изображение со скелетоном |
 | AnimatedSection | ui/AnimatedSection.jsx | Секция с анимацией |
 | StaggeredList | ui/StaggeredList.jsx | Список с stagger-анимацией |
@@ -78,18 +79,20 @@ main.jsx (BrowserRouter)
 | Footer | Footer/Footer.jsx | Подвал |
 | FooterColumn | Footer/FooterColumn.jsx | Колонка подвала |
 | FooterContacts | Footer/FooterContacts.jsx | Контакты |
-| FooterSubscribe | Footer/FooterSubscribe.jsx | Подписка |
 | FooterBottom | Footer/FooterBottom.jsx | Копирайт |
+| ScrollToTop | ScrollToTop.jsx | Скролл к верху при навигации |
 
-### Homepage (10)
+### Homepage (12)
 
 | Компонент | Путь | Описание |
 |-----------|------|----------|
 | Hero | Hero/Hero.jsx | Главный баннер |
 | Categories | Categories/Categories.jsx | Секция категорий |
 | CategoryCard | Categories/CategoryCard.jsx | Карточка категории |
+| ProductCards | ProductCard/ProductCards.jsx | Группа карточек товаров |
 | Benefits | Benefits/Benefits.jsx | Преимущества |
 | BenefitCard | Benefits/BenefitCard.jsx | Карточка преимущества |
+| InfoBlock | InfoBlocks/InfoBlock.jsx | Информационный блок |
 | News | News/News.jsx | Новости |
 | NewsCard | News/NewsCard.jsx | Карточка новости |
 | FAQ | FAQ/FAQ.jsx | FAQ-аккордеон |
@@ -119,7 +122,7 @@ main.jsx (BrowserRouter)
 | RecentlyViewed | product/RecentlyViewed.jsx | Недавно просмотренные |
 | QuickBuyModal | product/QuickBuyModal.jsx | Быстрый заказ |
 
-### Filters (4)
+### Filters (5)
 
 | Компонент | Путь | Описание |
 |-----------|------|----------|
@@ -136,17 +139,28 @@ main.jsx (BrowserRouter)
 | SearchInput | search/SearchInput.jsx | Поле поиска |
 | SearchDropdown | search/SearchDropdown.jsx | Результаты поиска |
 
-### SEO (1)
+### Cart (2)
 
 | Компонент | Путь | Описание |
 |-----------|------|----------|
-| JsonLd | seo/JsonLd.jsx | Schema.org разметка |
+| CartItem | cart/CartItem.jsx | Элемент корзины |
+| CartRecommendations | cart/CartRecommendations.jsx | Рекомендации в корзине |
 
-### Service (8)
+### SEO (4)
+
+| Компонент | Путь | Описание |
+|-----------|------|----------|
+| ProductJsonLd | seo/JsonLd.jsx | Schema.org для товара |
+| BreadcrumbJsonLd | seo/JsonLd.jsx | Schema.org для хлебных крошек |
+| OrganizationJsonLd | seo/JsonLd.jsx | Schema.org для организации |
+| LocalBusinessJsonLd | seo/JsonLd.jsx | Schema.org для локального бизнеса |
+
+### Service (9)
 
 | Компонент | Путь | Описание |
 |-----------|------|----------|
 | ServiceHero | Service/ServiceHero.jsx | Split-screen баннер |
+| ServiceIntro | Service/ServiceIntro.jsx | Вводная секция сервиса |
 | ServiceFeatures | Service/ServiceFeatures.jsx | Фичи сервиса (Быстро, Как дома, На связи) |
 | WhyUs | Service/WhyUs.jsx | Преимущества сервиса |
 | ServicePricing | Service/ServicePricing.jsx | Прайс-лист услуг |
@@ -168,6 +182,7 @@ main.jsx (BrowserRouter)
 | useInView | `useInView(options)` | Видимость элемента |
 | useToast | `useToast()` | Уведомления |
 | useReducedMotion | `useReducedMotion()` | Prefers-reduced-motion |
+| useFilterSync | `useFilterSync(initialFilters, parseUrl, buildUrl)` | Синхронизация фильтров с URL |
 
 ```js
 // Пример использования
@@ -251,9 +266,14 @@ import {
 
   // Утилиты
   getMinPrice,                     // (product) → number
+  hasDiscount,                     // (product) → boolean
   formatPrice,                     // (price) → '169 990 ₽'
   formatMemory,                    // (1024) → '1 ТБ'
   searchProducts,                  // (query) → products[]
+  getProductById,                  // (id) → product | undefined
+  getCategoryBySlug,               // (slug) → category | null
+  getRelatedProducts,              // (productId, limit?) → products[]
+  CATALOG_CATEGORIES,              // массив всех категорий
 
   // Б/У товары
   usedProducts,                    // массив б/у товаров
@@ -317,16 +337,27 @@ const { items, addItem } = useRecentlyViewedStore()
 | `/cart` | CartPage | Корзина |
 | `/search` | SearchPage | Результаты поиска |
 
+### Блог
+
+| Маршрут | Страница | Описание |
+|---------|----------|----------|
+| `/blog` | BlogPage | Список статей |
+| `/blog/:id` | BlogPostPage | Статья блога |
+
 ### Информационные
 
 | Маршрут | Страница | Описание |
 |---------|----------|----------|
-| `/about` | InfoPage | О компании |
+| `/about` | AboutPage | О компании |
 | `/delivery` | InfoPage | Доставка |
 | `/warranty` | InfoPage | Гарантия |
 | `/returns` | InfoPage | Возврат |
 | `/contacts` | InfoPage | Контакты |
 | `/faq` | InfoPage | FAQ |
+| `/privacy` | InfoPage | Политика конфиденциальности |
+| `/trade-in` | InfoPage | Trade-in |
+| `/credit` | InfoPage | Рассрочка и кредит |
+| `/terms` | InfoPage | Пользовательское соглашение |
 
 ## Стилизация
 

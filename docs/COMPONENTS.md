@@ -4,19 +4,20 @@
 
 ## Оглавление
 
-- [UI (19)](#ui-19)
+- [UI (18)](#ui-18)
 - [Layout (9)](#layout-9)
-- [Homepage (10)](#homepage-10)
+- [Homepage (12)](#homepage-12)
 - [Catalog (3)](#catalog-3)
 - [Product (9)](#product-9)
-- [Filters (3)](#filters-3)
+- [Filters (5)](#filters-5)
 - [Search (2)](#search-2)
-- [Cart (1)](#cart-1)
-- [SEO (1)](#seo-1)
+- [Cart (2)](#cart-2)
+- [SEO (4)](#seo-4)
+- [Service (9)](#service-9)
 
 ---
 
-## UI (19)
+## UI (18)
 
 Базовые переиспользуемые UI-компоненты.
 
@@ -159,13 +160,13 @@ import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 ]} />
 ```
 
-### Toast
+### Toast / ToastContainer
 
-Уведомление (toast).
+Уведомление и контейнер уведомлений.
 
 **Путь:** `src/components/ui/Toast.jsx`
 
-Используется через `useToastStore` для отображения уведомлений.
+**Экспорты:** `ToastContainer` — контейнер, подключается в `App.jsx`.
 
 ```jsx
 import { useToast } from '../hooks/useToast'
@@ -283,6 +284,20 @@ import { RangeSlider } from '../components/ui/RangeSlider'
 | `children` | ReactNode | — | Элементы списка |
 | `staggerDelay` | number | — | Задержка между элементами |
 
+### PageSkeleton
+
+Скелетон страницы, используется как fallback для `Suspense`.
+
+**Путь:** `src/components/ui/PageSkeleton.jsx`
+
+```jsx
+import { PageSkeleton } from '../components/ui/PageSkeleton'
+
+<Suspense fallback={<PageSkeleton />}>
+  <LazyPage />
+</Suspense>
+```
+
 ---
 
 ## Layout (9)
@@ -338,9 +353,9 @@ import { RangeSlider } from '../components/ui/RangeSlider'
 
 **Путь:** `src/components/Footer/FooterContacts.jsx`
 
-### FooterSubscribe
+### FooterSubscribe (не используется)
 
-Форма подписки на рассылку.
+Форма подписки на рассылку. Не подключена в Footer.jsx.
 
 **Путь:** `src/components/Footer/FooterSubscribe.jsx`
 
@@ -350,9 +365,17 @@ import { RangeSlider } from '../components/ui/RangeSlider'
 
 **Путь:** `src/components/Footer/FooterBottom.jsx`
 
+### ScrollToTop
+
+Скролл к верху страницы при навигации.
+
+**Путь:** `src/components/ScrollToTop.jsx`
+
+Подключается в `App.jsx`. Использует `useLocation` из React Router.
+
 ---
 
-## Homepage (10)
+## Homepage (12)
 
 Компоненты главной страницы.
 
@@ -378,6 +401,12 @@ import { RangeSlider } from '../components/ui/RangeSlider'
 |------|-----|--------------|----------|
 | `category` | object | — | Объект категории |
 
+### ProductCards
+
+Группа карточек товаров.
+
+**Путь:** `src/components/ProductCard/ProductCards.jsx`
+
 ### Benefits
 
 Секция преимуществ.
@@ -395,6 +424,12 @@ import { RangeSlider } from '../components/ui/RangeSlider'
 | `icon` | ReactNode | — | Иконка |
 | `title` | string | — | Заголовок |
 | `description` | string | — | Описание |
+
+### InfoBlock
+
+Информационный блок.
+
+**Путь:** `src/components/InfoBlocks/InfoBlock.jsx`
 
 ### News
 
@@ -609,7 +644,7 @@ import { ColorSelector } from '../components/product/ColorSelector'
 
 ---
 
-## Filters (3)
+## Filters (5)
 
 Компоненты фильтрации.
 
@@ -666,6 +701,12 @@ import { ColorSelector } from '../components/product/ColorSelector'
 | `onRemove` | function | — | Удаление фильтра |
 | `onReset` | function | — | Сброс всех |
 
+### UsedFilterSidebar
+
+Боковая панель фильтров для б/у товаров.
+
+**Путь:** `src/components/filters/UsedFilterSidebar.jsx`
+
 ---
 
 ## Search (2)
@@ -699,9 +740,15 @@ import { ColorSelector } from '../components/product/ColorSelector'
 
 ---
 
-## Cart (1)
+## Cart (2)
 
 Компоненты корзины.
+
+### CartItem
+
+Элемент корзины.
+
+**Путь:** `src/components/cart/CartItem.jsx`
 
 ### CartRecommendations
 
@@ -711,52 +758,101 @@ import { ColorSelector } from '../components/product/ColorSelector'
 
 ---
 
-## SEO (1)
+## SEO (4)
 
-SEO-компоненты.
-
-### JsonLd
-
-Структурированные данные Schema.org.
+SEO-компоненты. Все экспортируются из одного файла.
 
 **Путь:** `src/components/seo/JsonLd.jsx`
 
+### ProductJsonLd
+
+Структурированные данные Schema.org для товара.
+
 | Prop | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
-| `type` | string | — | Тип: `Product`, `Organization`, `BreadcrumbList` |
-| `data` | object | — | Данные для JSON-LD |
+| `product` | object | — | Объект товара |
+| `variant` | object | — | Текущий вариант |
+| `category` | string | — | Слаг категории |
+| `brand` | string | — | Слаг бренда |
 
 ```jsx
-import { JsonLd } from '../components/seo/JsonLd'
+import { ProductJsonLd } from '../components/seo/JsonLd'
 
-<JsonLd
-  type="Product"
-  data={{
-    name: product.name,
-    price: variant.price,
-    image: variant.images[0],
-  }}
-/>
+<ProductJsonLd product={product} variant={variant} category="smartphones" brand="apple" />
 ```
+
+### BreadcrumbJsonLd
+
+Структурированные данные для хлебных крошек.
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `items` | array | `[]` | Массив `{ label, href }` |
+
+### OrganizationJsonLd
+
+Структурированные данные об организации. Без пропсов — берёт данные из `config.js`.
+
+### LocalBusinessJsonLd
+
+Структурированные данные о локальном бизнесе. Без пропсов — берёт данные из `config.js`.
 
 ---
 
-## Другие компоненты
+## Service (9)
 
-### ProductCard
+Компоненты страницы сервиса.
 
-Карточка товара (устаревший вариант).
+### ServiceHero
 
-**Путь:** `src/components/ProductCard/ProductCard.jsx`
+Split-screen баннер сервиса.
 
-### ProductCards
+**Путь:** `src/components/Service/ServiceHero.jsx`
 
-Группа карточек товаров.
+### ServiceIntro
 
-**Путь:** `src/components/ProductCard/ProductCards.jsx`
+Вводная секция сервиса.
 
-### InfoBlock
+**Путь:** `src/components/Service/ServiceIntro.jsx`
 
-Информационный блок.
+### ServiceFeatures
 
-**Путь:** `src/components/InfoBlocks/InfoBlock.jsx`
+Фичи сервиса (Быстро, Как дома, На связи).
+
+**Путь:** `src/components/Service/ServiceFeatures.jsx`
+
+### WhyUs
+
+Преимущества сервиса.
+
+**Путь:** `src/components/Service/WhyUs.jsx`
+
+### ServicePricing
+
+Прайс-лист услуг.
+
+**Путь:** `src/components/Service/ServicePricing.jsx`
+
+### HowWeWork
+
+Этапы работы (01-04).
+
+**Путь:** `src/components/Service/HowWeWork.jsx`
+
+### RepairForm
+
+Форма записи на ремонт.
+
+**Путь:** `src/components/Service/RepairForm.jsx`
+
+### LoanerPhone
+
+Блок про подменный iPhone.
+
+**Путь:** `src/components/Service/LoanerPhone.jsx`
+
+### MobileService
+
+Выездной сервис.
+
+**Путь:** `src/components/Service/MobileService.jsx`

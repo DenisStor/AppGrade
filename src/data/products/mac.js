@@ -52,7 +52,7 @@ export const macProducts = [
     },
     description:
       'MacBook Pro 16" с чипом M4 Pro — мощный ноутбук для профессионалов: разработчиков, дизайнеров, видеомонтажёров.',
-    relatedIds: ['macbook-pro-14-m4-pro', 'magic-mouse'],
+    relatedIds: ['macbook-pro-14-m4', 'macbook-air-15-m3'],
   },
   {
     id: 'macbook-pro-14-m4',
@@ -96,7 +96,7 @@ export const macProducts = [
     },
     description:
       'MacBook Pro 14" с чипом M4 — компактный и мощный ноутбук для творческих профессионалов.',
-    relatedIds: ['macbook-pro-16-m4-pro', 'magic-keyboard'],
+    relatedIds: ['macbook-pro-16-m4-pro', 'macbook-air-13-m3'],
   },
   {
     id: 'macbook-air-15-m3',
@@ -162,7 +162,7 @@ export const macProducts = [
     },
     description:
       'MacBook Air 15" с чипом M3 — невероятно тонкий и лёгкий ноутбук с большим экраном.',
-    relatedIds: ['macbook-air-13-m3', 'magic-mouse'],
+    relatedIds: ['macbook-air-13-m3', 'macbook-pro-16-m4-pro'],
   },
   {
     id: 'macbook-air-13-m3',
@@ -206,7 +206,7 @@ export const macProducts = [
     },
     description:
       'MacBook Air 13" с чипом M3 — самый портативный Mac для повседневных задач.',
-    relatedIds: ['macbook-air-15-m3', 'magic-keyboard'],
+    relatedIds: ['macbook-air-15-m3', 'macbook-pro-14-m4'],
   },
   {
     id: 'imac-24-m4',
@@ -261,7 +261,7 @@ export const macProducts = [
     },
     description:
       'iMac 24" с чипом M4 — стильный моноблок с потрясающим дисплеем для дома и офиса.',
-    relatedIds: ['magic-keyboard', 'magic-mouse'],
+    relatedIds: ['macbook-pro-16-m4-pro', 'macbook-pro-14-m4'],
   },
 ]
 

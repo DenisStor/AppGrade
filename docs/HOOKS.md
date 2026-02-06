@@ -13,6 +13,7 @@
 | [useInView](#useinview) | Видимость элемента (Intersection Observer) |
 | [useToast](#usetoast) | Уведомления |
 | [useReducedMotion](#usereducedmotion) | Prefers-reduced-motion |
+| [useFilterSync](#usefiltersync) | Синхронизация фильтров с URL |
 
 ---
 
@@ -385,6 +386,81 @@ function AnimatedComponent() {
 
 ---
 
+## useFilterSync
+
+Синхронизация фильтров с URL (searchParams).
+
+**Путь:** `src/hooks/useFilterSync.js`
+
+### Сигнатура
+
+```js
+const { filters, sortBy, setSortBy, setFilter, resetFilters } = useFilterSync(
+  initialFilters,
+  parseUrl,
+  buildUrl
+)
+```
+
+### Параметры
+
+| Параметр | Тип | Описание |
+|----------|-----|----------|
+| `initialFilters` | object | Начальное состояние фильтров |
+| `parseUrl` | function | `(searchParams) → { filters, sortBy }` |
+| `buildUrl` | function | `(filters, sortBy) → URLSearchParams` |
+
+### Возвращает
+
+| Свойство | Тип | Описание |
+|----------|-----|----------|
+| `filters` | object | Текущие фильтры |
+| `sortBy` | string | Текущая сортировка |
+| `setSortBy` | function | Установка сортировки |
+| `setFilter` | function | `(key, value) → void` |
+| `resetFilters` | function | Сброс к начальному состоянию |
+
+### Дополнительные экспорты
+
+| Экспорт | Описание |
+|---------|----------|
+| `parseBrandPageUrl` | Парсер URL для BrandPage |
+| `buildBrandPageUrl` | Построитель URL для BrandPage |
+| `parseUsedPageUrl` | Парсер URL для UsedPage |
+| `buildUsedPageUrl` | Построитель URL для UsedPage |
+| `BRAND_PAGE_INITIAL_FILTERS` | Начальное состояние фильтров BrandPage |
+| `USED_PAGE_INITIAL_FILTERS` | Начальное состояние фильтров UsedPage |
+| `parseArray`, `parseNumberArray`, `parseBoolean`, `parseNumber` | Хелперы парсинга |
+
+### Пример
+
+```jsx
+import {
+  useFilterSync,
+  parseBrandPageUrl,
+  buildBrandPageUrl,
+  BRAND_PAGE_INITIAL_FILTERS,
+} from '../hooks/useFilterSync'
+
+function BrandPage() {
+  const { filters, sortBy, setSortBy, setFilter, resetFilters } = useFilterSync(
+    BRAND_PAGE_INITIAL_FILTERS,
+    parseBrandPageUrl,
+    buildBrandPageUrl
+  )
+
+  return <FilterSidebar filters={filters} onFilterChange={setFilter} onReset={resetFilters} />
+}
+```
+
+### Особенности
+
+- При загрузке парсит URL → state
+- При изменении state обновляет URL (replace)
+- Пропускает первый рендер (не перезаписывает URL до парсинга)
+
+---
+
 ## Импорт
 
 Все хуки можно импортировать напрямую:
@@ -397,4 +473,5 @@ import { useScrollPosition } from '../hooks/useScrollPosition'
 import { useInView } from '../hooks/useInView'
 import { useToast } from '../hooks/useToast'
 import { useReducedMotion } from '../hooks/useReducedMotion'
+import { useFilterSync } from '../hooks/useFilterSync'
 ```
