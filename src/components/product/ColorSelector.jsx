@@ -1,5 +1,4 @@
-import { Check } from 'lucide-react'
-import { isLightColor } from '../../utils/color'
+import { ColorSwatch } from '../ui/ColorSwatch'
 
 export function ColorSelector({
   colors = [],
@@ -13,8 +12,6 @@ export function ColorSelector({
     return colorVariants.some((v) => v.inStock)
   }
 
-  const selectedColor = colors.find((c) => c.id === selected)
-
   return (
     <div className={className}>
       <div className="mb-3">
@@ -23,45 +20,17 @@ export function ColorSelector({
 
       <div className="flex flex-wrap gap-3">
         {colors.map((color) => {
-          const isSelected = color.id === selected
           const isAvailable = getColorAvailability(color.id)
-          const isLight = isLightColor(color.hex)
-
           return (
-            <button
+            <ColorSwatch
               key={color.id}
-              onClick={() => onChange(color.id)}
+              color={color}
+              selected={color.id === selected}
+              size="lg"
               disabled={!isAvailable}
-              className={`relative w-10 h-10 rounded-full transition-all ${
-                isSelected
-                  ? 'ring-2 ring-gray-dark ring-offset-2'
-                  : isAvailable
-                  ? 'ring-1 ring-gray-200 hover:ring-gray-300'
-                  : 'ring-1 ring-gray-200 opacity-50 cursor-not-allowed'
-              }`}
-              style={{ backgroundColor: color.hex }}
-              title={`${color.name}${!isAvailable ? ' (нет в наличии)' : ''}`}
-              aria-label={`${color.name}${isSelected ? ' (выбран)' : ''}${
-                !isAvailable ? ' (нет в наличии)' : ''
-              }`}
-            >
-              {isSelected && (
-                <Check
-                  className={`absolute inset-0 m-auto w-5 h-5 ${
-                    isLight ? 'text-gray-dark' : 'text-white'
-                  }`}
-                />
-              )}
-              {!isAvailable && (
-                <span className="absolute inset-0 flex items-center justify-center">
-                  <span
-                    className={`block w-full h-0.5 rotate-45 ${
-                      isLight ? 'bg-gray-400' : 'bg-white/50'
-                    }`}
-                  />
-                </span>
-              )}
-            </button>
+              disabledStrike
+              onClick={() => onChange(color.id)}
+            />
           )
         })}
       </div>

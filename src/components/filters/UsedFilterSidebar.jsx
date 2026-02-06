@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { RangeSlider } from '../ui/RangeSlider'
 import { CheckboxFilter } from './CheckboxFilter'
 import { PRICE } from '../../data/constants'
@@ -11,12 +12,13 @@ export function UsedFilterSidebar({
   onReset,
   className = '',
 }) {
-  const hasActiveFilters =
+  const hasActiveFilters = useMemo(() =>
     filters.categories.length > 0 ||
     filters.conditions.length > 0 ||
     filters.inStock ||
     filters.priceRange[0] > priceRange[0] ||
     filters.priceRange[1] < priceRange[1]
+  , [filters, priceRange])
 
   // Опции категорий
   const categoryOptions = availableCategories.map((catSlug) => ({

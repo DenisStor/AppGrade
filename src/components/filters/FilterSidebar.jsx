@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { RangeSlider } from '../ui/RangeSlider'
 import { CheckboxFilter } from './CheckboxFilter'
 import { formatMemory } from '../../data/products'
@@ -13,12 +14,13 @@ export function FilterSidebar({
   hideBrandFilter = false,
   className = '',
 }) {
-  const hasActiveFilters =
+  const hasActiveFilters = useMemo(() =>
     filters.memory.length > 0 ||
     filters.brands.length > 0 ||
     filters.inStock ||
     filters.priceRange[0] > priceRange[0] ||
     filters.priceRange[1] < priceRange[1]
+  , [filters, priceRange])
 
   return (
     <aside className={`space-y-6 ${className}`}>

@@ -22,6 +22,7 @@ const ServicePage = lazy(() => import('./pages/service/ServicePage'))
 const UsedPage = lazy(() => import('./pages/used/UsedPage'))
 const BlogPage = lazy(() => import('./pages/blog/BlogPage'))
 const AboutPage = lazy(() => import('./pages/info/AboutPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function App() {
   return (
@@ -83,6 +84,13 @@ function App() {
 
       {/* Информационные страницы */}
       <Route path="/:slug" element={<InfoPage />} />
+
+      {/* 404 */}
+      <Route path="*" element={
+        <Suspense fallback={<PageSkeleton />}>
+          <NotFoundPage />
+        </Suspense>
+      } />
     </Routes>
     </>
   )

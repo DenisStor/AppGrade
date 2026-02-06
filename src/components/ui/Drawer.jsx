@@ -2,6 +2,11 @@ import { useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
+const SIDE_CLASSES = {
+  left: 'left-0 rounded-r-2xl animate-slide-in-left',
+  right: 'right-0 rounded-l-2xl animate-slide-in-right',
+}
+
 export function Drawer({
   isOpen,
   onClose,
@@ -33,11 +38,6 @@ export function Drawer({
 
   if (!isOpen) return null
 
-  const sideClasses = {
-    left: 'left-0 rounded-r-2xl animate-slide-in-left',
-    right: 'right-0 rounded-l-2xl animate-slide-in-right',
-  }
-
   return createPortal(
     <div className="fixed inset-0 z-50">
       <div
@@ -49,7 +49,7 @@ export function Drawer({
       <div
         className={`
           fixed top-0 bottom-0 w-full max-w-sm bg-white shadow-xl
-          flex flex-col ${sideClasses[side]} ${className}
+          flex flex-col ${SIDE_CLASSES[side]} ${className}
         `}
         role="dialog"
         aria-modal="true"

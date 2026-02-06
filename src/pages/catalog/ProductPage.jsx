@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Heart, Share2, Check } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
@@ -17,6 +17,7 @@ import { useFavoritesStore } from '../../stores/useFavoritesStore'
 import { useRecentlyViewedStore } from '../../stores/useRecentlyViewedStore'
 import { useCartStore } from '../../stores/useCartStore'
 import { useProductVariant } from '../../hooks/useProductVariant'
+import { usePageTitle } from '../../hooks/usePageTitle'
 
 export default function ProductPage() {
   const { category, brand, slug } = useParams()
@@ -48,13 +49,12 @@ export default function ProductPage() {
     if (product) addItem(product.id)
   }, [product, addItem])
 
-  // SEO
-  useEffect(() => {
-    if (product && currentVariant) {
-      const memoryPart = currentVariant.memory ? ` ${formatMemory(currentVariant.memory)}` : ''
-      document.title = `${product.name}${memoryPart} — купить в APPGRADE`
-    }
+  const pageTitle = useMemo(() => {
+    if (!product || !currentVariant) return null
+    const memoryPart = currentVariant.memory ? ` ${formatMemory(currentVariant.memory)}` : ''
+    return `${product.name}${memoryPart} — купить в APPGRADE`
   }, [product, currentVariant])
+  usePageTitle(pageTitle)
 
   if (!product) {
     return (

@@ -1,14 +1,15 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, memo } from 'react'
 import { Link } from 'react-router-dom'
 import { Heart, ShoppingCart, Check } from 'lucide-react'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 import { BadgeGroup } from '../ui/Badge'
+import { ColorSwatch } from '../ui/ColorSwatch'
 import { getMinPrice, formatPrice, getAvailableColors } from '../../data/products'
 import { useFavoritesStore } from '../../stores/useFavoritesStore'
 import { useCartStore } from '../../stores/useCartStore'
 import { useToast } from '../../hooks/useToast'
 
-export function ProductListCard({ product, category, brand }) {
+export const ProductListCard = memo(function ProductListCard({ product, category, brand }) {
   const { toggleItem, isFavorite } = useFavoritesStore()
   const { addItem: addToCart, isInCart } = useCartStore()
   const { toast } = useToast()
@@ -116,17 +117,13 @@ export function ProductListCard({ product, category, brand }) {
           {colors.length > 1 && (
             <div className="flex gap-1.5">
               {colors.slice(0, 5).map((color) => (
-                <button
+                <ColorSwatch
                   key={color.id}
+                  color={color}
+                  selected={selectedColorId === color.id}
+                  size="sm"
+                  showCheck={false}
                   onClick={(e) => handleColorClick(e, color.id)}
-                  className={`w-6 h-6 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
-                    selectedColorId === color.id
-                      ? 'border-gray-dark ring-2 ring-gray-dark/20'
-                      : 'border-gray-200 hover:border-gray-400'
-                  }`}
-                  style={{ backgroundColor: color.hex }}
-                  title={color.name}
-                  aria-label={`Выбрать цвет: ${color.name}`}
                 />
               ))}
               {colors.length > 5 && (
@@ -191,4 +188,4 @@ export function ProductListCard({ product, category, brand }) {
       </article>
     </>
   )
-}
+})

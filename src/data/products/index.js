@@ -262,4 +262,18 @@ export const formatMemory = (memory) => {
   return `${memory} ГБ`
 }
 
+// Маппинг отображаемых имён брендов в категориях
+export const BRAND_DISPLAY_NAMES = {
+  'apple-smartphones': 'iPhone',
+  'apple-laptops': 'Mac',
+  'apple-tablets': 'iPad',
+  'apple-watches': 'Apple Watch',
+  'apple-headphones': 'AirPods',
+  'samsung-smartphones': 'Samsung Galaxy',
+  'samsung-watches': 'Samsung Galaxy Watch',
+  'samsung-headphones': 'Samsung Galaxy Buds',
+  'dyson-hairdryers': 'Dyson',
+  'dyson-stylers': 'Dyson',
+}
+
 export { iphoneProducts, macProducts, samsungProducts, dysonProducts }

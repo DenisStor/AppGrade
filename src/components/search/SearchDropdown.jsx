@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
@@ -6,7 +7,7 @@ import { getMinPrice, formatPrice, getBrandSlug } from '../../data/products'
 export function SearchDropdown({ results = [], query, onClose }) {
   const navigate = useNavigate()
 
-  const displayedProducts = results.slice(0, 5)
+  const displayedProducts = useMemo(() => results.slice(0, 5), [results])
   const hasMore = results.length > 5
 
   const handleShowAll = () => {

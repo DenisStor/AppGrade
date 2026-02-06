@@ -9,10 +9,12 @@ import { CartItem } from '../../components/cart/CartItem'
 import { CartRecommendations } from '../../components/cart/CartRecommendations'
 import { useCartStore } from '../../stores/useCartStore'
 import { formatPrice } from '../../data/products'
+import { useToast } from '../../hooks/useToast'
 import { api } from '../../services/api'
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore()
+  const { toast } = useToast()
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
   const [orderForm, setOrderForm] = useState({ name: '', phone: '' })
   const [isOrderSuccess, setIsOrderSuccess] = useState(false)
@@ -33,8 +35,8 @@ export default function CartPage() {
       })
       setIsOrderSuccess(true)
       clearCart()
-    } catch (error) {
-      console.error('Ошибка оформления заказа:', error)
+    } catch {
+      toast('Ошибка оформления заказа. Попробуйте позже', 'error')
     }
   }, [orderForm, items, getTotal, clearCart])
 

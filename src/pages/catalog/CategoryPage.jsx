@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ChevronRight, Package } from 'lucide-react'
+import { Package } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { ImageWithSkeleton } from '../../components/ui/ImageWithSkeleton'
 import {
@@ -9,7 +9,10 @@ import {
   getProductsByCategoryAndBrand,
   getMinPrice,
   formatPrice,
+  BRAND_DISPLAY_NAMES,
 } from '../../data/products'
+import { formatProductCount } from '../../utils/pluralize'
+import { usePageTitle } from '../../hooks/usePageTitle'
 
 export default function CategoryPage() {
   const { category } = useParams()
@@ -17,10 +20,10 @@ export default function CategoryPage() {
   const categoryData = getCategoryBySlug(category)
   const brands = getBrandsByCategory(category)
 
-  // SEO
+  usePageTitle(categoryData?.seoTitle)
+
   useEffect(() => {
     if (categoryData) {
-      document.title = categoryData.seoTitle
       const metaDesc = document.querySelector('meta[name="description"]')
       if (metaDesc) {
         metaDesc.setAttribute('content', categoryData.seoDescription)
@@ -56,13 +59,12 @@ export default function CategoryPage() {
       </div>
 
       {brands.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           {brands.map((brand) => (
             <BrandCard
               key={brand.id}
               brand={brand}
               category={category}
-              categoryName={categoryData.name}
             />
           ))}
         </div>
@@ -75,64 +77,40 @@ export default function CategoryPage() {
   )
 }
 
-function BrandCard({ brand, category, categoryName }) {
+function BrandCard({ brand, category }) {
   const products = getProductsByCategoryAndBrand(category, brand.slug)
   const productCount = products.length
+  const minPrice = products.length ? Math.min(...products.map(getMinPrice)) : 0
 
-  // Минимальная цена среди всех товаров бренда
-  const minPrice = products.length
-    ? Math.min(...products.map(getMinPrice))
-    : 0
+  const displayName = BRAND_DISPLAY_NAMES[`${brand.slug}-${category}`] || brand.name
 
-  // Получаем первые 3 изображения товаров для превью
-  const previewImages = products
-    .slice(0, 3)
-    .map((p) => p.variants?.[0]?.images?.[0])
-    .filter(Boolean)
-
+  const flagship = products[0]
+  const flagshipImage = flagship?.variants?.[0]?.images?.[0]
   return (
     <Link
       to={`/catalog/${category}/${brand.slug}`}
-      className="group block bg-white p-6 rounded-card border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+      className="group flex flex-col bg-white rounded-card border border-gray-100 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
     >
-      {/* Превью товаров */}
-      <div className="flex items-center justify-center gap-2 mb-6 h-32">
-        {previewImages.length > 0 ? (
-          previewImages.map((img, idx) => (
-            <div
-              key={idx}
-              className="w-28 h-28 bg-gray-light rounded-xl flex items-center justify-center"
-            >
-              <ImageWithSkeleton
-                src={img}
-                alt=""
-                className="w-full h-full object-contain"
-              />
-            </div>
-          ))
+      <div className="bg-gray-light aspect-[3/4] flex items-center justify-center p-6">
+        {flagshipImage ? (
+          <ImageWithSkeleton
+            src={flagshipImage}
+            alt={flagship.name}
+            className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+          />
         ) : (
-          <div className="w-28 h-28 bg-gray-light rounded-xl flex items-center justify-center">
-            <Package className="w-8 h-8 text-gray-300" />
-          </div>
+          <Package className="w-12 h-12 text-gray-300" />
         )}
       </div>
 
-      {/* Информация */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-xl font-bold text-black group-hover:text-gray-dark transition-colors">
-            {brand.name}
-          </h3>
-          <p className="text-sm text-gray-medium mt-1">
-            {productCount} {productCount === 1 ? 'товар' : productCount < 5 ? 'товара' : 'товаров'}
-          </p>
-          {minPrice > 0 && (
-            <p className="text-sm font-medium text-gray-dark mt-1">
-              от {formatPrice(minPrice)}
-            </p>
-          )}
-        </div>
-        <ChevronRight className="w-5 h-5 text-gray-medium group-hover:text-gray-dark transition-colors" />
+      <div className="p-4">
+        <h3 className="text-lg font-bold text-gray-dark tracking-tight">{displayName}</h3>
+        <p className="text-sm text-gray-medium mt-1">
+          {formatProductCount(productCount)}
+        </p>
+        {minPrice > 0 && (
+          <p className="text-base font-semibold text-gray-dark mt-2">от {formatPrice(minPrice)}</p>
+        )}
       </div>
     </Link>
   )

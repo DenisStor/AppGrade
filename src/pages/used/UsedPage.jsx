@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { SlidersHorizontal, Shield, Clock, CheckCircle } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { Drawer } from '../../components/ui/Drawer'
@@ -7,7 +7,6 @@ import { UsedFilterSidebar } from '../../components/filters/UsedFilterSidebar'
 import { ProductListCard } from '../../components/catalog/ProductListCard'
 import {
   usedProducts,
-  getMinPrice,
   getBrandSlug,
 } from '../../data/products'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
@@ -19,8 +18,30 @@ import {
 } from '../../hooks/useFilterSync'
 import { PRICE } from '../../data/constants'
 import { formatProductCount } from '../../utils/pluralize'
+import { usePageTitle } from '../../hooks/usePageTitle'
+import { useProductFiltering } from '../../hooks/useProductFiltering'
+import { CONDITION_SORT_ORDER } from '../../data/products/used'
 import { Header } from '../../components/Header/Header'
 import { Footer } from '../../components/Footer/Footer'
+
+// Фильтры специфичные для б/у товаров
+const usedExtraFilters = (result, filters) => {
+  if (filters.categories.length) {
+    result = result.filter((p) => filters.categories.includes(p.category))
+  }
+  if (filters.conditions.length) {
+    result = result.filter((p) => filters.conditions.includes(p.condition))
+  }
+  return result
+}
+
+const usedSortNew = (a, b) =>
+  (CONDITION_SORT_ORDER[a.condition] ?? 3) - (CONDITION_SORT_ORDER[b.condition] ?? 3)
+
+const USED_FILTERING_OPTIONS = {
+  extraFilters: usedExtraFilters,
+  sortNew: usedSortNew,
+}
 
 export default function UsedPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -33,58 +54,7 @@ export default function UsedPage() {
     buildUrl
   )
 
-  // Фильтрация товаров
-  const filteredProducts = useMemo(() => {
-    let result = [...usedProducts]
-
-    // Фильтр по цене
-    result = result.filter((product) => {
-      const minPrice = getMinPrice(product)
-      return minPrice >= filters.priceRange[0] && minPrice <= filters.priceRange[1]
-    })
-
-    // Фильтр по категории
-    if (filters.categories.length) {
-      result = result.filter((product) =>
-        filters.categories.includes(product.category)
-      )
-    }
-
-    // Фильтр по состоянию
-    if (filters.conditions.length) {
-      result = result.filter((product) =>
-        filters.conditions.includes(product.condition)
-      )
-    }
-
-    // Фильтр по наличию
-    if (filters.inStock) {
-      result = result.filter((product) =>
-        product.variants.some((v) => v.inStock)
-      )
-    }
-
-    // Сортировка
-    switch (sortBy) {
-      case 'price-asc':
-        result.sort((a, b) => getMinPrice(a) - getMinPrice(b))
-        break
-      case 'price-desc':
-        result.sort((a, b) => getMinPrice(b) - getMinPrice(a))
-        break
-      case 'new':
-        result.sort((a, b) => {
-          // Сначала идеальное, потом отличное, потом хорошее
-          const order = { perfect: 0, excellent: 1, good: 2 }
-          return (order[a.condition] || 3) - (order[b.condition] || 3)
-        })
-        break
-      default:
-        break
-    }
-
-    return result
-  }, [filters, sortBy])
+  const filteredProducts = useProductFiltering(usedProducts, filters, sortBy, USED_FILTERING_OPTIONS)
 
   // Доступные категории
   const availableCategories = useMemo(() => {
@@ -106,10 +76,7 @@ export default function UsedPage() {
     (filters.inStock ? 1 : 0) +
     (filters.priceRange[0] > priceRange[0] || filters.priceRange[1] < priceRange[1] ? 1 : 0)
 
-  // SEO
-  useEffect(() => {
-    document.title = 'Проверенное б/у — купить в APPGRADE'
-  }, [])
+  usePageTitle('Проверенное б/у — купить в APPGRADE')
 
   const breadcrumbs = [
     { label: 'Проверенное б/у' },
@@ -132,7 +99,7 @@ export default function UsedPage() {
           <Breadcrumbs items={breadcrumbs} className="mb-6" />
 
           {/* Hero секция */}
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 lg:p-8 mb-8">
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 lg:p-8 mb-8 rounded-card">
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-3">
               Проверенное б/у
             </h1>

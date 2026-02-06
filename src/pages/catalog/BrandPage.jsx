@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { SlidersHorizontal } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
@@ -11,7 +11,6 @@ import {
   getProductsByCategoryAndBrand,
   getCategoryBySlug,
   getBrandBySlug,
-  getMinPrice,
 } from '../../data/products'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import {
@@ -22,6 +21,34 @@ import {
 } from '../../hooks/useFilterSync'
 import { PRICE } from '../../data/constants'
 import { formatProductCount } from '../../utils/pluralize'
+import { usePageTitle } from '../../hooks/usePageTitle'
+import { useProductFiltering } from '../../hooks/useProductFiltering'
+
+// Фильтры специфичные для страницы бренда
+const brandExtraFilters = (result, filters) => {
+  if (filters.colors.length) {
+    result = result.filter((p) =>
+      p.variants.some((v) => filters.colors.includes(v.color.id))
+    )
+  }
+  if (filters.memory.length) {
+    result = result.filter((p) =>
+      p.variants.some((v) => filters.memory.includes(v.memory))
+    )
+  }
+  return result
+}
+
+const brandSortNew = (a, b) => {
+  const aNew = a.badges?.includes('new') ? 1 : 0
+  const bNew = b.badges?.includes('new') ? 1 : 0
+  return bNew - aNew
+}
+
+const BRAND_FILTERING_OPTIONS = {
+  extraFilters: brandExtraFilters,
+  sortNew: brandSortNew,
+}
 
 export default function BrandPage() {
   const { category, brand } = useParams()
@@ -39,58 +66,7 @@ export default function BrandPage() {
   const brandData = getBrandBySlug(brand)
   const allProducts = getProductsByCategoryAndBrand(category, brand)
 
-  // Фильтрация товаров
-  const filteredProducts = useMemo(() => {
-    let result = [...allProducts]
-
-    // Фильтр по цене
-    result = result.filter((product) => {
-      const minPrice = getMinPrice(product)
-      return minPrice >= filters.priceRange[0] && minPrice <= filters.priceRange[1]
-    })
-
-    // Фильтр по цвету
-    if (filters.colors.length) {
-      result = result.filter((product) =>
-        product.variants.some((v) => filters.colors.includes(v.color.id))
-      )
-    }
-
-    // Фильтр по памяти
-    if (filters.memory.length) {
-      result = result.filter((product) =>
-        product.variants.some((v) => filters.memory.includes(v.memory))
-      )
-    }
-
-    // Фильтр по наличию
-    if (filters.inStock) {
-      result = result.filter((product) =>
-        product.variants.some((v) => v.inStock)
-      )
-    }
-
-    // Сортировка
-    switch (sortBy) {
-      case 'price-asc':
-        result.sort((a, b) => getMinPrice(a) - getMinPrice(b))
-        break
-      case 'price-desc':
-        result.sort((a, b) => getMinPrice(b) - getMinPrice(a))
-        break
-      case 'new':
-        result.sort((a, b) => {
-          const aNew = a.badges?.includes('new') ? 1 : 0
-          const bNew = b.badges?.includes('new') ? 1 : 0
-          return bNew - aNew
-        })
-        break
-      default:
-        break
-    }
-
-    return result
-  }, [allProducts, filters, sortBy])
+  const filteredProducts = useProductFiltering(allProducts, filters, sortBy, BRAND_FILTERING_OPTIONS)
 
   // Доступные опции для фильтров
   const availableColors = useMemo(() => {
@@ -129,12 +105,11 @@ export default function BrandPage() {
     (filters.inStock ? 1 : 0) +
     (filters.priceRange[0] > priceRange[0] || filters.priceRange[1] < priceRange[1] ? 1 : 0)
 
-  // SEO
-  useEffect(() => {
-    if (categoryData && brandData) {
-      document.title = `${brandData.name} ${categoryData.name} — купить в APPGRADE`
-    }
-  }, [categoryData, brandData])
+  usePageTitle(
+    categoryData && brandData
+      ? `${brandData.name} ${categoryData.name} — купить в APPGRADE`
+      : null
+  )
 
   if (!categoryData || !brandData) {
     return (

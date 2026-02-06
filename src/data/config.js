@@ -1,7 +1,9 @@
+export const SITE_URL = 'https://appgrade.ru'
+
 // Контактные данные магазина
 export const CONTACTS = {
-  phone: '+7 (909) 797-31-86',
-  phoneLink: 'tel:+79097973186',
+  phone: '52-56-56',
+  phoneLink: 'tel:525656',
   email: 'info@appgrade.ru',
   city: 'Калининград',
   address: 'проспект Мира, 59',

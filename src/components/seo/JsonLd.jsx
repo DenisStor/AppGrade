@@ -1,4 +1,4 @@
-import { CONTACTS, COMPANY } from '../../data/config'
+import { CONTACTS, COMPANY, SITE_URL } from '../../data/config'
 import { getBrandSlug } from '../../data/products'
 
 export function ProductJsonLd({ product, variant, category, brand }) {
@@ -18,7 +18,7 @@ export function ProductJsonLd({ product, variant, category, brand }) {
     },
     offers: {
       '@type': 'Offer',
-      url: `https://appgrade.ru/catalog/${category}/${brandSlug}/${product.slug}`,
+      url: `${SITE_URL}/catalog/${category}/${brandSlug}/${product.slug}`,
       priceCurrency: 'RUB',
       price: variant.price,
       availability: variant.inStock
@@ -51,13 +51,13 @@ export function BreadcrumbJsonLd({ items = [] }) {
         '@type': 'ListItem',
         position: 1,
         name: 'Главная',
-        item: 'https://appgrade.ru/',
+        item: `${SITE_URL}/`,
       },
       ...items.map((item, index) => ({
         '@type': 'ListItem',
         position: index + 2,
         name: item.label,
-        item: item.href ? `https://appgrade.ru${item.href}` : undefined,
+        item: item.href ? `${SITE_URL}${item.href}` : undefined,
       })),
     ],
   }
@@ -76,8 +76,8 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     name: COMPANY.name,
     legalName: COMPANY.legalName,
-    url: 'https://appgrade.ru',
-    logo: 'https://appgrade.ru/logo.png',
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
     contactPoint: {
       '@type': 'ContactPoint',
       telephone: CONTACTS.phone,
@@ -106,7 +106,7 @@ export function LocalBusinessJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Store',
     name: COMPANY.name,
-    image: 'https://appgrade.ru/logo.png',
+    image: `${SITE_URL}/logo.png`,
     telephone: CONTACTS.phone,
     email: CONTACTS.email,
     address: {

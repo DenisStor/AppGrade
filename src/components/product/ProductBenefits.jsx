@@ -1,20 +1,20 @@
 import { Truck, Shield, CreditCard } from 'lucide-react'
+import { PRODUCT_BENEFITS } from '../../data/benefits'
 
-const BENEFITS = [
-  { icon: Truck, label: 'Бесплатная доставка' },
-  { icon: Shield, label: 'Гарантия 1 год' },
-  { icon: CreditCard, label: 'Рассрочка 0%' },
-]
+const ICON_MAP = { Truck, Shield, CreditCard }
 
 export function ProductBenefits() {
   return (
-    <div className="grid grid-cols-3 gap-4 p-4 bg-gray-light">
-      {BENEFITS.map(({ icon: Icon, label }) => (
-        <div key={label} className="text-center">
-          <Icon className="w-6 h-6 mx-auto mb-2 text-gray-dark" />
-          <p className="text-xs text-gray-medium">{label}</p>
-        </div>
-      ))}
+    <div className="grid grid-cols-3 gap-4 p-4 bg-gray-light rounded-card">
+      {PRODUCT_BENEFITS.map(({ icon, label }) => {
+        const Icon = ICON_MAP[icon]
+        return (
+          <div key={label} className="text-center">
+            <Icon className="w-6 h-6 mx-auto mb-2 text-gray-dark" />
+            <p className="text-xs text-gray-medium">{label}</p>
+          </div>
+        )
+      })}
     </div>
   )
 }

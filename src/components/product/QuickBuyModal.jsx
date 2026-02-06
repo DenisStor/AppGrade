@@ -22,9 +22,8 @@ export function QuickBuyModal({ isOpen, onClose, product, variant }) {
       toast('Заявка отправлена! Мы скоро свяжемся с вами', 'success')
       onClose()
       setForm({ name: '', phone: '' })
-    } catch (error) {
+    } catch {
       toast('Ошибка отправки. Попробуйте позже', 'error')
-      console.error('Ошибка быстрой покупки:', error)
     } finally {
       setIsLoading(false)
     }

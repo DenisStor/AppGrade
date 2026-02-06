@@ -9,7 +9,7 @@ export function ServiceFeatures() {
           {SERVICE_FEATURES.map((feature) => (
             <article
               key={feature.id}
-              className="group bg-white border border-gray-100 shadow-sm overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1"
+              className="group bg-white border border-gray-100 shadow-sm overflow-hidden rounded-card transition-all hover:shadow-xl hover:-translate-y-1"
             >
               <div className="aspect-[3/2] overflow-hidden">
                 <img

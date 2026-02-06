@@ -2,6 +2,8 @@
 // condition: 'perfect' | 'excellent' | 'good'
 // conditionLabel: 'Идеальное' | 'Отличное' | 'Хорошее'
 
+export const CONDITION_SORT_ORDER = { perfect: 0, excellent: 1, good: 2 }
+
 export const usedProducts = [
   {
     id: 'used-iphone-14-pro-max-1',

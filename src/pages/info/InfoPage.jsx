@@ -1,6 +1,9 @@
-import { useParams, Navigate } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+import { useParams } from 'react-router-dom'
 import InfoLayout from '../../layouts/InfoLayout'
 import { INFO_PAGES } from '../../data/infoPages'
+
+const NotFoundPage = lazy(() => import('../NotFoundPage'))
 
 function PolicyContent({ content }) {
   return (
@@ -27,7 +30,11 @@ export default function InfoPage() {
   const page = INFO_PAGES[slug]
 
   if (!page) {
-    return <Navigate to="/" replace />
+    return (
+      <Suspense fallback={null}>
+        <NotFoundPage />
+      </Suspense>
+    )
   }
 
   if (page.content) {

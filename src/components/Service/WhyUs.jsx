@@ -24,7 +24,7 @@ export function WhyUs() {
             return (
               <article
                 key={item.id}
-                className="bg-white p-8 text-center transition-all hover:shadow-lg"
+                className="bg-white p-8 text-center rounded-card transition-all hover:shadow-lg"
               >
                 <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gray-dark flex items-center justify-center">
                   <Icon className="w-8 h-8 text-white" />

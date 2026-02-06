@@ -21,9 +21,8 @@ export function ContactSection() {
       setName('')
       setPhone('')
       setAgreed(false)
-    } catch (error) {
+    } catch {
       toast('Ошибка отправки. Попробуйте позже', 'error')
-      console.error('Ошибка отправки формы:', error)
     } finally {
       setIsLoading(false)
     }

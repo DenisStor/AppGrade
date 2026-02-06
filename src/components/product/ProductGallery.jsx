@@ -39,7 +39,7 @@ export function ProductGallery({ images = [], productName = '' }) {
         modules={[Thumbs, Zoom]}
         thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
         zoom={true}
-        className="aspect-square bg-gray-light overflow-hidden"
+        className="aspect-square bg-gray-light overflow-hidden rounded-2xl"
       >
         {allImages.map((src, index) => (
           <SwiperSlide key={index}>
@@ -66,7 +66,7 @@ export function ProductGallery({ images = [], productName = '' }) {
       >
         {allImages.map((src, index) => (
           <SwiperSlide key={index}>
-            <div className="aspect-square bg-gray-light overflow-hidden cursor-pointer border-2 border-transparent [.swiper-slide-thumb-active_&]:border-gray-300">
+            <div className="aspect-square bg-gray-light overflow-hidden rounded-lg cursor-pointer border-2 border-transparent [.swiper-slide-thumb-active_&]:border-gray-300">
               <ImageWithSkeleton
                 src={src}
                 alt={`Миниатюра ${index + 1}`}

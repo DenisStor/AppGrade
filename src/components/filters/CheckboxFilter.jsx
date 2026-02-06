@@ -1,10 +1,12 @@
+import { useCallback } from 'react'
+
 export function CheckboxFilter({ options = [], selected = [], onChange }) {
-  const toggleOption = (value) => {
+  const toggleOption = useCallback((value) => {
     const updated = selected.includes(value)
       ? selected.filter((v) => v !== value)
       : [...selected, value]
     onChange(updated)
-  }
+  }, [selected, onChange])
 
   return (
     <div className="space-y-2">

@@ -1,10 +1,27 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, X } from 'lucide-react'
 import { SearchDropdown } from './SearchDropdown'
 import { useSearchStore } from '../../stores/useSearchStore'
 import { useDebounce } from '../../hooks/useDebounce'
 import { searchProducts } from '../../data/products'
+
+const SEARCH_VARIANTS = {
+  default: {
+    container: 'relative',
+    form: 'relative',
+    input:
+      'w-full pl-10 pr-10 py-2.5 bg-gray-100 rounded-lg text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-gray-200 transition-all',
+    icon: 'absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-medium',
+  },
+  header: {
+    container: 'relative hidden lg:block',
+    form: 'relative',
+    input:
+      'w-64 pl-10 pr-10 py-2 bg-gray-100 rounded-lg text-sm focus:outline-none focus:w-80 focus:bg-white focus:ring-2 focus:ring-gray-200 transition-all duration-300',
+    icon: 'absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-medium',
+  },
+}
 
 export function SearchInput({ className = '', variant = 'default' }) {
   const navigate = useNavigate()
@@ -53,24 +70,7 @@ export function SearchInput({ className = '', variant = 'default' }) {
     inputRef.current?.focus()
   }
 
-  const variants = {
-    default: {
-      container: 'relative',
-      form: 'relative',
-      input:
-        'w-full pl-10 pr-10 py-2.5 bg-gray-100 rounded-lg text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-gray-200 transition-all',
-      icon: 'absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-medium',
-    },
-    header: {
-      container: 'relative hidden lg:block',
-      form: 'relative',
-      input:
-        'w-64 pl-10 pr-10 py-2 bg-gray-100 rounded-lg text-sm focus:outline-none focus:w-80 focus:bg-white focus:ring-2 focus:ring-gray-200 transition-all duration-300',
-      icon: 'absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-medium',
-    },
-  }
-
-  const v = variants[variant] || variants.default
+  const v = SEARCH_VARIANTS[variant] || SEARCH_VARIANTS.default
 
   return (
     <div ref={containerRef} className={`${v.container} ${className}`}>

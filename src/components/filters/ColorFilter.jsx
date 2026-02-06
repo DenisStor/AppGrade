@@ -1,43 +1,25 @@
-import { Check } from 'lucide-react'
-import { isLightColor } from '../../utils/color'
+import { useCallback } from 'react'
+import { ColorSwatch } from '../ui/ColorSwatch'
 
 export function ColorFilter({ colors = [], selected = [], onChange }) {
-  const toggleColor = (colorId) => {
+  const toggleColor = useCallback((colorId) => {
     const updated = selected.includes(colorId)
       ? selected.filter((c) => c !== colorId)
       : [...selected, colorId]
     onChange(updated)
-  }
+  }, [selected, onChange])
 
   return (
     <div className="flex flex-wrap gap-2">
-      {colors.map((color) => {
-        const isSelected = selected.includes(color.id)
-        const isLight = isLightColor(color.hex)
-
-        return (
-          <button
-            key={color.id}
-            onClick={() => toggleColor(color.id)}
-            className={`relative w-8 h-8 rounded-full transition-all ${
-              isSelected
-                ? 'ring-2 ring-gray-dark ring-offset-2'
-                : 'ring-1 ring-gray-200 hover:ring-gray-300'
-            }`}
-            style={{ backgroundColor: color.hex }}
-            title={color.name}
-            aria-label={`${color.name}${isSelected ? ' (выбран)' : ''}`}
-          >
-            {isSelected && (
-              <Check
-                className={`absolute inset-0 m-auto w-4 h-4 ${
-                  isLight ? 'text-gray-dark' : 'text-white'
-                }`}
-              />
-            )}
-          </button>
-        )
-      })}
+      {colors.map((color) => (
+        <ColorSwatch
+          key={color.id}
+          color={color}
+          selected={selected.includes(color.id)}
+          size="md"
+          onClick={() => toggleColor(color.id)}
+        />
+      ))}
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { usePageTitle } from '../../hooks/usePageTitle'
 import { Header } from '../../components/Header/Header'
 import { Footer } from '../../components/Footer/Footer'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
@@ -8,6 +9,8 @@ import { ImageWithSkeleton } from '../../components/ui/ImageWithSkeleton'
 import { news } from '../../data/news'
 
 export default function BlogPage() {
+  usePageTitle('Блог — APPGRADE')
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
@@ -34,7 +37,7 @@ export default function BlogPage() {
                 to={`/blog/${post.id}`}
                 className="block group"
               >
-                <div className="aspect-[2/1] overflow-hidden mb-4">
+                <div className="aspect-[2/1] overflow-hidden rounded-card mb-4">
                   <ImageWithSkeleton
                     src={post.image}
                     alt={post.title}

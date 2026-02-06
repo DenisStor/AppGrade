@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
+import { usePageTitle } from '../../hooks/usePageTitle'
 import { Header } from '../../components/Header/Header'
 import { Footer } from '../../components/Footer/Footer'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
@@ -11,6 +12,8 @@ import { news } from '../../data/news'
 export default function BlogPostPage() {
   const { id } = useParams()
   const post = news.find(item => item.id === Number(id))
+
+  usePageTitle(post ? `${post.title} — APPGRADE` : 'Статья не найдена — APPGRADE')
 
   if (!post) {
     return (
@@ -54,7 +57,7 @@ export default function BlogPostPage() {
               </h1>
             </div>
 
-            <div className="aspect-[2/1] overflow-hidden mb-10">
+            <div className="aspect-[2/1] overflow-hidden rounded-2xl mb-10">
               <ImageWithSkeleton
                 src={post.image}
                 alt={post.title}
@@ -90,7 +93,7 @@ export default function BlogPostPage() {
                     to={`/blog/${item.id}`}
                     className="block group"
                   >
-                    <div className="aspect-[2/1] overflow-hidden mb-4">
+                    <div className="aspect-[2/1] overflow-hidden rounded-card mb-4">
                       <ImageWithSkeleton
                         src={item.image}
                         alt={item.title}

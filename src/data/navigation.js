@@ -18,7 +18,6 @@ const EXTRA_NAV_LINKS = [
   { label: 'Каталог', href: '/catalog' },
   { label: 'Сервис', href: '/service' },
   { label: 'Блог', href: '/blog' },
-  { label: 'О нас', href: '/about' },
 ]
 
 // Производные (компонуем из базовых)

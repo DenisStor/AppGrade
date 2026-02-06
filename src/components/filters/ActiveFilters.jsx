@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { X } from 'lucide-react'
 import { formatMemory, formatPrice } from '../../data/products'
 import { PRICE } from '../../data/constants'
@@ -14,13 +15,14 @@ export function ActiveFilters({
   onResetAll,
   className = '',
 }) {
-  const hasFilters =
+  const hasFilters = useMemo(() =>
     filters.colors.length > 0 ||
     filters.memory.length > 0 ||
     filters.brands?.length > 0 ||
     filters.inStock ||
     filters.priceRange[0] > 0 ||
     filters.priceRange[1] < PRICE.MAX
+  , [filters])
 
   if (!hasFilters) return null
 

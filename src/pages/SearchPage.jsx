@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { Header } from '../components/Header/Header'
@@ -6,6 +6,8 @@ import { Footer } from '../components/Footer/Footer'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { ProductGrid } from '../components/catalog/ProductGrid'
 import { searchProducts } from '../data/products'
+import { formatProductCount } from '../utils/pluralize'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams()
@@ -15,11 +17,7 @@ export default function SearchPage() {
     return searchProducts(query)
   }, [query])
 
-  useEffect(() => {
-    document.title = query
-      ? `Поиск: ${query} — APPGRADE`
-      : 'Поиск товаров — APPGRADE'
-  }, [query])
+  usePageTitle(query ? `Поиск: ${query} — APPGRADE` : 'Поиск товаров — APPGRADE')
 
   const breadcrumbs = [{ label: 'Поиск' }]
 
@@ -35,12 +33,7 @@ export default function SearchPage() {
           </h1>
           {query && (
             <p className="text-gray-medium mt-2">
-              Найдено {results.length}{' '}
-              {results.length === 1
-                ? 'товар'
-                : results.length < 5
-                ? 'товара'
-                : 'товаров'}
+              Найдено {formatProductCount(results.length)}
             </p>
           )}
         </div>

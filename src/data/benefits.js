@@ -1,3 +1,11 @@
+// Преимущества на карточке товара (ProductBenefits)
+export const PRODUCT_BENEFITS = [
+  { icon: 'Truck', label: 'Бесплатная доставка' },
+  { icon: 'Shield', label: 'Гарантия 1 год' },
+  { icon: 'CreditCard', label: 'Рассрочка 0%' },
+]
+
+// Преимущества на главной (Benefits)
 export const benefits = [
   {
     id: 1,

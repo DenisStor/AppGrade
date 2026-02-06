@@ -1,5 +1,24 @@
 import { useState } from 'react'
 
+const VARIANTS = {
+  primary: 'bg-gray-dark text-white hover:bg-black',
+  secondary: 'bg-gray-dark text-white hover:bg-black',
+  outline: 'border border-gray-dark text-gray-dark hover:bg-gray-dark hover:text-white',
+  'outline-white': 'border border-white text-white hover:bg-white hover:text-gray-dark',
+  white: 'bg-white text-gray-dark hover:bg-gray-100',
+  ghost: 'text-gray-dark hover:bg-gray-100',
+  glass: 'bg-gray-light border border-gray-200/50 text-gray-dark hover:bg-gray-200 shadow-glass hover:shadow-glass-hover',
+  liquid: 'liquid-glass hover:shadow-liquid-hover text-gray-dark',
+}
+
+const SIZES = {
+  sm: 'px-4 py-2 text-sm min-h-[44px]',
+  md: 'px-6 py-3 text-base min-h-[44px]',
+  lg: 'px-8 py-4 text-lg min-h-[48px]',
+}
+
+const LIGHT_RIPPLE_VARIANTS = new Set(['primary', 'secondary', 'outline-white'])
+
 export function Button({
   children,
   variant = 'primary',
@@ -10,26 +29,7 @@ export function Button({
 }) {
   const [ripples, setRipples] = useState([])
 
-  const variants = {
-    primary: 'bg-gray-dark text-white hover:bg-black',
-    secondary: 'bg-gray-dark text-white hover:bg-black',
-    outline: 'border border-gray-dark text-gray-dark hover:bg-gray-dark hover:text-white',
-    'outline-white': 'border border-white text-white hover:bg-white hover:text-gray-dark',
-    white: 'bg-white text-gray-dark hover:bg-gray-100',
-    ghost: 'text-gray-dark hover:bg-gray-100',
-    glass: 'bg-gray-light border border-gray-200/50 text-gray-dark hover:bg-gray-200 shadow-glass hover:shadow-glass-hover',
-    liquid: 'liquid-glass hover:shadow-liquid-hover text-gray-dark',
-  }
-
-  const sizes = {
-    sm: 'px-4 py-2 text-sm min-h-[44px]',
-    md: 'px-6 py-3 text-base min-h-[44px]',
-    lg: 'px-8 py-4 text-lg min-h-[48px]',
-  }
-
-  const rippleColor = ['primary', 'secondary', 'outline-white'].includes(variant)
-    ? 'bg-white/30'
-    : 'bg-gray-dark/20'
+  const rippleColor = LIGHT_RIPPLE_VARIANTS.has(variant) ? 'bg-white/30' : 'bg-gray-dark/20'
 
   const handleClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -52,8 +52,8 @@ export function Button({
         disabled:opacity-50 disabled:cursor-not-allowed
         relative overflow-hidden
         active:scale-95
-        ${variants[variant]}
-        ${sizes[size]}
+        ${VARIANTS[variant]}
+        ${SIZES[size]}
         ${className}
       `}
       onClick={handleClick}

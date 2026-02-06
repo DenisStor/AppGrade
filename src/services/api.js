@@ -10,7 +10,8 @@ export const api = {
    * Оформление заказа
    */
   async submitOrder(data) {
-    console.log('[API] submitOrder:', data)
+    // TODO: заменить заглушку на реальный API
+    // console.log('[API] submitOrder:', data)
     await new Promise(resolve => setTimeout(resolve, API_DELAY))
     return { success: true, orderId: Date.now() }
   },
@@ -19,7 +20,8 @@ export const api = {
    * Быстрая покупка
    */
   async submitQuickBuy(data) {
-    console.log('[API] submitQuickBuy:', data)
+    // TODO: заменить заглушку на реальный API
+    // console.log('[API] submitQuickBuy:', data)
     await new Promise(resolve => setTimeout(resolve, API_DELAY))
     return { success: true, requestId: Date.now() }
   },
@@ -28,7 +30,8 @@ export const api = {
    * Отправка контактной формы
    */
   async submitContactForm(data) {
-    console.log('[API] submitContactForm:', data)
+    // TODO: заменить заглушку на реальный API
+    // console.log('[API] submitContactForm:', data)
     await new Promise(resolve => setTimeout(resolve, API_DELAY))
     return { success: true }
   },
@@ -37,7 +40,8 @@ export const api = {
    * Запись на ремонт
    */
   async submitRepairRequest(data) {
-    console.log('[API] submitRepairRequest:', data)
+    // TODO: заменить заглушку на реальный API
+    // console.log('[API] submitRepairRequest:', data)
     await new Promise(resolve => setTimeout(resolve, API_DELAY))
     return { success: true, requestId: Date.now() }
   },

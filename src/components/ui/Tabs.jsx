@@ -1,5 +1,22 @@
 import { useState } from 'react'
 
+const TAB_VARIANTS = {
+  underline: {
+    container: 'border-b border-gray-200',
+    tab: 'px-4 py-3 text-sm font-medium transition-colors relative',
+    tabActive: 'text-gray-dark',
+    tabInactive: 'text-gray-medium hover:text-gray-dark',
+    indicator: 'absolute bottom-0 left-0 right-0 h-0.5 bg-gray-dark rounded-full',
+  },
+  pills: {
+    container: 'bg-gray-100 p-1 rounded-lg inline-flex',
+    tab: 'px-4 py-2 text-sm font-medium transition-all rounded-md',
+    tabActive: 'bg-white text-gray-dark shadow-sm',
+    tabInactive: 'text-gray-medium hover:text-gray-dark',
+    indicator: '',
+  },
+}
+
 export function Tabs({
   tabs = [],
   defaultTab,
@@ -15,26 +32,7 @@ export function Tabs({
   }
 
   const activeTabData = tabs.find((t) => t.id === activeTab)
-
-  const variants = {
-    underline: {
-      container: 'border-b border-gray-200',
-      tab: 'px-4 py-3 text-sm font-medium transition-colors relative',
-      tabActive: 'text-gray-dark',
-      tabInactive: 'text-gray-medium hover:text-gray-dark',
-      indicator:
-        'absolute bottom-0 left-0 right-0 h-0.5 bg-gray-dark rounded-full',
-    },
-    pills: {
-      container: 'bg-gray-100 p-1 rounded-lg inline-flex',
-      tab: 'px-4 py-2 text-sm font-medium transition-all rounded-md',
-      tabActive: 'bg-white text-gray-dark shadow-sm',
-      tabInactive: 'text-gray-medium hover:text-gray-dark',
-      indicator: '',
-    },
-  }
-
-  const v = variants[variant]
+  const v = TAB_VARIANTS[variant]
 
   return (
     <div className={className}>
