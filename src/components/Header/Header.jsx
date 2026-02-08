@@ -27,6 +27,8 @@ export function Header() {
             <button
               onClick={() => setIsMenuOpen(true)}
               className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/50 hover:backdrop-blur-sm rounded-full transition-all"
+              aria-expanded={isMenuOpen}
+              aria-label="Меню"
             >
               <Menu size={24} />
             </button>

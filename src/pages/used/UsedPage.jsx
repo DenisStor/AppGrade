@@ -1,14 +1,14 @@
 import { useState, useMemo, useCallback } from 'react'
-import { SlidersHorizontal, Shield, Clock, CheckCircle } from 'lucide-react'
+import { Shield, Clock, CheckCircle } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
-import { Drawer } from '../../components/ui/Drawer'
 import { SortDropdown } from '../../components/catalog/SortDropdown'
 import { UsedFilterSidebar } from '../../components/filters/UsedFilterSidebar'
+import { MobileFilterButton } from '../../components/filters/MobileFilterButton'
+import { FilterDrawer } from '../../components/filters/FilterDrawer'
+import { EmptyFilterResults } from '../../components/filters/EmptyFilterResults'
 import { ProductListCard } from '../../components/catalog/ProductListCard'
-import {
-  usedProducts,
-  getBrandSlug,
-} from '../../data/products'
+import { usedProducts } from '../../data/products'
+import { getBrandSlug, getMinPrice } from '../../utils/product'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import {
   useFilterSync,
@@ -21,8 +21,7 @@ import { formatProductCount } from '../../utils/pluralize'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { useProductFiltering } from '../../hooks/useProductFiltering'
 import { CONDITION_SORT_ORDER } from '../../data/products/used'
-import { Header } from '../../components/Header/Header'
-import { Footer } from '../../components/Footer/Footer'
+import { PageLayout } from '../../layouts/PageLayout'
 
 // Фильтры специфичные для б/у товаров
 const usedExtraFilters = (result, filters) => {
@@ -92,112 +91,56 @@ export default function UsedPage() {
   }
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-white">
-        <div className="section-padding py-6 lg:py-10">
-          <Breadcrumbs items={breadcrumbs} className="mb-6" />
+    <PageLayout className="flex-1">
+      <div className="section-padding py-6 lg:py-10">
+        <Breadcrumbs items={breadcrumbs} className="mb-6" />
 
-          {/* Hero секция */}
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 lg:p-8 mb-8 rounded-card">
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-3">
-              Проверенное б/у
-            </h1>
-            <p className="text-gray-medium mb-6 max-w-2xl">
-              Техника Apple и Samsung с гарантией качества. Каждое устройство проходит
-              многоступенчатую проверку и имеет гарантию до 6 месяцев.
+        {/* Hero секция */}
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 lg:p-8 mb-8 rounded-card">
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-3">
+            Проверенное б/у
+          </h1>
+          <p className="text-gray-medium mb-6 max-w-2xl">
+            Техника Apple и Samsung с гарантией качества. Каждое устройство проходит
+            многоступенчатую проверку и имеет гарантию до 6 месяцев.
+          </p>
+          <div className="flex flex-wrap gap-4 lg:gap-6">
+            <div className="flex items-center gap-2 text-sm text-gray-dark">
+              <Shield className="w-5 h-5 text-gray-dark" />
+              <span>Гарантия до 6 мес.</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-dark">
+              <CheckCircle className="w-5 h-5 text-gray-dark" />
+              <span>Проверка качества</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-dark">
+              <Clock className="w-5 h-5 text-gray-dark" />
+              <span>Возврат 14 дней</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between mb-6 lg:mb-8">
+          <div>
+            <p className="text-gray-medium">
+              {formatProductCount(filteredProducts.length)}
             </p>
-            <div className="flex flex-wrap gap-4 lg:gap-6">
-              <div className="flex items-center gap-2 text-sm text-gray-dark">
-                <Shield className="w-5 h-5 text-gray-dark" />
-                <span>Гарантия до 6 мес.</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-dark">
-                <CheckCircle className="w-5 h-5 text-gray-dark" />
-                <span>Проверка качества</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-dark">
-                <Clock className="w-5 h-5 text-gray-dark" />
-                <span>Возврат 14 дней</span>
-              </div>
-            </div>
           </div>
 
-          <div className="flex items-center justify-between mb-6 lg:mb-8">
-            <div>
-              <p className="text-gray-medium">
-                {formatProductCount(filteredProducts.length)}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              {!isDesktop && (
-                <button
-                  onClick={() => setIsFilterOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  <SlidersHorizontal className="w-4 h-4" />
-                  <span className="text-sm font-medium">Фильтры</span>
-                  {activeFiltersCount > 0 && (
-                    <span className="w-5 h-5 bg-gray-dark text-white text-xs rounded-full flex items-center justify-center">
-                      {activeFiltersCount}
-                    </span>
-                  )}
-                </button>
-              )}
-              <SortDropdown value={sortBy} onChange={setSortBy} />
-            </div>
-          </div>
-
-          <div className="flex gap-8">
-            {isDesktop && (
-              <aside className="w-64 flex-shrink-0">
-                <UsedFilterSidebar
-                  filters={filters}
-                  availableCategories={availableCategories}
-                  priceRange={priceRange}
-                  onFilterChange={setFilter}
-                  onReset={resetFilters}
-                />
-              </aside>
+          <div className="flex items-center gap-3">
+            {!isDesktop && (
+              <MobileFilterButton
+                onClick={() => setIsFilterOpen(true)}
+                activeCount={activeFiltersCount}
+              />
             )}
-
-            <div className="flex-1">
-              {filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-                  {filteredProducts.map((product) => {
-                    const { category, brand } = getProductUrl(product)
-                    return (
-                      <ProductListCard
-                        key={product.id}
-                        product={product}
-                        category={category}
-                        brand={brand}
-                      />
-                    )
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-16">
-                  <p className="text-gray-medium mb-4">Товары не найдены</p>
-                  <button
-                    onClick={resetFilters}
-                    className="text-blue-500 hover:underline"
-                  >
-                    Сбросить фильтры
-                  </button>
-                </div>
-              )}
-            </div>
+            <SortDropdown value={sortBy} onChange={setSortBy} />
           </div>
+        </div>
 
-          {!isDesktop && (
-            <Drawer
-              isOpen={isFilterOpen}
-              onClose={() => setIsFilterOpen(false)}
-              title="Фильтры"
-              side="left"
-            >
+        <div className="flex gap-8">
+          {isDesktop && (
+            <aside className="w-64 flex-shrink-0">
               <UsedFilterSidebar
                 filters={filters}
                 availableCategories={availableCategories}
@@ -205,19 +148,46 @@ export default function UsedPage() {
                 onFilterChange={setFilter}
                 onReset={resetFilters}
               />
-              <div className="mt-6 pt-4 border-t border-gray-100">
-                <button
-                  onClick={() => setIsFilterOpen(false)}
-                  className="w-full py-3 bg-gray-dark text-white rounded-lg font-medium hover:bg-gray-dark/90 transition-colors"
-                >
-                  Показать {filteredProducts.length} товаров
-                </button>
-              </div>
-            </Drawer>
+            </aside>
           )}
+
+          <div className="flex-1">
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+                {filteredProducts.map((product) => {
+                  const { category, brand } = getProductUrl(product)
+                  return (
+                    <ProductListCard
+                      key={product.id}
+                      product={product}
+                      category={category}
+                      brand={brand}
+                    />
+                  )
+                })}
+              </div>
+            ) : (
+              <EmptyFilterResults onReset={resetFilters} />
+            )}
+          </div>
         </div>
-      </main>
-      <Footer />
-    </>
+
+        {!isDesktop && (
+          <FilterDrawer
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            filteredCount={filteredProducts.length}
+          >
+            <UsedFilterSidebar
+              filters={filters}
+              availableCategories={availableCategories}
+              priceRange={priceRange}
+              onFilterChange={setFilter}
+              onReset={resetFilters}
+            />
+          </FilterDrawer>
+        )}
+      </div>
+    </PageLayout>
   )
 }

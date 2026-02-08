@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Heart, Share2, Check } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
+import { Skeleton } from '../../components/ui/Skeleton'
 import { Badge, BadgeGroup } from '../../components/ui/Badge'
 import { Tabs } from '../../components/ui/Tabs'
 import { ProductGallery } from '../../components/product/ProductGallery'
@@ -12,7 +13,10 @@ import { QuickBuyModal } from '../../components/product/QuickBuyModal'
 import { RelatedProducts } from '../../components/product/RelatedProducts'
 import { RecentlyViewed } from '../../components/product/RecentlyViewed'
 import { ProductJsonLd, BreadcrumbJsonLd } from '../../components/seo/JsonLd'
-import { getProductBySlug, getCategoryBySlug, getBrandBySlug, formatPrice, formatMemory } from '../../data/products'
+import { catalogApi } from '../../services/catalogApi'
+import { useCatalogQuery } from '../../hooks/useCatalogQuery'
+import { mapProduct } from '../../services/productMapper'
+import { formatPrice, formatMemory } from '../../utils/product'
 import { useFavoritesStore } from '../../stores/useFavoritesStore'
 import { useRecentlyViewedStore } from '../../stores/useRecentlyViewedStore'
 import { useCartStore } from '../../stores/useCartStore'
@@ -21,9 +25,13 @@ import { usePageTitle } from '../../hooks/usePageTitle'
 
 export default function ProductPage() {
   const { category, brand, slug } = useParams()
-  const product = getProductBySlug(slug)
-  const categoryData = getCategoryBySlug(category)
-  const brandData = getBrandBySlug(brand)
+
+  const { data: rawProduct, loading } = useCatalogQuery(
+    () => catalogApi.getProduct(slug),
+    [slug]
+  )
+
+  const product = useMemo(() => mapProduct(rawProduct), [rawProduct])
 
   const { toggleItem, isFavorite } = useFavoritesStore()
   const { addItem } = useRecentlyViewedStore()
@@ -44,7 +52,6 @@ export default function ProductPage() {
     availableMemoryForColor,
   } = useProductVariant(product)
 
-  // Добавление в недавно просмотренные
   useEffect(() => {
     if (product) addItem(product.id)
   }, [product, addItem])
@@ -55,6 +62,23 @@ export default function ProductPage() {
     return `${product.name}${memoryPart} — купить в APPGRADE`
   }, [product, currentVariant])
   usePageTitle(pageTitle)
+
+  if (loading) {
+    return (
+      <div className="section-padding py-6 lg:py-10">
+        <Skeleton className="h-6 w-64 mb-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          <Skeleton className="aspect-square rounded-3xl" />
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-3/4" />
+            <Skeleton className="h-6 w-1/2" />
+            <Skeleton className="h-12 w-1/3" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!product) {
     return (
@@ -69,8 +93,8 @@ export default function ProductPage() {
 
   const breadcrumbs = [
     { label: 'Каталог', href: '/catalog' },
-    { label: categoryData?.name || category, href: `/catalog/${category}` },
-    { label: brandData?.name || brand, href: `/catalog/${category}/${brand}` },
+    { label: product.categoryName || category, href: `/catalog/${category}` },
+    { label: product.brand || brand, href: `/catalog/${category}/${brand}` },
     { label: product.name },
   ]
 
@@ -90,10 +114,7 @@ export default function ProductPage() {
       content: (
         <div className="space-y-3">
           {Object.entries(product.specs).map(([key, value]) => (
-            <div
-              key={key}
-              className="flex justify-between py-2 border-b border-gray-100 last:border-0"
-            >
+            <div key={key} className="flex justify-between py-2 border-b border-gray-100 last:border-0">
               <span className="text-gray-medium capitalize">{key}</span>
               <span className="text-gray-dark font-medium">{value}</span>
             </div>
@@ -114,7 +135,6 @@ export default function ProductPage() {
         <ProductGallery images={currentVariant?.images || []} productName={product.name} />
 
         <div>
-          {/* Заголовок и действия */}
           <div className="flex items-start justify-between gap-4 mb-4">
             <div>
               <BadgeGroup badges={product.badges} className="mb-2" />
@@ -140,17 +160,18 @@ export default function ProductPage() {
               >
                 <Heart className="w-5 h-5" fill={isFavorite(product.id) ? 'currentColor' : 'none'} />
               </button>
-              <button
-                onClick={() => navigator.share?.({ url: window.location.href })}
-                className="p-3 rounded-full bg-gray-100 text-gray-dark hover:bg-gray-200 transition-colors"
-                aria-label="Поделиться"
-              >
-                <Share2 className="w-5 h-5" />
-              </button>
+              {navigator.share && (
+                <button
+                  onClick={() => navigator.share({ url: window.location.href, title: product.name })}
+                  className="p-3 rounded-full bg-gray-100 text-gray-dark hover:bg-gray-200 transition-colors"
+                  aria-label="Поделиться"
+                >
+                  <Share2 className="w-5 h-5" />
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Цена */}
           <div className="mb-6">
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-bold text-gray-dark">
@@ -205,10 +226,13 @@ export default function ProductPage() {
         <Tabs tabs={tabs} defaultTab="description" />
       </div>
 
-      <RelatedProducts productId={product.id} className="mt-12 lg:mt-16" />
+      <RelatedProducts
+        relatedProducts={product._relatedProducts}
+        className="mt-12 lg:mt-16"
+      />
       <RecentlyViewed currentProductId={product.id} className="mt-12 lg:mt-16" />
 
-      <QuickBuyModal isOpen={isQuickBuyOpen} onClose={() => setIsQuickBuyOpen(false)} />
+      <QuickBuyModal isOpen={isQuickBuyOpen} onClose={() => setIsQuickBuyOpen(false)} product={product} variant={currentVariant} />
     </div>
   )
 }

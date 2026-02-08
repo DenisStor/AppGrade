@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
-import { getMinPrice, formatPrice, getBrandSlug } from '../../data/products'
+import { getMinPrice, formatPrice, getBrandSlug } from '../../utils/product'
 
 export function SearchDropdown({ results = [], query, onClose }) {
   const navigate = useNavigate()

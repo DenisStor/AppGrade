@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { getAvailableColors, getAvailableMemory } from '../data/products'
+import { getAvailableColors, getAvailableMemory } from '../utils/product'
 
 export function useProductVariant(product) {
   const [selectedColor, setSelectedColor] = useState(null)
@@ -45,8 +45,8 @@ export function useProductVariant(product) {
   const handleColorChange = (colorId) => {
     setSelectedColor(colorId)
     const variantsForColor = product.variants.filter((v) => v.color.id === colorId)
-    if (!variantsForColor.find((v) => v.memory === selectedMemory)) {
-      setSelectedMemory(variantsForColor[0]?.memory)
+    if (variantsForColor.length > 0 && !variantsForColor.find((v) => v.memory === selectedMemory)) {
+      setSelectedMemory(variantsForColor[0].memory)
     }
   }
 

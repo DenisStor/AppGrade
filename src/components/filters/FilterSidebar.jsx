@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { RangeSlider } from '../ui/RangeSlider'
 import { CheckboxFilter } from './CheckboxFilter'
-import { formatMemory } from '../../data/products'
+import { formatMemory } from '../../utils/product'
 import { PRICE } from '../../data/constants'
 
 export function FilterSidebar({

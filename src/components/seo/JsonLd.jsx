@@ -1,5 +1,5 @@
 import { CONTACTS, COMPANY, SITE_URL } from '../../data/config'
-import { getBrandSlug } from '../../data/products'
+import { getBrandSlug } from '../../utils/product'
 
 export function ProductJsonLd({ product, variant, category, brand }) {
   if (!product || !variant) return null
@@ -30,6 +30,8 @@ export function ProductJsonLd({ product, variant, category, brand }) {
       },
     },
     sku: variant.id,
+    ...(product.mpn && { mpn: product.mpn }),
+    ...(product.gtin13 && { gtin13: product.gtin13 }),
   }
 
   return (

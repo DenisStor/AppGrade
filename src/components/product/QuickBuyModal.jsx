@@ -16,8 +16,9 @@ export function QuickBuyModal({ isOpen, onClose, product, variant }) {
       await api.submitQuickBuy({
         name: form.name,
         phone: form.phone,
-        productId: product?.id,
-        variantId: variant?.id,
+        productName: product?.name,
+        variantInfo: [variant?.color?.name, variant?.memory && `${variant.memory} ГБ`].filter(Boolean).join(', ') || undefined,
+        productId: product?._dbId,
       })
       toast('Заявка отправлена! Мы скоро свяжемся с вами', 'success')
       onClose()

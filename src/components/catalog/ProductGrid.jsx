@@ -1,5 +1,5 @@
 import { ProductListCard } from './ProductListCard'
-import { getBrandSlug } from '../../data/products'
+import { getBrandSlug } from '../../utils/product'
 
 export function ProductGrid({ products = [], category, brand, className = '' }) {
   if (!products.length) return null

@@ -50,6 +50,7 @@ export function Button({
         font-semibold rounded-btn
         transition-all duration-200
         disabled:opacity-50 disabled:cursor-not-allowed
+        focus-visible:ring-2 focus-visible:ring-gray-dark focus-visible:ring-offset-2
         relative overflow-hidden
         active:scale-95
         ${VARIANTS[variant]}

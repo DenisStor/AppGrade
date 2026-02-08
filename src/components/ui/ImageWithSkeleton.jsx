@@ -12,6 +12,7 @@ export function ImageWithSkeleton({ src, alt, className = '', skeletonClassName 
       <img
         src={src}
         alt={alt}
+        loading="lazy"
         className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
         onLoad={() => setIsLoaded(true)}
       />

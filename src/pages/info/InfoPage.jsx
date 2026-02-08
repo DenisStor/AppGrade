@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { useParams } from 'react-router-dom'
 import InfoLayout from '../../layouts/InfoLayout'
+import { usePageTitle } from '../../hooks/usePageTitle'
 import { INFO_PAGES } from '../../data/infoPages'
 
 const NotFoundPage = lazy(() => import('../NotFoundPage'))
@@ -28,6 +29,8 @@ function PolicyContent({ content }) {
 export default function InfoPage() {
   const { slug } = useParams()
   const page = INFO_PAGES[slug]
+
+  usePageTitle(page ? `${page.title} — APPGRADE` : null)
 
   if (!page) {
     return (

@@ -1,16 +1,16 @@
 import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { ShoppingBag } from 'lucide-react'
-import { Header } from '../../components/Header/Header'
-import { Footer } from '../../components/Footer/Footer'
 import { Button } from '../../components/ui/Button'
 import { Modal } from '../../components/ui/Modal'
 import { CartItem } from '../../components/cart/CartItem'
 import { CartRecommendations } from '../../components/cart/CartRecommendations'
 import { useCartStore } from '../../stores/useCartStore'
-import { formatPrice } from '../../data/products'
+import { formatPrice } from '../../utils/product'
 import { useToast } from '../../hooks/useToast'
+import { usePageTitle } from '../../hooks/usePageTitle'
 import { api } from '../../services/api'
+import { PageLayout } from '../../layouts/PageLayout'
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore()
@@ -18,6 +18,8 @@ export default function CartPage() {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
   const [orderForm, setOrderForm] = useState({ name: '', phone: '' })
   const [isOrderSuccess, setIsOrderSuccess] = useState(false)
+
+  usePageTitle('Корзина — APPGRADE')
 
   const handleOrderSubmit = useCallback(async (e) => {
     e.preventDefault()
@@ -30,6 +32,7 @@ export default function CartPage() {
           variantId: i.variantId,
           quantity: i.quantity,
           price: i.price,
+          name: i.name,
         })),
         total: getTotal(),
       })
@@ -48,119 +51,111 @@ export default function CartPage() {
 
   if (items.length === 0 && !isOrderSuccess) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center section-padding py-20">
-            <ShoppingBag className="w-20 h-20 mx-auto mb-6 text-gray-300" />
-            <h1 className="text-2xl font-bold text-gray-dark mb-3">
-              Корзина пуста
-            </h1>
-            <p className="text-gray-medium mb-8 max-w-md mx-auto">
-              Добавьте товары из каталога, чтобы оформить заказ
-            </p>
-            <Link to="/catalog">
-              <Button variant="primary" size="lg">
-                Перейти в каталог
-              </Button>
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <PageLayout className="flex-1 flex items-center justify-center">
+        <div className="text-center section-padding py-20">
+          <ShoppingBag className="w-20 h-20 mx-auto mb-6 text-gray-300" />
+          <h1 className="text-2xl font-bold text-gray-dark mb-3">
+            Корзина пуста
+          </h1>
+          <p className="text-gray-medium mb-8 max-w-md mx-auto">
+            Добавьте товары из каталога, чтобы оформить заказ
+          </p>
+          <Link to="/catalog">
+            <Button variant="primary" size="lg">
+              Перейти в каталог
+            </Button>
+          </Link>
+        </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <Header />
-      <main className="flex-1 section-padding py-8 lg:py-12">
-        <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-8">
-          Корзина
-        </h1>
+    <PageLayout className="flex-1 section-padding py-8 lg:py-12">
+      <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-8">
+        Корзина
+      </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Товары */}
-          <div className="lg:col-span-2 order-1">
-            <div className="space-y-4">
-              {items.map((item) => (
-                <CartItem
-                  key={item.id}
-                  item={item}
-                  onRemove={() => removeItem(item.id)}
-                  onUpdateQuantity={(qty) => updateQuantity(item.id, qty)}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={clearCart}
-              className="mt-4 text-sm text-gray-medium hover:text-red-500 transition-colors"
-            >
-              Очистить корзину
-            </button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Товары */}
+        <div className="lg:col-span-2 order-1">
+          <div className="space-y-4">
+            {items.map((item) => (
+              <CartItem
+                key={item.id}
+                item={item}
+                onRemove={() => removeItem(item.id)}
+                onUpdateQuantity={(qty) => updateQuantity(item.id, qty)}
+              />
+            ))}
           </div>
 
-          {/* Итого - на мобильном второй, на десктопе справа на всю высоту */}
-          <div className="lg:col-span-1 lg:row-span-2 order-2">
-            <div className="bg-gray-light p-6 rounded-card sticky top-24">
-              <h2 className="text-lg font-semibold text-gray-dark mb-4">
-                Итого
-              </h2>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-medium">
-                    Товары ({items.reduce((sum, i) => sum + i.quantity, 0)} шт.)
-                  </span>
-                  <span className="text-gray-dark font-medium">
-                    {formatPrice(getTotal())}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-medium">Доставка</span>
-                  <span className="text-green-600 font-medium">Бесплатно</span>
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 pt-4 mb-6">
-                <div className="flex justify-between">
-                  <span className="text-lg font-semibold text-gray-dark">
-                    К оплате
-                  </span>
-                  <span className="text-xl font-bold text-gray-dark">
-                    {formatPrice(getTotal())}
-                  </span>
-                </div>
-              </div>
-
-              <Button
-                variant="primary"
-                size="lg"
-                className="w-full"
-                onClick={() => setIsOrderModalOpen(true)}
-              >
-                Оформить заказ
-              </Button>
-
-              <p className="text-xs text-gray-medium text-center mt-4">
-                Нажимая кнопку, вы соглашаетесь с{' '}
-                <Link to="/terms" className="underline hover:text-gray-dark">
-                  условиями
-                </Link>
-              </p>
-            </div>
-          </div>
-
-          {/* Рекомендации - на мобильном третий, на десктопе под товарами */}
-          {items.length > 0 && (
-            <div className="lg:col-span-2 order-3">
-              <CartRecommendations cartItems={items} />
-            </div>
-          )}
+          <button
+            onClick={clearCart}
+            className="mt-4 text-sm text-gray-medium hover:text-red-500 transition-colors"
+          >
+            Очистить корзину
+          </button>
         </div>
-      </main>
-      <Footer />
+
+        {/* Итого - на мобильном второй, на десктопе справа на всю высоту */}
+        <div className="lg:col-span-1 lg:row-span-2 order-2">
+          <div className="bg-gray-light p-6 rounded-card sticky top-24">
+            <h2 className="text-lg font-semibold text-gray-dark mb-4">
+              Итого
+            </h2>
+
+            <div className="space-y-3 mb-6">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-medium">
+                  Товары ({items.reduce((sum, i) => sum + i.quantity, 0)} шт.)
+                </span>
+                <span className="text-gray-dark font-medium">
+                  {formatPrice(getTotal())}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-medium">Доставка</span>
+                <span className="text-green-600 font-medium">Бесплатно</span>
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 pt-4 mb-6">
+              <div className="flex justify-between">
+                <span className="text-lg font-semibold text-gray-dark">
+                  К оплате
+                </span>
+                <span className="text-xl font-bold text-gray-dark">
+                  {formatPrice(getTotal())}
+                </span>
+              </div>
+            </div>
+
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full"
+              onClick={() => setIsOrderModalOpen(true)}
+            >
+              Оформить заказ
+            </Button>
+
+            <p className="text-xs text-gray-medium text-center mt-4">
+              Нажимая кнопку, вы соглашаетесь с{' '}
+              <Link to="/terms" className="underline hover:text-gray-dark">
+                условиями
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Рекомендации - на мобильном третий, на десктопе под товарами */}
+        {items.length > 0 && (
+          <div className="lg:col-span-2 order-3">
+            <CartRecommendations cartItems={items} />
+          </div>
+        )}
+      </div>
 
       {/* Модалка оформления заказа */}
       <Modal
@@ -239,6 +234,6 @@ export default function CartPage() {
           </form>
         )}
       </Modal>
-    </div>
+    </PageLayout>
   )
 }

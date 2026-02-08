@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { X } from 'lucide-react'
-import { formatMemory, formatPrice } from '../../data/products'
+import { formatMemory, formatPrice } from '../../utils/product'
 import { PRICE } from '../../data/constants'
 
 export function ActiveFilters({

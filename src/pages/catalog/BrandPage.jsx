@@ -1,17 +1,18 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { SlidersHorizontal } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
-import { Drawer } from '../../components/ui/Drawer'
+import { Skeleton } from '../../components/ui/Skeleton'
 import { ProductGrid } from '../../components/catalog/ProductGrid'
 import { SortDropdown } from '../../components/catalog/SortDropdown'
 import { FilterSidebar } from '../../components/filters/FilterSidebar'
 import { ActiveFilters } from '../../components/filters/ActiveFilters'
-import {
-  getProductsByCategoryAndBrand,
-  getCategoryBySlug,
-  getBrandBySlug,
-} from '../../data/products'
+import { MobileFilterButton } from '../../components/filters/MobileFilterButton'
+import { FilterDrawer } from '../../components/filters/FilterDrawer'
+import { EmptyFilterResults } from '../../components/filters/EmptyFilterResults'
+import { catalogApi } from '../../services/catalogApi'
+import { useCatalogQuery } from '../../hooks/useCatalogQuery'
+import { mapProducts } from '../../services/productMapper'
+import { getMinPrice, getAvailableColorsFromProducts, getAvailableMemoryFromProducts } from '../../utils/product'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import {
   useFilterSync,
@@ -24,7 +25,6 @@ import { formatProductCount } from '../../utils/pluralize'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { useProductFiltering } from '../../hooks/useProductFiltering'
 
-// Фильтры специфичные для страницы бренда
 const brandExtraFilters = (result, filters) => {
   if (filters.colors.length) {
     result = result.filter((p) =>
@@ -62,36 +62,29 @@ export default function BrandPage() {
     buildUrl
   )
 
-  const categoryData = getCategoryBySlug(category)
-  const brandData = getBrandBySlug(brand)
-  const allProducts = getProductsByCategoryAndBrand(category, brand)
+  const { data: rawProducts, loading, error } = useCatalogQuery(
+    () => catalogApi.getProducts({ category, brand }),
+    [category, brand]
+  )
+
+  const { data: categoryBrandsData } = useCatalogQuery(
+    () => catalogApi.getCategoryBrands(category),
+    [category]
+  )
+
+  const allProducts = useMemo(() => mapProducts(rawProducts), [rawProducts])
+
+  const categoryName = rawProducts?.[0]?.category_name
+    || categoryBrandsData?.category?.name
+    || category
+  const brandName = rawProducts?.[0]?.brand_name
+    || categoryBrandsData?.brands?.find(b => b.slug === brand)?.name
+    || brand
 
   const filteredProducts = useProductFiltering(allProducts, filters, sortBy, BRAND_FILTERING_OPTIONS)
 
-  // Доступные опции для фильтров
-  const availableColors = useMemo(() => {
-    const colorMap = new Map()
-    allProducts.forEach((p) => {
-      p.variants.forEach((v) => {
-        if (!colorMap.has(v.color.id)) {
-          colorMap.set(v.color.id, v.color)
-        }
-      })
-    })
-    return Array.from(colorMap.values())
-  }, [allProducts])
-
-  const availableMemory = useMemo(() => {
-    const memorySet = new Set()
-    allProducts.forEach((p) => {
-      p.variants.forEach((v) => {
-        if (v.memory !== null && v.memory !== undefined) {
-          memorySet.add(v.memory)
-        }
-      })
-    })
-    return Array.from(memorySet).sort((a, b) => a - b)
-  }, [allProducts])
+  const availableColors = useMemo(() => getAvailableColorsFromProducts(allProducts), [allProducts])
+  const availableMemory = useMemo(() => getAvailableMemoryFromProducts(allProducts), [allProducts])
 
   const priceRange = useMemo(() => {
     if (!allProducts.length) return [0, PRICE.MAX]
@@ -106,17 +99,27 @@ export default function BrandPage() {
     (filters.priceRange[0] > priceRange[0] || filters.priceRange[1] < priceRange[1] ? 1 : 0)
 
   usePageTitle(
-    categoryData && brandData
-      ? `${brandData.name} ${categoryData.name} — купить в APPGRADE`
+    allProducts.length
+      ? `${brandName} ${categoryName} — купить в APPGRADE`
       : null
   )
 
-  if (!categoryData || !brandData) {
+  if (error) {
     return (
       <div className="section-padding py-20 text-center">
-        <h1 className="text-2xl font-bold text-gray-dark mb-4">
-          {!categoryData ? 'Категория не найдена' : 'Бренд не найден'}
-        </h1>
+        <p className="text-red-500 text-lg mb-2">Ошибка загрузки товаров</p>
+        <p className="text-gray-medium text-sm mb-4">{error}</p>
+        <Link to="/catalog" className="text-blue-500 hover:underline">
+          Вернуться в каталог
+        </Link>
+      </div>
+    )
+  }
+
+  if (!loading && !allProducts.length && !rawProducts?.length) {
+    return (
+      <div className="section-padding py-20 text-center">
+        <h1 className="text-2xl font-bold text-gray-dark mb-4">Товары не найдены</h1>
         <Link to="/catalog" className="text-blue-500 hover:underline">
           Вернуться в каталог
         </Link>
@@ -126,8 +129,8 @@ export default function BrandPage() {
 
   const breadcrumbs = [
     { label: 'Каталог', href: '/catalog' },
-    { label: categoryData.name, href: `/catalog/${category}` },
-    { label: brandData.name },
+    { label: categoryName, href: `/catalog/${category}` },
+    { label: brandName },
   ]
 
   return (
@@ -137,7 +140,7 @@ export default function BrandPage() {
       <div className="flex items-center justify-between mb-6 lg:mb-8">
         <div>
           <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark">
-            {brandData.name} {categoryData.name}
+            {brandName} {categoryName}
           </h1>
           <p className="text-gray-medium mt-1">
             {formatProductCount(filteredProducts.length)}
@@ -146,18 +149,10 @@ export default function BrandPage() {
 
         <div className="flex items-center gap-3">
           {!isDesktop && (
-            <button
+            <MobileFilterButton
               onClick={() => setIsFilterOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              <span className="text-sm font-medium">Фильтры</span>
-              {activeFiltersCount > 0 && (
-                <span className="w-5 h-5 bg-gray-dark text-white text-xs rounded-full flex items-center justify-center">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </button>
+              activeCount={activeFiltersCount}
+            />
           )}
           <SortDropdown value={sortBy} onChange={setSortBy} />
         </div>
@@ -173,7 +168,7 @@ export default function BrandPage() {
         onRemoveMemory={(memory) =>
           setFilter('memory', filters.memory.filter((m) => m !== memory))
         }
-        onRemoveBrand={() => {}} // Не используется — бренд в URL
+        onRemoveBrand={() => {}}
         onResetPrice={() => setFilter('priceRange', [priceRange[0], priceRange[1]])}
         onResetStock={() => setFilter('inStock', false)}
         onResetAll={resetFilters}
@@ -185,7 +180,7 @@ export default function BrandPage() {
           <aside className="w-64 flex-shrink-0">
             <FilterSidebar
               filters={filters}
-              availableBrands={[]} // Бренд уже выбран
+              availableBrands={[]}
               availableColors={availableColors}
               availableMemory={availableMemory}
               priceRange={priceRange}
@@ -197,28 +192,25 @@ export default function BrandPage() {
         )}
 
         <div className="flex-1">
-          {filteredProducts.length > 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="aspect-[3/4] rounded-3xl" />
+              ))}
+            </div>
+          ) : filteredProducts.length > 0 ? (
             <ProductGrid products={filteredProducts} category={category} brand={brand} />
           ) : (
-            <div className="text-center py-16">
-              <p className="text-gray-medium mb-4">Товары не найдены</p>
-              <button
-                onClick={resetFilters}
-                className="text-blue-500 hover:underline"
-              >
-                Сбросить фильтры
-              </button>
-            </div>
+            <EmptyFilterResults onReset={resetFilters} />
           )}
         </div>
       </div>
 
       {!isDesktop && (
-        <Drawer
+        <FilterDrawer
           isOpen={isFilterOpen}
           onClose={() => setIsFilterOpen(false)}
-          title="Фильтры"
-          side="left"
+          filteredCount={filteredProducts.length}
         >
           <FilterSidebar
             filters={filters}
@@ -230,15 +222,7 @@ export default function BrandPage() {
             onReset={resetFilters}
             hideBrandFilter
           />
-          <div className="mt-6 pt-4 border-t border-gray-100">
-            <button
-              onClick={() => setIsFilterOpen(false)}
-              className="w-full py-3 bg-gray-dark text-white rounded-lg font-medium hover:bg-gray-dark/90 transition-colors"
-            >
-              Показать {filteredProducts.length} товаров
-            </button>
-          </div>
-        </Drawer>
+        </FilterDrawer>
       )}
     </div>
   )

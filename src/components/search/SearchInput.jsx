@@ -1,10 +1,11 @@
-import { useRef, useEffect, useMemo } from 'react'
+import { useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, X } from 'lucide-react'
 import { SearchDropdown } from './SearchDropdown'
 import { useSearchStore } from '../../stores/useSearchStore'
 import { useDebounce } from '../../hooks/useDebounce'
-import { searchProducts } from '../../data/products'
+import { catalogApi } from '../../services/catalogApi'
+import { mapProducts } from '../../services/productMapper'
 
 const SEARCH_VARIANTS = {
   default: {
@@ -33,12 +34,19 @@ export function SearchInput({ className = '', variant = 'default' }) {
 
   const debouncedQuery = useDebounce(query, 300)
 
-  // Поиск при изменении запроса
+  // Поиск при изменении запроса (через API)
   useEffect(() => {
     if (debouncedQuery.trim().length >= 2) {
-      const searchResults = searchProducts(debouncedQuery)
-      setResults(searchResults)
-      setIsOpen(true)
+      const controller = new AbortController()
+      catalogApi.search(debouncedQuery, { signal: controller.signal })
+        .then(raw => {
+          setResults(mapProducts(raw))
+          setIsOpen(true)
+        })
+        .catch(err => {
+          if (err.name !== 'AbortError') console.error('Search:', err.message)
+        })
+      return () => controller.abort()
     } else {
       setResults([])
       setIsOpen(false)

@@ -1,6 +1,6 @@
 import { Minus, Plus, Trash2 } from 'lucide-react'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
-import { formatPrice, formatMemory } from '../../data/products'
+import { formatPrice, formatMemory } from '../../utils/product'
 
 export function CartItem({ item, onRemove, onUpdateQuantity }) {
   const memoryLabel = item.memory ? formatMemory(item.memory) : ''

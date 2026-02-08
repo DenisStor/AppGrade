@@ -7,7 +7,6 @@ export const REDIRECTS = [
   { from: '/airpods', to: '/catalog/headphones' },
   { from: '/accessories', to: '/catalog/accessories' },
   { from: '/vision', to: '/catalog/accessories' },
-  { from: '/used', to: '/catalog/smartphones' },
   { from: '/samsung', to: '/catalog/smartphones' },
   { from: '/dyson', to: '/catalog/hairdryers' },
   // Старые URL каталога

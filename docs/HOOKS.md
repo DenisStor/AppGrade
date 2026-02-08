@@ -14,6 +14,9 @@
 | [useToast](#usetoast) | Уведомления |
 | [useReducedMotion](#usereducedmotion) | Prefers-reduced-motion |
 | [useFilterSync](#usefiltersync) | Синхронизация фильтров с URL |
+| [useCatalogQuery](#usecatalogquery) | GET-запросы с loading/error/refetch |
+| [usePageTitle](#usepagetitle) | Управление `<title>` страницы |
+| [useProductFiltering](#useproductfiltering) | Фильтрация и сортировка товаров |
 
 ---
 
@@ -461,6 +464,146 @@ function BrandPage() {
 
 ---
 
+## useCatalogQuery
+
+Универсальный хук для GET-запросов к API каталога с управлением loading/error.
+
+**Путь:** `src/hooks/useCatalogQuery.js`
+
+### Сигнатура
+
+```js
+const { data, loading, error, refetch } = useCatalogQuery(fetcher, deps)
+```
+
+### Параметры
+
+| Параметр | Тип | По умолчанию | Описание |
+|----------|-----|--------------|----------|
+| `fetcher` | function | — | Async-функция, возвращающая данные |
+| `deps` | array | `[]` | Зависимости для перезапроса |
+
+### Возвращает
+
+| Свойство | Тип | Описание |
+|----------|-----|----------|
+| `data` | any | Результат запроса |
+| `loading` | boolean | Идёт ли загрузка |
+| `error` | string\|null | Текст ошибки |
+| `refetch` | function | Повторный запрос |
+
+### Пример
+
+```jsx
+import { useCatalogQuery } from '../hooks/useCatalogQuery'
+import { catalogApi } from '../services/catalogApi'
+
+function CategoryPage({ slug }) {
+  const { data, loading, error } = useCatalogQuery(
+    () => catalogApi.getCategoryBrands(slug),
+    [slug]
+  )
+
+  if (loading) return <Skeleton />
+  if (error) return <p>Ошибка: {error}</p>
+  return <BrandList brands={data.brands} />
+}
+```
+
+### Особенности
+
+- Автоматическая отмена при размонтировании (mountedRef)
+- Если `fetcher` равен `null/undefined`, сбрасывает data и не загружает
+
+---
+
+## usePageTitle
+
+Устанавливает `document.title` при монтировании и изменении.
+
+**Путь:** `src/hooks/usePageTitle.js`
+
+### Сигнатура
+
+```js
+usePageTitle(title)
+```
+
+### Параметры
+
+| Параметр | Тип | Описание |
+|----------|-----|----------|
+| `title` | string | Заголовок страницы |
+
+### Пример
+
+```jsx
+import { usePageTitle } from '../hooks/usePageTitle'
+
+function ProductPage({ product }) {
+  usePageTitle(`${product.name} — AppGrade`)
+  return <div>...</div>
+}
+```
+
+---
+
+## useProductFiltering
+
+Мемоизированная фильтрация и сортировка массива товаров.
+
+**Путь:** `src/hooks/useProductFiltering.js`
+
+### Сигнатура
+
+```js
+const filteredProducts = useProductFiltering(products, filters, sortBy, options)
+```
+
+### Параметры
+
+| Параметр | Тип | По умолчанию | Описание |
+|----------|-----|--------------|----------|
+| `products` | array | — | Исходный массив товаров |
+| `filters` | object | — | Объект фильтров (`priceRange`, `inStock` и др.) |
+| `sortBy` | string | — | Сортировка: `price-asc`, `price-desc`, `new` |
+| `options` | object | `{}` | Доп. опции |
+| `options.extraFilters` | function | — | `(products, filters) → products[]` — кастомные фильтры |
+| `options.sortNew` | function | — | Функция сортировки для `'new'` |
+
+### Возвращает
+
+| Тип | Описание |
+|-----|----------|
+| array | Отфильтрованный и отсортированный массив товаров |
+
+### Пример
+
+```jsx
+import { useProductFiltering } from '../hooks/useProductFiltering'
+
+function BrandPage({ products, filters, sortBy }) {
+  const filtered = useProductFiltering(products, filters, sortBy, {
+    extraFilters: (items, f) => {
+      if (f.memory.length) {
+        return items.filter(p => p.variants.some(v => f.memory.includes(v.memory)))
+      }
+      return items
+    },
+  })
+
+  return <ProductGrid products={filtered} />
+}
+```
+
+### Особенности
+
+- Обёрнут в `useMemo` для оптимизации
+- Встроенные фильтры: по цене (`priceRange`), наличию (`inStock`)
+- `extraFilters` позволяет добавить специфичные фильтры страницы
+
+---
+
 ## Импорт
 
 Все хуки можно импортировать напрямую:
@@ -474,4 +617,7 @@ import { useInView } from '../hooks/useInView'
 import { useToast } from '../hooks/useToast'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useFilterSync } from '../hooks/useFilterSync'
+import { useCatalogQuery } from '../hooks/useCatalogQuery'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { useProductFiltering } from '../hooks/useProductFiltering'
 ```

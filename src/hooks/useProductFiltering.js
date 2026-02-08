@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { getMinPrice } from '../data/products'
+import { getMinPrice } from '../utils/product'
 
 export function useProductFiltering(products, filters, sortBy, options = {}) {
   const { extraFilters, sortNew } = options

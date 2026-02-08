@@ -13,7 +13,7 @@ export function Categories() {
           title="Лучшие устройства в одном магазине"
           subtitle="Выберите нужную категорию"
           linkText="Смотреть все категории"
-          linkHref="/iphone"
+          linkHref="/catalog"
         />
       </div>
       <div className="overflow-hidden">

@@ -4,8 +4,8 @@
 
 ## Оглавление
 
-- [UI (18)](#ui-18)
-- [Layout (9)](#layout-9)
+- [UI (19)](#ui-19)
+- [Layout (10)](#layout-10)
 - [Homepage (12)](#homepage-12)
 - [Catalog (3)](#catalog-3)
 - [Product (9)](#product-9)
@@ -14,10 +14,11 @@
 - [Cart (2)](#cart-2)
 - [SEO (4)](#seo-4)
 - [Service (9)](#service-9)
+- [Админка (11)](#админка-11)
 
 ---
 
-## UI (18)
+## UI (19)
 
 Базовые переиспользуемые UI-компоненты.
 
@@ -298,9 +299,36 @@ import { PageSkeleton } from '../components/ui/PageSkeleton'
 </Suspense>
 ```
 
+### ColorSwatch
+
+Свотч выбора цвета с поддержкой размеров, состояний selected/disabled.
+
+**Путь:** `src/components/ui/ColorSwatch.jsx`
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `color` | object | — | `{ id, name, hex }` |
+| `selected` | boolean | `false` | Выбран ли цвет |
+| `size` | string | `'md'` | Размер: `sm`, `md`, `lg` |
+| `showCheck` | boolean | `true` | Показывать галочку при выборе |
+| `disabled` | boolean | `false` | Заблокирован |
+| `disabledStrike` | boolean | `false` | Показывать зачёркивание при disabled |
+| `onClick` | function | — | Обработчик клика |
+| `className` | string | `''` | Дополнительные классы |
+
+```jsx
+import { ColorSwatch } from '../components/ui/ColorSwatch'
+
+<ColorSwatch
+  color={{ id: 'black', name: 'Чёрный', hex: '#1d1d1f' }}
+  selected={selectedColor === 'black'}
+  onClick={() => setSelectedColor('black')}
+/>
+```
+
 ---
 
-## Layout (9)
+## Layout (10)
 
 Компоненты структуры страницы.
 
@@ -353,9 +381,9 @@ import { PageSkeleton } from '../components/ui/PageSkeleton'
 
 **Путь:** `src/components/Footer/FooterContacts.jsx`
 
-### FooterSubscribe (не используется)
+### FooterSubscribe
 
-Форма подписки на рассылку. Не подключена в Footer.jsx.
+Форма подписки на рассылку (email + кнопка).
 
 **Путь:** `src/components/Footer/FooterSubscribe.jsx`
 
@@ -856,3 +884,92 @@ Split-screen баннер сервиса.
 Выездной сервис.
 
 **Путь:** `src/components/Service/MobileService.jsx`
+
+---
+
+## Админка (11)
+
+Компоненты админ-панели (`src/admin/components/`).
+
+### AdminSidebar
+
+Боковое меню навигации (6 пунктов + счётчик заявок).
+
+**Путь:** `src/admin/components/AdminSidebar.jsx`
+
+### AdminHeader
+
+Верхняя панель (user, logout, mobile menu).
+
+**Путь:** `src/admin/components/AdminHeader.jsx`
+
+### DataTable
+
+Универсальная таблица с сортировкой и пагинацией.
+
+**Путь:** `src/admin/components/DataTable.jsx`
+
+### ImageUploader
+
+Drag&drop загрузка изображений с превью.
+
+**Путь:** `src/admin/components/ImageUploader.jsx`
+
+### StatusBadge
+
+Бейдж статуса (active/draft/new/in_stock).
+
+**Путь:** `src/admin/components/StatusBadge.jsx`
+
+### ConfirmDialog
+
+Модальное окно подтверждения удаления.
+
+**Путь:** `src/admin/components/ConfirmDialog.jsx`
+
+### SortableList
+
+Drag&drop список на @dnd-kit.
+
+**Путь:** `src/admin/components/SortableList.jsx`
+
+### RichTextEditor
+
+TipTap WYSIWYG редактор (bold, italic, headings, images, links).
+
+**Путь:** `src/admin/components/RichTextEditor.jsx`
+
+### VariantMatrix
+
+Матрица вариантов товара (цвет x память → цена/статус).
+
+**Путь:** `src/admin/components/VariantMatrix.jsx`
+
+### AdminModal
+
+Модальное окно для админки с Escape и backdrop.
+
+**Путь:** `src/admin/components/AdminModal.jsx`
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `open` | boolean | — | Состояние открытия |
+| `title` | string | — | Заголовок |
+| `onClose` | function | — | Callback закрытия |
+| `onConfirm` | function | — | Callback подтверждения (опционально) |
+| `confirmText` | string | `'Сохранить'` | Текст кнопки подтверждения |
+| `loading` | boolean | — | Состояние загрузки |
+| `children` | ReactNode | — | Содержимое |
+
+### SortableImages
+
+Drag&drop сортировка изображений с загрузкой новых.
+
+**Путь:** `src/admin/components/SortableImages.jsx`
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `images` | array | `[]` | Массив URL изображений |
+| `onImagesChange` | function | — | Callback изменения порядка/удаления |
+| `onUpload` | function | — | Callback загрузки файлов |
+| `uploading` | boolean | — | Состояние загрузки |

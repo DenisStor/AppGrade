@@ -1,4 +1,4 @@
-import { formatMemory } from '../../data/products'
+import { formatMemory } from '../../utils/product'
 
 export function MemorySelector({
   options = [],

@@ -1,88 +1,77 @@
 # AppGrade — Магазин техники Apple
 
-SPA магазин электроники на React 19 + Vite + Tailwind CSS.
+SPA магазин электроники с админ-панелью и серверным API.
+
+**Витрина:** React 19 + Vite 7 + Tailwind CSS 3 + React Router 7 + Zustand 5
+**Бэкенд:** Express 5 + SQLite (better-sqlite3) + JWT
+**Админка:** React + react-hot-toast + @dnd-kit + @tiptap/react
 
 ## Быстрый старт
 
 ```bash
 npm install
-npm run dev
+npm run seed         # Заполнить БД (первый запуск)
+npm run dev:all      # Витрина (5173) + API (3001)
 ```
 
 ## Команды
 
 | Команда | Описание |
 |---------|----------|
-| `npm run dev` | Dev-сервер (localhost:5173) |
+| `npm run dev` | Vite dev-сервер (localhost:5173) |
+| `npm run dev:server` | Express API (localhost:3001) |
+| `npm run dev:all` | Оба сервера через concurrently |
 | `npm run build` | Сборка в dist/ |
 | `npm run preview` | Превью сборки |
-
-## Технологии
-
-- React 19
-- React Router 7
-- Vite 7
-- Tailwind CSS 3
-- Zustand 5
-- Swiper 12
-- Lucide Icons
-
-## Структура проекта
-
-```
-src/
-├── assets/              # Статика (изображения, шрифты)
-├── components/          # React-компоненты
-│   ├── ui/              # UI-компоненты (Button, Modal, Tabs...)
-│   ├── catalog/         # Каталог (ProductGrid, ProductListCard)
-│   ├── product/         # Страница товара (ColorSelector, Gallery)
-│   ├── filters/         # Фильтры (FilterSidebar, CheckboxFilter)
-│   ├── search/          # Поиск (SearchInput, SearchDropdown)
-│   ├── Header/          # Хедер
-│   ├── Footer/          # Подвал
-│   ├── Hero/            # Главный баннер
-│   ├── Categories/      # Секция категорий
-│   ├── Benefits/        # Преимущества
-│   ├── News/            # Новости
-│   ├── FAQ/             # FAQ
-│   ├── cart/            # Корзина
-│   └── seo/             # SEO-компоненты
-├── data/                # Данные и конфигурация
-│   ├── products/        # Товары (iphone.js, mac.js, dyson.js)
-│   ├── config.js        # Контакты, компания
-│   ├── navigation.js    # Меню навигации
-│   ├── categories.js    # Категории
-│   └── ...
-├── hooks/               # Кастомные хуки
-├── layouts/             # Layouts (CatalogLayout, InfoLayout)
-├── pages/               # Страницы
-│   ├── catalog/         # Каталог, бренды, товары
-│   └── info/            # Информационные страницы
-├── stores/              # Zustand stores
-├── utils/               # Утилиты
-├── App.jsx              # Роутинг
-├── main.jsx             # Точка входа
-└── index.css            # Глобальные стили
-```
-
-## Документация
-
-| Файл | Описание |
-|------|----------|
-| [CLAUDE.md](./CLAUDE.md) | Документация для разработки |
-| [docs/COMPONENTS.md](./docs/COMPONENTS.md) | Полное описание компонентов |
-| [docs/HOOKS.md](./docs/HOOKS.md) | Документация хуков |
+| `npm run seed` | Заполнить БД из src/data/ |
 
 ## Основные возможности
 
 - 4-уровневая структура каталога (`/catalog/category/brand/product`)
 - Фильтрация по цене, памяти, бренду, наличию
 - Корзина с сохранением в localStorage
-- Избранное
-- Недавно просмотренные товары
+- Избранное и недавно просмотренные товары
 - Поиск по каталогу
+- Админ-панель (товары, баннеры, категории, блог, заявки)
+- Серверный API с SQLite
 - Адаптивный дизайн (mobile-first)
 - SEO-оптимизация (JSON-LD)
+
+## Структура проекта
+
+```
+src/
+├── components/          # React-компоненты (ui, catalog, product, filters, search...)
+├── data/                # Статические данные и конфигурация
+├── hooks/               # Кастомные хуки
+├── services/            # API-сервисы витрины
+├── utils/               # Утилиты
+├── stores/              # Zustand stores
+├── layouts/             # CatalogLayout, PageLayout
+├── pages/               # Страницы
+└── admin/               # Админ-панель (lazy-loaded)
+
+server/
+├── routes/              # API-роуты
+├── db.js                # SQLite + миграции
+├── auth.js              # JWT middleware
+└── seed.js              # Заполнение БД
+```
+
+## Документация
+
+| Файл | Описание |
+|------|----------|
+| [CLAUDE.md](./CLAUDE.md) | Entry-point для AI-ассистентов |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Архитектура, файловая структура, дизайн-система |
+| [docs/API.md](./docs/API.md) | API эндпоинты с примерами запросов/ответов |
+| [docs/DATABASE.md](./docs/DATABASE.md) | Схема БД (13 таблиц), связи, индексы |
+| [docs/STORES.md](./docs/STORES.md) | Zustand stores с типами и примерами |
+| [docs/COMPONENTS.md](./docs/COMPONENTS.md) | Полное описание компонентов с props |
+| [docs/HOOKS.md](./docs/HOOKS.md) | Документация хуков |
+| [docs/CONVENTIONS.md](./docs/CONVENTIONS.md) | Код-стайл, именование, паттерны |
+| [docs/TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md) | Решение частых проблем |
+| [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) | Env-переменные, сборка, деплой |
 
 ## Лицензия
 

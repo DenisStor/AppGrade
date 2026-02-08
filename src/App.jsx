@@ -23,6 +23,7 @@ const UsedPage = lazy(() => import('./pages/used/UsedPage'))
 const BlogPage = lazy(() => import('./pages/blog/BlogPage'))
 const AboutPage = lazy(() => import('./pages/info/AboutPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+const AdminApp = lazy(() => import('./admin/AdminApp'))
 
 function App() {
   return (
@@ -81,6 +82,13 @@ function App() {
         </Suspense>
       } />
       <Route path="/blog/:id" element={<BlogPostPage />} />
+
+      {/* Админка */}
+      <Route path="/admin/*" element={
+        <Suspense fallback={<PageSkeleton />}>
+          <AdminApp />
+        </Suspense>
+      } />
 
       {/* Информационные страницы */}
       <Route path="/:slug" element={<InfoPage />} />

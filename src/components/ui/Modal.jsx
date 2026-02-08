@@ -1,6 +1,8 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
+
+const FOCUSABLE_SELECTOR = 'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
 
 export function Modal({
   isOpen,
@@ -10,10 +12,34 @@ export function Modal({
   size = 'md',
   className = '',
 }) {
-  const handleEscape = useCallback(
+  const dialogRef = useRef(null)
+  const previousFocusRef = useRef(null)
+
+  const handleKeyDown = useCallback(
     (e) => {
       if (e.key === 'Escape') {
         onClose()
+        return
+      }
+
+      if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll(FOCUSABLE_SELECTOR)
+        if (!focusable.length) return
+
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault()
+            last.focus()
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault()
+            first.focus()
+          }
+        }
       }
     },
     [onClose]
@@ -21,15 +47,23 @@ export function Modal({
 
   useEffect(() => {
     if (isOpen) {
+      previousFocusRef.current = document.activeElement
+      const previousOverflow = document.body.style.overflow
       document.body.style.overflow = 'hidden'
-      document.addEventListener('keydown', handleEscape)
-    }
+      document.addEventListener('keydown', handleKeyDown)
 
-    return () => {
-      document.body.style.overflow = ''
-      document.removeEventListener('keydown', handleEscape)
+      requestAnimationFrame(() => {
+        const focusable = dialogRef.current?.querySelectorAll(FOCUSABLE_SELECTOR)
+        if (focusable?.length) focusable[0].focus()
+      })
+
+      return () => {
+        document.body.style.overflow = previousOverflow
+        document.removeEventListener('keydown', handleKeyDown)
+        previousFocusRef.current?.focus()
+      }
     }
-  }, [isOpen, handleEscape])
+  }, [isOpen, handleKeyDown])
 
   if (!isOpen) return null
 
@@ -50,6 +84,7 @@ export function Modal({
       />
 
       <div
+        ref={dialogRef}
         className={`
           relative w-full ${sizeClasses[size]} bg-white rounded-2xl shadow-xl
           transform transition-all animate-fade-in ${className}

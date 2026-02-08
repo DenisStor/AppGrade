@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Container } from '../ui/Container'
 import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
+import { api } from '../../services/api'
 
 export function RepairForm() {
   const { toast } = useToast()
@@ -29,12 +30,15 @@ export function RepairForm() {
 
     setIsSubmitting(true)
 
-    // Имитация отправки
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    toast('Заявка отправлена! Мы свяжемся с вами в ближайшее время', 'success')
-    setFormData({ name: '', phone: '', device: '', problem: '' })
-    setIsSubmitting(false)
+    try {
+      await api.submitRepairRequest(formData)
+      toast('Заявка отправлена! Мы свяжемся с вами в ближайшее время', 'success')
+      setFormData({ name: '', phone: '', device: '', problem: '' })
+    } catch {
+      toast('Не удалось отправить заявку. Попробуйте позже', 'error')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
