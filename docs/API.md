@@ -68,7 +68,7 @@ Authorization: Bearer eyJhbGc...
 
 Список товаров с фильтрами.
 
-**Cache:** 1 минута (max-age=60)
+**Cache:** no-cache (браузер проверяет актуальность при каждом запросе)
 
 | Параметр | Тип | Описание |
 |----------|-----|---------|
@@ -135,6 +135,29 @@ Authorization: Bearer eyJhbGc...
 // Ответ 200
 [ { "...товар..." } ]
 // Пустой запрос → []
+```
+
+### GET /api/public/services
+
+Активные услуги с ценами.
+
+**Cache:** 5 минут (max-age=300)
+
+```json
+// Ответ 200
+[
+  {
+    "id": 1,
+    "name": "Замена экрана",
+    "time": "1-2 часа",
+    "sort_order": 0,
+    "active": 1,
+    "prices": [
+      { "model_id": "iphone-15", "price": "12990" },
+      { "model_id": "iphone-16", "price": "15990" }
+    ]
+  }
+]
 ```
 
 ---
@@ -325,10 +348,95 @@ Authorization: Bearer eyJhbGc...
 
 Частичное обновление. Варианты, SIM, связи заменяются целиком если указаны.
 
+### PUT /api/products/reorder
+
+```json
+// Запрос
+{ "ids": [5, 3, 1, 2, 4] }
+// Ответ 200
+{ "success": true }
+```
+
 ### DELETE /api/products/:id
 
 ```json
 { "success": true }
+```
+
+---
+
+## Бренды (protected)
+
+### GET /api/brands
+
+Список всех брендов.
+
+```json
+// Ответ 200
+[
+  { "id": 1, "name": "Apple", "slug": "apple", "logo_url": "...", "sort_order": 0, "active": 1 }
+]
+```
+
+---
+
+## Услуги (protected)
+
+### GET /api/services
+
+Все услуги с ценами.
+
+```json
+// Ответ 200
+[
+  {
+    "id": 1, "name": "Замена экрана", "time": "1-2 часа",
+    "sort_order": 0, "active": 1,
+    "prices": [{ "model_id": "iphone-15", "price": "12990" }]
+  }
+]
+```
+
+### GET /api/services/:id
+
+Одна услуга с ценами.
+
+### POST /api/services
+
+```json
+// Запрос
+{
+  "name": "Замена экрана",
+  "time": "1-2 часа",
+  "active": 1,
+  "prices": { "iphone-15": "12990", "iphone-16": "15990" }
+}
+
+// Ответ 201 — услуга с id, sort_order, timestamps, prices[]
+// Ошибка 400
+{ "error": "Название и время обязательны" }
+```
+
+### PUT /api/services/:id
+
+Частичное обновление. Цены заменяются целиком если указаны.
+
+### PUT /api/services/reorder
+
+```json
+// Запрос
+{ "ids": [3, 1, 2] }
+// Ответ 200
+{ "success": true }
+```
+
+### DELETE /api/services/:id
+
+```json
+// Ответ 200
+{ "success": true }
+// Ошибка 404
+{ "error": "Услуга не найдена" }
 ```
 
 ---

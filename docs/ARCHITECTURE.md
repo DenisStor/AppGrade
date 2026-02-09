@@ -95,11 +95,11 @@ src/
     ├── services/           # apiClient, bannerService, productService...
     ├── components/         # DataTable, ImageUploader, VariantMatrix...
     ├── utils/              # generateSlug
-    └── pages/              # Login, Dashboard, Products, Blog, Requests...
+    └── pages/              # Login, Dashboard, Products, Blog, Requests, Services...
 
 server/
 ├── index.js                # Express, CORS, middleware, маршруты
-├── db.js                   # SQLite подключение + миграции (13 таблиц)
+├── db.js                   # SQLite подключение + миграции (14 таблиц)
 ├── auth.js                 # JWT middleware (verifyToken, signToken)
 ├── seed.js                 # Заполнение БД из src/data/
 ├── routes/
@@ -110,6 +110,8 @@ server/
 │   ├── banners.js          # CRUD баннеров + reorder
 │   ├── blog.js             # CRUD статей
 │   ├── requests.js         # Заявки (POST публичный, GET/PUT protected)
+│   ├── brands.js           # GET /api/brands (список брендов)
+│   ├── services.js         # CRUD /api/services (услуги + цены)
 │   ├── upload.js           # POST multer (jpg/png/webp/gif, 5MB)
 │   └── dashboard.js        # GET /api/dashboard/stats
 ├── uploads/                # Загруженные файлы

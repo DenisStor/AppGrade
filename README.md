@@ -8,11 +8,25 @@ SPA магазин электроники с админ-панелью и сер
 
 ## Быстрый старт
 
+### Требования
+- Node.js 18+
+- npm 9+
+
+### Установка и запуск
+
 ```bash
+git clone <repo-url>
+cd ElectronicsStore
 npm install
-npm run seed         # Заполнить БД (первый запуск)
+npm run seed         # Заполнить БД тестовыми данными
 npm run dev:all      # Витрина (5173) + API (3001)
 ```
+
+### Доступ
+- Витрина: http://localhost:5173
+- API: http://localhost:3001
+- Админка: http://localhost:5173/admin
+  - Логин: `admin@appgrade.ru` / `admin123`
 
 ## Команды
 
@@ -65,7 +79,7 @@ server/
 | [CLAUDE.md](./CLAUDE.md) | Entry-point для AI-ассистентов |
 | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Архитектура, файловая структура, дизайн-система |
 | [docs/API.md](./docs/API.md) | API эндпоинты с примерами запросов/ответов |
-| [docs/DATABASE.md](./docs/DATABASE.md) | Схема БД (13 таблиц), связи, индексы |
+| [docs/DATABASE.md](./docs/DATABASE.md) | Схема БД (14 таблиц), связи, индексы |
 | [docs/STORES.md](./docs/STORES.md) | Zustand stores с типами и примерами |
 | [docs/COMPONENTS.md](./docs/COMPONENTS.md) | Полное описание компонентов с props |
 | [docs/HOOKS.md](./docs/HOOKS.md) | Документация хуков |

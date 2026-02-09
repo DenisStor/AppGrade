@@ -245,7 +245,7 @@ router.get('/products', (req, res) => {
 
   enrichProducts(products, { includeRelations: true })
 
-  res.set('Cache-Control', 'public, max-age=60')
+  res.set('Cache-Control', 'no-cache')
   res.json(products)
 })
 

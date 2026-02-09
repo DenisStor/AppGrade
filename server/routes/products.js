@@ -95,6 +95,18 @@ router.get('/', (req, res) => {
   res.json({ items: products, total: total.count, page: safePage, limit: safeLimit })
 })
 
+router.put('/reorder', (req, res) => {
+  const { ids } = req.body
+  if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids обязателен' })
+
+  const stmt = db.prepare("UPDATE products SET sort_order = ?, updated_at = datetime('now') WHERE id = ?")
+  const update = db.transaction((ids) => {
+    ids.forEach((id, i) => stmt.run(i, id))
+  })
+  update(ids)
+  res.json({ success: true })
+})
+
 router.get('/:id', (req, res) => {
   const product = getProductFull(Number(req.params.id))
   if (!product) return res.status(404).json({ error: 'Товар не найден' })

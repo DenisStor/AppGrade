@@ -33,8 +33,8 @@ src/
 ├── pages/          # catalog/, info/, blog/, cart/, service/, used/
 └── admin/          # Lazy-loaded: hooks, services, components, pages
 server/
-├── routes/         # auth, public, products, categories, banners, blog, requests, upload, dashboard
-├── db.js           # SQLite + миграции (13 таблиц)
+├── routes/         # auth, public, products, categories, banners, blog, requests, brands, services, upload, dashboard
+├── db.js           # SQLite + миграции (14 таблиц)
 ├── auth.js         # JWT middleware
 └── seed.js         # Заполнение БД
 ```
@@ -177,7 +177,7 @@ import { mapProducts, mapProduct } from '../services/productMapper'  // snake→
 
 ### Админка (`src/admin/services/`)
 
-apiClient.js (JWT + auto-signout), bannerService, categoryService, productService, requestService, blogService, dashboardService
+apiClient.js (JWT + auto-signout), bannerService, categoryService, productService, requestService, blogService, serviceService, dashboardService
 
 ### Хуки админки
 
@@ -203,7 +203,7 @@ Mobile-first, основной брейкпоинт `lg:` (1024px). Шрифты
 ## API
 
 Публичные: `/api/public/*` (categories, products, search) — без авторизации
-Защищённые: `/api/banners`, `/api/products`, `/api/blog`, `/api/requests` — JWT
+Защищённые: `/api/banners`, `/api/products`, `/api/blog`, `/api/requests`, `/api/brands`, `/api/services` — JWT
 Логин: `admin@appgrade.ru` / `admin123`, JWT 4 часа
 
 Подробнее: [docs/API.md](./docs/API.md) | БД: [docs/DATABASE.md](./docs/DATABASE.md)
@@ -226,7 +226,7 @@ Mobile-first, основной брейкпоинт `lg:` (1024px). Шрифты
 |------|----------|
 | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Архитектура, файловая структура, дизайн-система |
 | [docs/API.md](./docs/API.md) | API эндпоинты с примерами запросов/ответов |
-| [docs/DATABASE.md](./docs/DATABASE.md) | Схема БД (13 таблиц), связи, индексы |
+| [docs/DATABASE.md](./docs/DATABASE.md) | Схема БД (14 таблиц), связи, индексы |
 | [docs/STORES.md](./docs/STORES.md) | Zustand stores с типами и примерами |
 | [docs/COMPONENTS.md](./docs/COMPONENTS.md) | Полное описание компонентов с props |
 | [docs/HOOKS.md](./docs/HOOKS.md) | Документация хуков |

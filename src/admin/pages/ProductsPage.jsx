@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Plus, Search, Trash2 } from 'lucide-react'
+import { Plus, Search, Trash2, Pencil, Eye, EyeOff } from 'lucide-react'
 import { useQuery } from '../hooks/useQuery'
 import { productService } from '../services/productService'
 import DataTable from '../components/DataTable'
+import SortableList from '../components/SortableList'
 import StatusBadge from '../components/StatusBadge'
 import ConfirmDialog from '../components/ConfirmDialog'
 import toast from 'react-hot-toast'
@@ -18,23 +19,52 @@ export default function ProductsPage() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [categoryFilter, setCategoryFilter] = useState('')
+  const [brandFilter, setBrandFilter] = useState('')
   const [activeTab, setActiveTab] = useState('new')
   const [deleteId, setDeleteId] = useState(null)
   const [deleting, setDeleting] = useState(false)
 
   const currentTab = TABS.find(t => t.key === activeTab)
   const isUsedTab = activeTab === 'used'
+  const isSortMode = !!(categoryFilter && brandFilter && !search)
 
-  const qs = new URLSearchParams({ page, limit: 30, is_used: currentTab.is_used })
+  const qs = new URLSearchParams({ is_used: currentTab.is_used })
   if (search) qs.set('search', search)
   if (categoryFilter) qs.set('category_id', categoryFilter)
+  if (brandFilter) qs.set('brand_id', brandFilter)
+  if (isSortMode) {
+    qs.set('limit', '200')
+  } else {
+    qs.set('page', page)
+    qs.set('limit', '30')
+  }
 
-  const { data, loading, refetch } = useQuery(`/products?${qs}`, [page, search, categoryFilter, activeTab])
+  const { data, loading, refetch } = useQuery(`/products?${qs}`, [page, search, categoryFilter, brandFilter, activeTab])
   const { data: categories } = useQuery('/categories')
+  const { data: brands } = useQuery('/brands')
 
   const handleTabChange = (key) => {
     setActiveTab(key)
     setPage(1)
+  }
+
+  const handleReorder = async (newItems) => {
+    try {
+      await productService.reorder(newItems.map(i => i.id))
+      refetch()
+    } catch (e) {
+      toast.error(e.message)
+    }
+  }
+
+  const toggleActive = async (product) => {
+    try {
+      await productService.update(product.id, { active: product.active ? 0 : 1 })
+      refetch()
+      toast.success(product.active ? 'Товар скрыт' : 'Товар активирован')
+    } catch (e) {
+      toast.error(e.message)
+    }
   }
 
   const handleDelete = async () => {
@@ -135,16 +165,59 @@ export default function ProductsPage() {
         </div>
         <select
           value={categoryFilter}
-          onChange={(e) => { setCategoryFilter(e.target.value); setPage(1) }}
+          onChange={(e) => { setCategoryFilter(e.target.value); setBrandFilter(''); setPage(1) }}
           className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none"
         >
           <option value="">Все категории</option>
           {categories?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
+        <select
+          value={brandFilter}
+          onChange={(e) => { setBrandFilter(e.target.value); setPage(1) }}
+          className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none"
+        >
+          <option value="">Все бренды</option>
+          {brands?.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+        </select>
       </div>
+
+      {isSortMode && (
+        <p className="text-xs text-gray-500">Перетаскивайте товары для изменения порядка отображения</p>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-12"><div className="w-8 h-8 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin" /></div>
+      ) : isSortMode ? (
+        (data?.items?.length) ? (
+          <SortableList
+            items={data.items}
+            onReorder={handleReorder}
+            renderItem={(product) => (
+              <div className="flex items-center gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                  <p className="text-xs text-gray-400">
+                    {product.minPrice ? `${product.minPrice.toLocaleString('ru')} ₽` : '—'}
+                    {product.variantCount > 0 && ` · ${product.variantCount} вар.`}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button onClick={() => toggleActive(product)} className="p-1.5 hover:bg-gray-100 rounded" title={product.active ? 'Скрыть' : 'Показать'}>
+                    {product.active ? <Eye size={16} className="text-green-500" /> : <EyeOff size={16} className="text-gray-400" />}
+                  </button>
+                  <button onClick={() => navigate(`/admin/products/${product.id}`)} className="p-1.5 hover:bg-gray-100 rounded">
+                    <Pencil size={16} className="text-gray-500" />
+                  </button>
+                  <button onClick={() => setDeleteId(product.id)} className="p-1.5 hover:bg-gray-100 rounded">
+                    <Trash2 size={16} className="text-red-500" />
+                  </button>
+                </div>
+              </div>
+            )}
+          />
+        ) : (
+          <div className="text-center py-12 text-gray-400">Нет товаров</div>
+        )
       ) : (
         <DataTable
           columns={columns}

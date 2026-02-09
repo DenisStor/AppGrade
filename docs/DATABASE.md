@@ -75,6 +75,7 @@ PRAGMA foreign_keys = ON;
 | condition | TEXT | perfect, excellent, good |
 | condition_label | TEXT | |
 | warranty | TEXT | |
+| dimensions | TEXT | DEFAULT '[]' (JSON: массив измерений) |
 | sort_order | INTEGER | DEFAULT 0 |
 | active | INTEGER | DEFAULT 1 |
 | created_at | TEXT | DEFAULT datetime('now') |
@@ -92,6 +93,9 @@ PRAGMA foreign_keys = ON;
 | price | INTEGER | NOT NULL (в рублях) |
 | old_price | INTEGER | Для скидок |
 | stock_status | TEXT | DEFAULT 'in_stock' CHECK(in_stock, on_order, out_of_stock) |
+| sim_id | TEXT | NULL (связь, миграция из SIM-опций) |
+| sim_name | TEXT | NULL |
+| attributes | TEXT | DEFAULT '{}' (JSON: произвольные атрибуты варианта) |
 | sort_order | INTEGER | DEFAULT 0 |
 | created_at | TEXT | DEFAULT datetime('now') |
 
@@ -112,6 +116,7 @@ PRAGMA foreign_keys = ON;
 | product_id | INTEGER | NOT NULL REFERENCES products(id) ON DELETE CASCADE |
 | sim_id | TEXT | NOT NULL (dual, esim) |
 | name | TEXT | NOT NULL (nanoSIM + eSIM) |
+| price_modifier | INTEGER | DEFAULT 0 |
 | sort_order | INTEGER | DEFAULT 0 |
 
 ### product_relations
@@ -170,6 +175,28 @@ PRAGMA foreign_keys = ON;
 | created_at | TEXT | DEFAULT datetime('now') |
 | updated_at | TEXT | DEFAULT datetime('now') |
 
+### service_items
+
+| Колонка | Тип | Ограничения |
+|---------|-----|------------|
+| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| name | TEXT | NOT NULL |
+| time | TEXT | NOT NULL |
+| sort_order | INTEGER | DEFAULT 0 |
+| active | INTEGER | DEFAULT 1 |
+| created_at | TEXT | DEFAULT datetime('now') |
+| updated_at | TEXT | DEFAULT datetime('now') |
+
+### service_prices
+
+| Колонка | Тип | Ограничения |
+|---------|-----|------------|
+| id | INTEGER | PRIMARY KEY AUTOINCREMENT |
+| service_item_id | INTEGER | NOT NULL REFERENCES service_items(id) ON DELETE CASCADE |
+| model_id | TEXT | NOT NULL |
+| price | TEXT | NOT NULL |
+| | | UNIQUE(service_item_id, model_id) |
+
 ## Связи (ER-диаграмма)
 
 ```mermaid
@@ -185,6 +212,7 @@ erDiagram
     products ||--o{ product_relations : "product_id CASCADE"
     products ||--o{ product_relations : "related_product_id CASCADE"
     products ||--o| requests : "product_id SET NULL"
+    service_items ||--o{ service_prices : "service_item_id CASCADE"
 ```
 
 ## Каскадное удаление
@@ -197,9 +225,10 @@ erDiagram
 | products → product_sim_options | CASCADE |
 | products → product_relations | CASCADE |
 | products → requests | SET NULL |
+| service_items → service_prices | CASCADE |
 | categories/brands → products | Нет CASCADE (защита) |
 
-## Индексы (15)
+## Индексы (17)
 
 | Индекс | Таблица.колонка |
 |--------|----------------|
@@ -218,6 +247,8 @@ erDiagram
 | idx_categories_active | categories.active |
 | idx_blog_posts_slug | blog_posts.slug |
 | idx_blog_posts_status | blog_posts.status |
+| idx_service_prices_item | service_prices.service_item_id |
+| idx_service_items_active | service_items.active |
 
 ## Seed (`npm run seed`)
 
