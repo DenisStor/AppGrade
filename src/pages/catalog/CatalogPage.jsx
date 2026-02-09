@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { Skeleton } from '../../components/ui/Skeleton'
+import { ImageWithSkeleton } from '../../components/ui/ImageWithSkeleton'
 import { catalogApi } from '../../services/catalogApi'
 import { useCatalogQuery } from '../../hooks/useCatalogQuery'
 import { mapCategory } from '../../services/productMapper'
@@ -44,11 +45,12 @@ export default function CatalogPage() {
               <div className="lg:hidden">
                 <div className="bg-gray-light aspect-square flex items-center justify-center p-4 rounded-xl">
                   {category.image && (
-                    <img
+                    <ImageWithSkeleton
                       src={category.image}
                       alt={category.name}
                       className="w-3/4 h-3/4 object-contain transition-transform duration-300 group-hover:scale-105"
-                      onError={(e) => { e.target.style.display = 'none' }}
+                      sizes="50vw"
+                      widths={[200, 400]}
                     />
                   )}
                 </div>
@@ -61,11 +63,12 @@ export default function CatalogPage() {
               <div className="hidden lg:block relative overflow-hidden rounded-card aspect-[4/3] transition-all duration-300 hover:shadow-liquid bg-gray-light">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
                 {category.image && (
-                  <img
+                  <ImageWithSkeleton
                     src={category.image}
                     alt={category.name}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    onError={(e) => { e.target.style.display = 'none' }}
+                    sizes="33vw"
+                    widths={[400, 800]}
                   />
                 )}
                 <div className="absolute bottom-0 left-0 right-0 p-6 z-20">

@@ -4,10 +4,12 @@ import cors from 'cors'
 import compression from 'compression'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { existsSync } from 'fs'
 import { verifyToken } from './auth.js'
 
 import authRoutes from './routes/auth.js'
 import uploadRoutes from './routes/upload.js'
+import imageRoutes from './routes/image.js'
 import dashboardRoutes from './routes/dashboard.js'
 import bannersRoutes from './routes/banners.js'
 import categoriesRoutes from './routes/categories.js'
@@ -23,6 +25,7 @@ const __dirname = dirname(__filename)
 
 const app = express()
 const PORT = process.env.PORT || 3001
+const uploadsDir = join(__dirname, 'uploads')
 
 // Security headers
 app.use((req, res, next) => {
@@ -75,7 +78,21 @@ app.use(cors({
     : ['http://localhost:5173', 'http://localhost:4173'],
 }))
 app.use(express.json({ limit: '10mb' }))
-app.use('/uploads', express.static(join(__dirname, 'uploads'), {
+
+// Изображения: on-the-fly ресайз → WebP content negotiation → статика
+app.use('/uploads', imageRoutes)
+app.use('/uploads', (req, res, next) => {
+  if (req.headers.accept?.includes('image/webp') && !req.path.endsWith('.webp')) {
+    const webpPath = req.path.replace(/\.(png|jpe?g)$/i, '.webp')
+    const fullPath = join(uploadsDir, webpPath)
+    if (existsSync(fullPath)) {
+      res.type('image/webp')
+      return res.sendFile(fullPath)
+    }
+  }
+  next()
+})
+app.use('/uploads', express.static(uploadsDir, {
   maxAge: '7d',
 }))
 

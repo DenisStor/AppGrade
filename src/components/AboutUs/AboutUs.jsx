@@ -1,5 +1,6 @@
 import { User, Users, TrendingUp, ShieldCheck } from 'lucide-react'
 import { SectionDivider } from '../ui/SectionDivider'
+import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 import aboutImage from '../../assets/about/applego.jpg'
 
 const features = [
@@ -51,7 +52,7 @@ export function AboutUs({ showDivider = true }) {
 
           {/* Правая колонка - изображение */}
           <div className="lg:order-last">
-            <img
+            <ImageWithSkeleton
               src={aboutImage}
               alt="Магазин AppleGO"
               className="w-full h-64 lg:h-full object-cover rounded-card"

@@ -48,6 +48,10 @@ export function ProductGallery({ images = [], productName = '' }) {
                 src={src}
                 alt={`${productName} — фото ${index + 1}`}
                 className="w-full h-full object-contain"
+                loading={index === 0 ? 'eager' : 'lazy'}
+                fetchPriority={index === 0 ? 'high' : undefined}
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                widths={[400, 800, 1200]}
               />
             </div>
           </SwiperSlide>
@@ -71,6 +75,8 @@ export function ProductGallery({ images = [], productName = '' }) {
                 src={src}
                 alt={`Миниатюра ${index + 1}`}
                 className="w-full h-full object-contain p-2"
+                sizes="100px"
+                widths={[200, 400]}
               />
             </div>
           </SwiperSlide>

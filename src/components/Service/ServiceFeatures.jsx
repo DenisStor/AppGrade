@@ -1,4 +1,5 @@
 import { Container } from '../ui/Container'
+import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 import { SERVICE_FEATURES } from '../../data/service'
 
 export function ServiceFeatures() {
@@ -12,7 +13,7 @@ export function ServiceFeatures() {
               className="group bg-white border border-gray-100 shadow-sm overflow-hidden rounded-card transition-all hover:shadow-xl hover:-translate-y-1"
             >
               <div className="aspect-[3/2] overflow-hidden">
-                <img
+                <ImageWithSkeleton
                   src={feature.image}
                   alt={feature.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

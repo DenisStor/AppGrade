@@ -4,6 +4,7 @@ import { extname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import { randomUUID } from 'crypto'
+import sharp from 'sharp'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -11,6 +12,13 @@ const uploadsDir = join(__dirname, '..', 'uploads')
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const MAX_SIZE = 5 * 1024 * 1024
+
+const SIZE_CONFIG = {
+  products:   { maxWidth: 1200, thumbWidth: 400 },
+  banners:    { maxWidth: 1920 },
+  blog:       { maxWidth: 1200 },
+  categories: { maxWidth: 800 },
+}
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -37,9 +45,64 @@ const upload = multer({
   },
 })
 
+async function optimizeImage(filePath, type) {
+  const config = SIZE_CONFIG[type] || SIZE_CONFIG.products
+  const ext = extname(filePath).toLowerCase()
+
+  // GIF не обрабатываем Sharp'ом
+  if (ext === '.gif') return
+
+  try {
+    const pipeline = sharp(filePath).rotate()
+
+    // Ресайз + сжатие оригинала
+    const resizeOpts = { width: config.maxWidth, withoutEnlargement: true }
+
+    if (ext === '.png') {
+      const buf = await pipeline.clone()
+        .resize(resizeOpts)
+        .png({ quality: 80, compressionLevel: 9 })
+        .toBuffer()
+      await sharp(buf).toFile(filePath)
+    } else if (ext === '.webp') {
+      const buf = await pipeline.clone()
+        .resize(resizeOpts)
+        .webp({ quality: 80 })
+        .toBuffer()
+      await sharp(buf).toFile(filePath)
+    } else {
+      const buf = await pipeline.clone()
+        .resize(resizeOpts)
+        .jpeg({ quality: 80, progressive: true })
+        .toBuffer()
+      await sharp(buf).toFile(filePath)
+    }
+
+    // Генерация WebP-версии (кроме если уже webp)
+    if (ext !== '.webp') {
+      const webpPath = filePath.replace(/\.(png|jpe?g)$/i, '.webp')
+      await sharp(filePath)
+        .resize(resizeOpts)
+        .webp({ quality: 80 })
+        .toFile(webpPath)
+    }
+
+    // Миниатюра для products
+    if (config.thumbWidth) {
+      const thumbPath = filePath.replace(/(\.[^.]+)$/, `-thumb.webp`)
+      await sharp(filePath)
+        .resize({ width: config.thumbWidth, withoutEnlargement: true })
+        .webp({ quality: 75 })
+        .toFile(thumbPath)
+    }
+  } catch (err) {
+    console.error('Image optimization error:', err.message)
+  }
+}
+
 const router = Router()
 
-router.post('/', upload.single('file'), (req, res) => {
+router.post('/', upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Файл не загружен' })
   }
@@ -47,6 +110,8 @@ router.post('/', upload.single('file'), (req, res) => {
   const type = req.body.type || 'products'
   const allowed = ['products', 'banners', 'blog', 'categories']
   const folder = allowed.includes(type) ? type : 'products'
+
+  await optimizeImage(req.file.path, folder)
 
   res.json({ url: `/uploads/${folder}/${req.file.filename}` })
 })

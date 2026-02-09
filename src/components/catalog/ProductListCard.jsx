@@ -68,6 +68,8 @@ export const ProductListCard = memo(function ProductListCard({ product, category
               src={selectedVariant?.images?.[0]}
               alt={product.name}
               className="w-full h-full object-contain"
+              sizes="50vw"
+              widths={[400, 800]}
             />
           </div>
 
@@ -146,6 +148,8 @@ export const ProductListCard = memo(function ProductListCard({ product, category
             src={selectedVariant?.images?.[0]}
             alt={product.name}
             className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            widths={[400, 800, 1200]}
           />
 
           {product.badges?.length > 0 && (

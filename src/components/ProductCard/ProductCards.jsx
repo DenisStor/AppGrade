@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 import buPhoto from '../../assets/bu-devices.png'
 import servicePhoto from '../../assets/service-photo.png'
 import { Button } from '../ui/Button'
@@ -14,7 +15,7 @@ export function ProductCards() {
       <div className="grid md:grid-cols-2 gap-6 px-6 lg:px-60">
         {/* Проверенное б/у */}
         <Link to="/used" className="group aspect-[2/1] relative overflow-hidden rounded-card hover:scale-[1.02] transition-transform duration-300 block">
-          <img
+          <ImageWithSkeleton
             src={buPhoto}
             alt="Проверенное б/у"
             className="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-110 transition-all duration-300"
@@ -29,7 +30,7 @@ export function ProductCards() {
         </Link>
         {/* Сервис */}
         <Link to="/service" className="group aspect-[2/1] relative overflow-hidden rounded-card hover:scale-[1.02] transition-transform duration-300 block">
-          <img
+          <ImageWithSkeleton
             src={servicePhoto}
             alt="Сервис"
             className="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-110 transition-all duration-300"

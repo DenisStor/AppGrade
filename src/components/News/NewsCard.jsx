@@ -10,6 +10,8 @@ export function NewsCard({ id, image, date, title }) {
           alt={title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           skeletonClassName="rounded"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          widths={[400, 800, 1200]}
         />
       </div>
       <h3 className="font-semibold text-xl md:text-2xl text-gray-dark mb-2">

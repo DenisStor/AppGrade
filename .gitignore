@@ -3,6 +3,7 @@ node_modules/
 
 # Build
 dist/
+.cache/
 
 # Environment
 .env
@@ -32,6 +33,7 @@ server/uploads/products/*
 server/uploads/banners/*
 server/uploads/blog/*
 server/uploads/categories/*
+server/uploads/.cache/
 !server/uploads/**/.gitkeep
 
 # Logs

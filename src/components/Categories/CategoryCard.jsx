@@ -11,6 +11,8 @@ export function CategoryCard({ name, image, link }) {
             alt={name}
             className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
             skeletonClassName="rounded"
+            sizes="(max-width: 640px) 160px, 280px"
+            widths={[200, 400]}
           />
         </div>
       </div>

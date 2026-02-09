@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { Button } from '../ui/Button'
+import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 import serviceImg from '../../assets/mobile-service.jpg'
 
 export function MobileService() {
@@ -34,7 +35,7 @@ export function MobileService() {
           </div>
           <div className="relative">
             <div className="aspect-[4/3] overflow-hidden rounded-3xl">
-              <img
+              <ImageWithSkeleton
                 src={serviceImg}
                 alt="Выездной ремонт"
                 className="w-full h-full object-cover"

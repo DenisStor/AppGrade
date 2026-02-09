@@ -39,6 +39,8 @@ export default function BlogPage() {
                   src={post.image}
                   alt={post.title}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  widths={[400, 800, 1200]}
                 />
               </div>
               <span className="text-xs text-gray-medium uppercase tracking-wider">

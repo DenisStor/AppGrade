@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react'
 import { Container } from '../ui/Container'
 import { Button } from '../ui/Button'
+import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 import loanerPhoneImg from '../../assets/loaner-phone.png'
 
 export function LoanerPhone() {
@@ -30,7 +31,7 @@ export function LoanerPhone() {
           </div>
           <div className="relative">
             <div className="aspect-[4/3] bg-gray-light overflow-hidden rounded-3xl">
-              <img
+              <ImageWithSkeleton
                 src={loanerPhoneImg}
                 alt="Подменный iPhone"
                 className="w-full h-full object-cover"
