@@ -6,20 +6,20 @@ export const CONTACTS = {
   phoneLink: 'tel:525656',
   email: 'info@appgrade.ru',
   city: 'Калининград',
-  address: 'проспект Мира, 59',
-  fullAddress: 'Калининград, проспект Мира, 59',
+  address: 'проспект Мира, 57-59',
+  fullAddress: 'Калининград, проспект Мира, 57-59',
   workHours: 'Ежедневно 11:00 — 20:00',
   whatsapp: 'https://wa.me/79097973186',
   telegram: 'https://t.me/appgrade',
   vk: 'https://vk.com/appgrade',
-  mapId: '204645025784'
+  mapId: '156841140469'
 }
 
 // Юридическая информация
 export const COMPANY = {
   name: 'APPGRADE',
-  legalName: 'ИП Зелёный Никита Анатольевич',
-  inn: '390507826625',
-  ogrnip: '314392618400120',
+  legalName: 'ИП Серов Василий Александрович',
+  inn: '390606876585',
+  ogrnip: '325390000056442',
   year: new Date().getFullYear()
 }

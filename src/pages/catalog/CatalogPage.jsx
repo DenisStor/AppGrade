@@ -37,8 +37,9 @@ export default function CatalogPage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-6">
-          {categories.map((category) => (
-            <Link key={category.id} to={category.href} className="group">
+          {categories.map((category, index) => (
+            <Link key={category.id} to={category.href} className="group animate-card-appear"
+                  style={{ animationDelay: `${Math.min(index * 80, 600)}ms` }}>
               {/* Мобильная версия */}
               <div className="lg:hidden">
                 <div className="bg-gray-light aspect-square flex items-center justify-center p-4 rounded-xl">

@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
-import { Skeleton } from '../components/ui/Skeleton'
-import { ProductGrid } from '../components/catalog/ProductGrid'
+import { ProductGrid, ProductGridSkeleton } from '../components/catalog/ProductGrid'
 import { catalogApi } from '../services/catalogApi'
 import { useCatalogQuery } from '../hooks/useCatalogQuery'
 import { mapProducts } from '../services/productMapper'
@@ -47,20 +46,16 @@ export default function SearchPage() {
           <p className="text-gray-medium text-sm">{error}</p>
         </div>
       ) : !query ? (
-        <div className="text-center py-16">
+        <div className="text-center py-16 animate-fade-in">
           <Search className="w-16 h-16 mx-auto mb-4 text-gray-200" />
           <p className="text-gray-medium">Введите запрос в строке поиска</p>
         </div>
       ) : loading ? (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-[3/4] rounded-3xl" />
-          ))}
-        </div>
+        <ProductGridSkeleton count={6} />
       ) : results.length > 0 ? (
         <ProductGrid products={results} />
       ) : (
-        <div className="text-center py-16">
+        <div className="text-center py-16 animate-fade-in">
           <Search className="w-16 h-16 mx-auto mb-4 text-gray-200" />
           <p className="text-gray-dark text-lg mb-2">Ничего не найдено</p>
           <p className="text-gray-medium mb-6">

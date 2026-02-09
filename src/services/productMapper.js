@@ -1,21 +1,15 @@
 /**
  * Маппинг API-ответа (snake_case) → формат, ожидаемый компонентами витрины.
  *
- * Компоненты ожидают:
- * - product.id = slug (для корзины/избранного)
- * - product.brand = имя бренда (строка)
- * - product.category = slug категории
- * - variant.id = строка "slug-color-memory"
- * - variant.color = { id, name, hex }
- * - variant.images = [url1, url2, ...]
- * - variant.inStock = boolean
- * - variant.oldPrice = число
- * - variant.memory = число
- * - product.simOptions = [{ id, name }]
+ * Поддерживает:
+ * - attributes (новый формат) — произвольные измерения
+ * - legacy-поля (color_name, color_hex, memory, sim_id) — backward compat
  */
 
 export function mapProduct(raw) {
   if (!raw) return null
+
+  const dimensions = raw.dimensions || []
 
   const product = {
     id: raw.slug,
@@ -30,28 +24,34 @@ export function mapProduct(raw) {
     description: raw.description || '',
     badges: raw.badges || [],
     specs: raw.specs || {},
+    dimensions,
     isUsed: !!raw.is_used,
     condition: raw.condition,
     conditionLabel: raw.condition_label,
     warranty: raw.warranty,
     relatedIds: (raw.relatedIds || []),
-    simOptions: (raw.simOptions || []).map(s => ({
-      id: s.sim_id,
-      name: s.name,
-    })),
     variants: (raw.variants || []).map(v => {
-      const colorId = v.color_hex
-        ? v.color_hex.replace('#', '').toLowerCase()
-        : (v.color_name || 'default').toLowerCase().replace(/[^a-zа-яё0-9]/g, '-')
-      const memPart = v.memory ? `-${v.memory}` : ''
+      const attrs = v.attributes && Object.keys(v.attributes).length > 0
+        ? v.attributes
+        : buildLegacyAttributes(v, dimensions)
+
+      // Variant ID из slug + attribute ids
+      const attrParts = Object.values(attrs).map(a => a.id).filter(Boolean)
+      const variantId = attrParts.length
+        ? `${raw.slug}-${attrParts.join('-')}`
+        : `${raw.slug}-${v.id || 'default'}`
+
+      // Backward compat computed fields
+      const color = attrs.color || { id: 'default', name: 'Default', hex: '#000000' }
+      const memory = attrs.memory ? Number(attrs.memory.id) : (v.memory || null)
+      const sim = attrs.sim ? { id: attrs.sim.id, name: attrs.sim.name } : null
+
       return {
-        id: `${raw.slug}-${colorId}${memPart}`,
-        color: {
-          id: colorId,
-          name: v.color_name || 'Default',
-          hex: v.color_hex || '#000000',
-        },
-        memory: v.memory || null,
+        id: variantId,
+        attributes: attrs,
+        color,
+        memory,
+        sim,
         price: v.price,
         oldPrice: v.old_price || null,
         inStock: v.stock_status === 'in_stock',
@@ -60,12 +60,46 @@ export function mapProduct(raw) {
     }),
   }
 
+  // simOptions — извлекаем из вариантов, fallback на product_sim_options
+  // Не извлекать sim из legacy-полей если dimensions определены и не содержат 'sim'
+  const hasDimensions = dimensions.length > 0
+  const simFromVariants = new Map()
+  for (const v of raw.variants || []) {
+    const simAttr = v.attributes?.sim
+    const simId = simAttr?.id || (!hasDimensions ? v.sim_id : null)
+    const simName = simAttr?.name || (!hasDimensions ? v.sim_name : null)
+    if (simId) simFromVariants.set(simId, { id: simId, name: simName || simId })
+  }
+  product.simOptions = simFromVariants.size > 0
+    ? [...simFromVariants.values()]
+    : (!hasDimensions && raw.simOptions?.length)
+      ? raw.simOptions.map(s => ({ id: s.sim_id, name: s.name }))
+      : []
+
   // Связанные товары (если есть полные данные)
   if (raw.relatedProducts?.length) {
     product._relatedProducts = raw.relatedProducts.map(mapProduct)
   }
 
   return product
+}
+
+function buildLegacyAttributes(v, dimensions = []) {
+  const attrs = {}
+  const hasDimensions = dimensions.length > 0
+  if ((v.color_name || v.color_hex) && (!hasDimensions || dimensions.some(d => d.key === 'color'))) {
+    const colorId = v.color_hex
+      ? v.color_hex.replace('#', '').toLowerCase()
+      : (v.color_name || 'default').toLowerCase().replace(/[^a-zа-яё0-9]/g, '-')
+    attrs.color = { id: colorId, name: v.color_name || 'Default', hex: v.color_hex || '#000000' }
+  }
+  if (v.memory && (!hasDimensions || dimensions.some(d => d.key === 'memory'))) {
+    attrs.memory = { id: String(v.memory), name: `${v.memory >= 1024 ? `${v.memory / 1024} ТБ` : `${v.memory} ГБ`}` }
+  }
+  if (v.sim_id && (!hasDimensions || dimensions.some(d => d.key === 'sim'))) {
+    attrs.sim = { id: v.sim_id, name: v.sim_name || v.sim_id }
+  }
+  return attrs
 }
 
 export function mapProducts(rawList) {

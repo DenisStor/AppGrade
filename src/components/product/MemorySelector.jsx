@@ -28,9 +28,9 @@ export function MemorySelector({
               key={memory}
               onClick={() => onChange(memory)}
               disabled={!isAvailable}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 isSelected
-                  ? 'bg-gray-dark text-white'
+                  ? 'bg-gray-dark text-white scale-[1.05]'
                   : isAvailable
                   ? 'bg-gray-100 text-gray-dark hover:bg-gray-200'
                   : 'bg-gray-100 text-gray-300 cursor-not-allowed line-through'

@@ -1,8 +1,8 @@
-export function SimSelector({ options = [], selected, onChange, className = '' }) {
+export function DimensionSelector({ label, options = [], selected, onChange, className = '' }) {
   return (
     <div className={className}>
       <div className="mb-3">
-        <span className="text-sm font-medium text-gray-dark">Связь</span>
+        <span className="text-sm font-medium text-gray-dark">{label}</span>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -12,10 +12,10 @@ export function SimSelector({ options = [], selected, onChange, className = '' }
             <button
               key={option.id}
               onClick={() => onChange(option.id)}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 border-2 ${
+              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 isSelected
-                  ? 'border-gray-dark bg-white text-gray-dark scale-[1.05]'
-                  : 'border-gray-200 bg-white text-gray-dark hover:border-gray-300'
+                  ? 'bg-gray-dark text-white scale-[1.05]'
+                  : 'bg-gray-100 text-gray-dark hover:bg-gray-200'
               }`}
             >
               {option.name}

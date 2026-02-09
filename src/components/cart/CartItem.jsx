@@ -3,11 +3,14 @@ import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 import { formatPrice, formatMemory } from '../../utils/product'
 
 export function CartItem({ item, onRemove, onUpdateQuantity }) {
-  const memoryLabel = item.memory ? formatMemory(item.memory) : ''
-  const colorLabel = item.color?.name || ''
-  const simLabel = item.sim ? `${item.sim}` : ''
-
-  const options = [colorLabel, memoryLabel, simLabel].filter(Boolean).join(' • ')
+  let options
+  if (item.attributes && Object.keys(item.attributes).length > 0) {
+    options = Object.values(item.attributes).map(a => a.name).filter(Boolean).join(' \u2022 ')
+  } else {
+    const colorLabel = item.color?.name || ''
+    const memoryLabel = item.memory ? formatMemory(item.memory) : ''
+    options = [colorLabel, memoryLabel].filter(Boolean).join(' \u2022 ')
+  }
 
   return (
     <div className="flex gap-4 p-4 bg-gray-light rounded-card">

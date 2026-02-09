@@ -287,15 +287,25 @@ import { RangeSlider } from '../components/ui/RangeSlider'
 
 ### PageSkeleton
 
-Скелетон страницы, используется как fallback для `Suspense`.
+Page-specific скелетоны для lazy-loaded страниц. Каждый повторяет layout целевой страницы и обёрнут в `PageLayout` (Header/Footer видны сразу).
 
 **Путь:** `src/components/ui/PageSkeleton.jsx`
 
-```jsx
-import { PageSkeleton } from '../components/ui/PageSkeleton'
+| Компонент | Структура |
+|-----------|-----------|
+| `PageSkeleton` | Generic grid 2×4 карточек (обратная совместимость, без PageLayout) |
+| `ServicePageSkeleton` | Hero + 2 колонки (текст + фото) + таблица прайсов |
+| `CartPageSkeleton` | Title + grid 2/3 товары-полоски + 1/3 sidebar |
+| `SearchPageSkeleton` | Breadcrumbs + title + grid 2×3 карточек |
+| `UsedPageSkeleton` | Breadcrumbs + hero-banner + toolbar + sidebar + grid |
+| `BlogPageSkeleton` | Breadcrumbs + title + subtitle + grid карточек (aspect 2:1) |
+| `AboutPageSkeleton` | Breadcrumbs + 2 колонки (текст + фото) + 4 feature-карточки |
 
-<Suspense fallback={<PageSkeleton />}>
-  <LazyPage />
+```jsx
+import { SearchPageSkeleton } from '../components/ui/PageSkeleton'
+
+<Suspense fallback={<SearchPageSkeleton />}>
+  <SearchPage />
 </Suspense>
 ```
 

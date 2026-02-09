@@ -5,12 +5,16 @@ import { Button } from '../ui/Button'
 export function ProductActions({
   product,
   currentVariant,
-  selectedSim,
   isInCart,
   onAddToCart,
   onQuickBuy,
 }) {
   const inCart = currentVariant && isInCart(product.id, currentVariant.id)
+
+  const handleAddToCart = () => {
+    if (!currentVariant) return
+    onAddToCart(product, currentVariant)
+  }
 
   return (
     <div className="space-y-3 mb-8">
@@ -26,7 +30,7 @@ export function ProductActions({
           variant="primary"
           size="lg"
           className="w-full"
-          onClick={() => currentVariant && onAddToCart(product, currentVariant, selectedSim)}
+          onClick={handleAddToCart}
           disabled={!currentVariant}
         >
           <ShoppingCart className="w-5 h-5 mr-2" />

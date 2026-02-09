@@ -32,7 +32,7 @@ function enrichProducts(products, { includeRelations = false, includeRelatedProd
 
   // 3. Все SIM-опции одним запросом
   const allSim = db.prepare(`
-    SELECT product_id, sim_id, name FROM product_sim_options WHERE product_id IN (${placeholders}) ORDER BY sort_order ASC
+    SELECT product_id, sim_id, name, price_modifier FROM product_sim_options WHERE product_id IN (${placeholders}) ORDER BY sort_order ASC
   `).all(...productIds)
 
   // 4. Все связи одним запросом (если нужны)
@@ -53,6 +53,7 @@ function enrichProducts(products, { includeRelations = false, includeRelatedProd
   const variantsByProduct = new Map()
   for (const v of allVariants) {
     v.images = imagesByVariant.get(v.id) || []
+    v.attributes = safeJsonParse(v.attributes, {})
     if (!variantsByProduct.has(v.product_id)) variantsByProduct.set(v.product_id, [])
     variantsByProduct.get(v.product_id).push(v)
   }
@@ -60,7 +61,7 @@ function enrichProducts(products, { includeRelations = false, includeRelatedProd
   const simByProduct = new Map()
   for (const s of allSim) {
     if (!simByProduct.has(s.product_id)) simByProduct.set(s.product_id, [])
-    simByProduct.get(s.product_id).push({ sim_id: s.sim_id, name: s.name })
+    simByProduct.get(s.product_id).push({ sim_id: s.sim_id, name: s.name, price_modifier: s.price_modifier || 0 })
   }
 
   const relationsByProduct = new Map()
@@ -73,6 +74,7 @@ function enrichProducts(products, { includeRelations = false, includeRelatedProd
   for (const p of products) {
     p.badges = safeJsonParse(p.badges, [])
     p.specs = safeJsonParse(p.specs, {})
+    p.dimensions = safeJsonParse(p.dimensions, [])
     p.variants = variantsByProduct.get(p.id) || []
     p.simOptions = simByProduct.get(p.id) || []
     if (includeRelations) {
@@ -171,7 +173,7 @@ router.get('/categories/:slug/brands', (req, res) => {
         MIN(pv.price) as min_price
       FROM products p
       JOIN product_variants pv ON pv.product_id = p.id
-      WHERE p.category_id = ? AND p.brand_id IN (${bPlaceholders}) AND p.active = 1
+      WHERE p.category_id = ? AND p.brand_id IN (${bPlaceholders}) AND p.active = 1 AND p.is_used = 0
       GROUP BY p.brand_id
     `).all(category.id, ...brandIds)
 
@@ -182,7 +184,7 @@ router.get('/categories/:slug/brands', (req, res) => {
       SELECT DISTINCT p.brand_id, pi.url FROM product_images pi
       JOIN product_variants pv ON pi.variant_id = pv.id
       JOIN products p ON pv.product_id = p.id
-      WHERE p.category_id = ? AND p.brand_id IN (${bPlaceholders}) AND p.active = 1
+      WHERE p.category_id = ? AND p.brand_id IN (${bPlaceholders}) AND p.active = 1 AND p.is_used = 0
         AND pi.sort_order = 0 AND pv.sort_order = 0
       GROUP BY p.brand_id
     `).all(category.id, ...brandIds)
@@ -299,7 +301,7 @@ router.get('/search', (req, res) => {
     FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
     LEFT JOIN brands b ON p.brand_id = b.id
-    WHERE p.active = 1 AND (p.name LIKE ? OR p.short_description LIKE ?)
+    WHERE p.active = 1 AND p.is_used = 0 AND (p.name LIKE ? OR p.short_description LIKE ?)
     ORDER BY p.sort_order ASC
     LIMIT 50
   `).all(`%${q}%`, `%${q}%`)
@@ -307,6 +309,35 @@ router.get('/search', (req, res) => {
   enrichProducts(products)
 
   res.json(products)
+})
+
+// GET /api/public/services — активные услуги с ценами
+router.get('/services', (req, res) => {
+  const services = db.prepare(
+    'SELECT * FROM service_items WHERE active = 1 ORDER BY sort_order ASC, id ASC'
+  ).all()
+
+  if (services.length) {
+    const ids = services.map(s => s.id)
+    const placeholders = ids.map(() => '?').join(',')
+
+    const allPrices = db.prepare(
+      `SELECT service_item_id, model_id, price FROM service_prices WHERE service_item_id IN (${placeholders}) ORDER BY id ASC`
+    ).all(...ids)
+
+    const pricesByItem = new Map()
+    for (const p of allPrices) {
+      if (!pricesByItem.has(p.service_item_id)) pricesByItem.set(p.service_item_id, [])
+      pricesByItem.get(p.service_item_id).push({ model_id: p.model_id, price: p.price })
+    }
+
+    for (const s of services) {
+      s.prices = pricesByItem.get(s.id) || []
+    }
+  }
+
+  res.set('Cache-Control', 'public, max-age=300')
+  res.json(services)
 })
 
 export default router

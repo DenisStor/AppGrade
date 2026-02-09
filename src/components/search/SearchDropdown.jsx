@@ -18,7 +18,7 @@ export function SearchDropdown({ results = [], query, onClose }) {
   return (
     <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 animate-fade-in">
       <div className="max-h-96 overflow-y-auto">
-        {displayedProducts.map((product) => {
+        {displayedProducts.map((product, index) => {
           const variant = product.variants?.[0]
           const price = getMinPrice(product)
 
@@ -29,7 +29,8 @@ export function SearchDropdown({ results = [], query, onClose }) {
               key={product.id}
               to={`/catalog/${product.category}/${brandSlug}/${product.slug}`}
               onClick={onClose}
-              className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors animate-card-appear"
+              style={{ animationDelay: `${index * 50}ms` }}
             >
               <div className="w-14 h-14 bg-gray-light rounded-lg overflow-hidden flex-shrink-0">
                 <ImageWithSkeleton
@@ -57,7 +58,8 @@ export function SearchDropdown({ results = [], query, onClose }) {
       {hasMore && (
         <button
           onClick={handleShowAll}
-          className="w-full px-4 py-3 text-sm font-medium text-gray-dark hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 border-t border-gray-100"
+          className="w-full px-4 py-3 text-sm font-medium text-gray-dark hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 border-t border-gray-100 animate-card-appear"
+          style={{ animationDelay: `${Math.min(displayedProducts.length * 50, 250)}ms` }}
         >
           Показать все ({results.length})
           <ArrowRight className="w-4 h-4" />

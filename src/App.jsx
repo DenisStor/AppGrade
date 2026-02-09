@@ -2,7 +2,14 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { ScrollToTop } from './components/ScrollToTop'
 import { ToastContainer } from './components/ui/Toast'
-import { PageSkeleton } from './components/ui/PageSkeleton'
+import {
+  SearchPageSkeleton,
+  CartPageSkeleton,
+  ServicePageSkeleton,
+  UsedPageSkeleton,
+  BlogPageSkeleton,
+  AboutPageSkeleton,
+} from './components/ui/PageSkeleton'
 import { REDIRECTS } from './data/redirects'
 import Home from './pages/Home'
 // Layouts
@@ -43,22 +50,22 @@ function App() {
 
       {/* Lazy-loaded страницы */}
       <Route path="/search" element={
-        <Suspense fallback={<PageSkeleton />}>
+        <Suspense fallback={<SearchPageSkeleton />}>
           <SearchPage />
         </Suspense>
       } />
       <Route path="/cart" element={
-        <Suspense fallback={<PageSkeleton />}>
+        <Suspense fallback={<CartPageSkeleton />}>
           <CartPage />
         </Suspense>
       } />
       <Route path="/service" element={
-        <Suspense fallback={<PageSkeleton />}>
+        <Suspense fallback={<ServicePageSkeleton />}>
           <ServicePage />
         </Suspense>
       } />
       <Route path="/used" element={
-        <Suspense fallback={<PageSkeleton />}>
+        <Suspense fallback={<UsedPageSkeleton />}>
           <UsedPage />
         </Suspense>
       } />
@@ -70,14 +77,14 @@ function App() {
 
       {/* О компании */}
       <Route path="/about" element={
-        <Suspense fallback={<PageSkeleton />}>
+        <Suspense fallback={<AboutPageSkeleton />}>
           <AboutPage />
         </Suspense>
       } />
 
       {/* Блог */}
       <Route path="/blog" element={
-        <Suspense fallback={<PageSkeleton />}>
+        <Suspense fallback={<BlogPageSkeleton />}>
           <BlogPage />
         </Suspense>
       } />
@@ -85,7 +92,7 @@ function App() {
 
       {/* Админка */}
       <Route path="/admin/*" element={
-        <Suspense fallback={<PageSkeleton />}>
+        <Suspense fallback={null}>
           <AdminApp />
         </Suspense>
       } />
@@ -95,7 +102,7 @@ function App() {
 
       {/* 404 */}
       <Route path="*" element={
-        <Suspense fallback={<PageSkeleton />}>
+        <Suspense fallback={null}>
           <NotFoundPage />
         </Suspense>
       } />

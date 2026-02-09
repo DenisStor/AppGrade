@@ -13,6 +13,8 @@ const CategoryEditPage = lazy(() => import('./pages/CategoryEditPage'))
 const ProductsPage = lazy(() => import('./pages/ProductsPage'))
 const ProductEditPage = lazy(() => import('./pages/ProductEditPage'))
 const RequestsPage = lazy(() => import('./pages/RequestsPage'))
+const ServicesPage = lazy(() => import('./pages/ServicesPage'))
+const ServiceEditPage = lazy(() => import('./pages/ServiceEditPage'))
 const BlogListPage = lazy(() => import('./pages/BlogListPage'))
 const BlogEditPage = lazy(() => import('./pages/BlogEditPage'))
 
@@ -44,6 +46,9 @@ export default function AdminApp() {
             <Route path="products/new" element={<ProductEditPage />} />
             <Route path="products/:id" element={<ProductEditPage />} />
             <Route path="requests" element={<RequestsPage />} />
+            <Route path="services" element={<ServicesPage />} />
+            <Route path="services/new" element={<ServiceEditPage />} />
+            <Route path="services/:id" element={<ServiceEditPage />} />
             <Route path="blog" element={<BlogListPage />} />
             <Route path="blog/new" element={<BlogEditPage />} />
             <Route path="blog/:id" element={<BlogEditPage />} />

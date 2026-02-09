@@ -16,7 +16,7 @@ import { ProductJsonLd, BreadcrumbJsonLd } from '../../components/seo/JsonLd'
 import { catalogApi } from '../../services/catalogApi'
 import { useCatalogQuery } from '../../hooks/useCatalogQuery'
 import { mapProduct } from '../../services/productMapper'
-import { formatPrice, formatMemory } from '../../utils/product'
+import { formatPrice } from '../../utils/product'
 import { useFavoritesStore } from '../../stores/useFavoritesStore'
 import { useRecentlyViewedStore } from '../../stores/useRecentlyViewedStore'
 import { useCartStore } from '../../stores/useCartStore'
@@ -40,6 +40,10 @@ export default function ProductPage() {
   const [isQuickBuyOpen, setIsQuickBuyOpen] = useState(false)
 
   const {
+    selections,
+    setSelection,
+    dimensions,
+    getOptionsForDimension,
     selectedColor,
     selectedMemory,
     selectedSim,
@@ -58,8 +62,13 @@ export default function ProductPage() {
 
   const pageTitle = useMemo(() => {
     if (!product || !currentVariant) return null
-    const memoryPart = currentVariant.memory ? ` ${formatMemory(currentVariant.memory)}` : ''
-    return `${product.name}${memoryPart} — купить в APPGRADE`
+    const attrs = currentVariant.attributes || {}
+    const nonColorParts = Object.entries(attrs)
+      .filter(([key]) => key !== 'color')
+      .map(([, val]) => val.name)
+      .filter(Boolean)
+    const suffix = nonColorParts.length ? ` ${nonColorParts.join(' ')}` : ''
+    return `${product.name}${suffix} — купить в APPGRADE`
   }, [product, currentVariant])
   usePageTitle(pageTitle)
 
@@ -98,8 +107,11 @@ export default function ProductPage() {
     { label: product.name },
   ]
 
-  const discount = currentVariant?.oldPrice
-    ? Math.round((1 - currentVariant.price / currentVariant.oldPrice) * 100)
+  const displayPrice = currentVariant ? currentVariant.price : null
+  const displayOldPrice = currentVariant?.oldPrice || null
+
+  const discount = displayOldPrice
+    ? Math.round((1 - displayPrice / displayOldPrice) * 100)
     : 0
 
   const tabs = [
@@ -140,9 +152,9 @@ export default function ProductPage() {
               <BadgeGroup badges={product.badges} className="mb-2" />
               <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark">
                 {product.name}
-                {currentVariant && (
+                {currentVariant?.attributes?.color?.name && (
                   <span className="block font-normal whitespace-nowrap">
-                    ({currentVariant.color.name})
+                    ({currentVariant.attributes.color.name})
                   </span>
                 )}
               </h1>
@@ -172,15 +184,15 @@ export default function ProductPage() {
             </div>
           </div>
 
-          <div className="mb-6">
-            <div className="flex items-baseline gap-3">
+          <div className="mb-6" key={currentVariant?.id}>
+            <div className="flex items-baseline gap-3 animate-fade-in">
               <span className="text-3xl font-bold text-gray-dark">
-                {currentVariant ? formatPrice(currentVariant.price) : '—'}
+                {displayPrice ? formatPrice(displayPrice) : '—'}
               </span>
-              {currentVariant?.oldPrice && (
+              {displayOldPrice && (
                 <>
                   <span className="text-lg text-gray-medium line-through">
-                    {formatPrice(currentVariant.oldPrice)}
+                    {formatPrice(displayOldPrice)}
                   </span>
                   <Badge variant="discount" label={`-${discount}%`} />
                 </>
@@ -198,6 +210,10 @@ export default function ProductPage() {
 
           <ProductConfig
             product={product}
+            dimensions={dimensions}
+            selections={selections}
+            onSelectionChange={setSelection}
+            getOptionsForDimension={getOptionsForDimension}
             colors={colors}
             memoryOptions={memoryOptions}
             selectedColor={selectedColor}
@@ -212,7 +228,6 @@ export default function ProductPage() {
           <ProductActions
             product={product}
             currentVariant={currentVariant}
-            selectedSim={selectedSim}
             isInCart={isInCart}
             onAddToCart={addToCart}
             onQuickBuy={() => setIsQuickBuyOpen(true)}

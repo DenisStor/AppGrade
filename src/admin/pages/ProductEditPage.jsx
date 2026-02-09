@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, Plus, X, Search } from 'lucide-react'
 import { productService } from '../services/productService'
 import { useQuery } from '../hooks/useQuery'
@@ -13,15 +13,16 @@ const BADGE_OPTIONS = ['new', 'hit', 'sale', 'used']
 export default function ProductEditPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const isNew = !id
   const [loading, setLoading] = useState(!isNew)
   const [saving, setSaving] = useState(false)
-  const [hasMemory, setHasMemory] = useState(true)
+  const [dimensions, setDimensions] = useState([])
   const [errors, setErrors] = useState({})
 
   // Модалки
   const [specModal, setSpecModal] = useState({ open: false, key: '', value: '', editKey: null })
-  const [simModal, setSimModal] = useState({ open: false, id: '', name: '', editIndex: null })
+  const [dimModal, setDimModal] = useState({ open: false, label: '', type: 'select' })
 
   // Связанные товары — поиск
   const [relatedSearch, setRelatedSearch] = useState('')
@@ -29,6 +30,7 @@ export default function ProductEditPage() {
   const [relatedNames, setRelatedNames] = useState({})
 
   const { data: categories } = useQuery('/categories')
+  const { data: brands } = useQuery('/brands')
 
   // Debounced поиск связанных товаров
   useEffect(() => {
@@ -44,7 +46,8 @@ export default function ProductEditPage() {
     name: '', slug: '', category_id: '', brand_id: '',
     short_description: '', description: '',
     badges: [], specs: {},
-    is_used: 0, condition: '', condition_label: '', warranty: '',
+    is_used: isNew && searchParams.get('used') === '1' ? 1 : 0,
+    condition: '', condition_label: '', warranty: '',
     active: 1, variants: [], simOptions: [], relatedIds: [],
   })
 
@@ -52,18 +55,54 @@ export default function ProductEditPage() {
     if (!isNew) {
       productService.getById(id)
         .then(data => {
-          const variants = data.variants?.map(v => ({
-            color_name: v.color_name,
-            color_hex: v.color_hex,
-            memory: v.memory,
-            price: v.price,
-            old_price: v.old_price,
-            stock_status: v.stock_status,
-            images: v.images || [],
-          })) || []
+          const variants = data.variants?.map(v => {
+            let attrs = v.attributes || {}
+            if (!Object.keys(attrs).length) {
+              attrs = {}
+              if (v.color_name && v.color_name !== 'Default') {
+                const colorId = v.color_hex
+                  ? v.color_hex.replace('#', '').toLowerCase()
+                  : v.color_name.toLowerCase().replace(/[^a-zа-яё0-9]/g, '-')
+                attrs.color = { id: colorId, name: v.color_name, hex: v.color_hex || '#000000' }
+              }
+              if (v.memory) {
+                attrs.memory = { id: String(v.memory), name: v.memory >= 1024 ? `${v.memory / 1024} ТБ` : `${v.memory} ГБ` }
+              }
+              if (v.sim_id) {
+                attrs.sim = { id: v.sim_id, name: v.sim_name || v.sim_id }
+              }
+            }
+            // Fallback: восстановление sim из legacy, только если sim есть в dimensions
+            const dimKeys = (data.dimensions || []).map(d => d.key)
+            if (!attrs.sim && v.sim_id && (!dimKeys.length || dimKeys.includes('sim'))) {
+              attrs.sim = { id: v.sim_id, name: v.sim_name || v.sim_id }
+            }
+            return {
+              color_name: v.color_name,
+              color_hex: v.color_hex,
+              memory: v.memory,
+              sim_id: v.sim_id || null,
+              sim_name: v.sim_name || null,
+              attributes: attrs,
+              price: v.price,
+              old_price: v.old_price,
+              stock_status: v.stock_status,
+              images: v.images || [],
+            }
+          }) || []
 
-          const hasAnyMemory = variants.some(v => v.memory)
-          setHasMemory(hasAnyMemory)
+          // Восстанавливаем dimensions
+          let dims = data.dimensions || []
+          if (!dims.length && variants.length) {
+            // Вычислить из legacy
+            const hasColor = variants.some(v => v.color_name && v.color_name !== 'Default')
+            const hasMemory = variants.some(v => v.memory)
+            const hasSim = variants.some(v => v.sim_id)
+            if (hasColor) dims.push({ key: 'color', label: 'Цвет', type: 'color' })
+            if (hasMemory) dims.push({ key: 'memory', label: 'Память', type: 'select' })
+            if (hasSim) dims.push({ key: 'sim', label: 'Связь', type: 'select' })
+          }
+          setDimensions(dims)
 
           setForm({
             ...data,
@@ -94,6 +133,51 @@ export default function ProductEditPage() {
   const toggleBadge = (badge) => {
     const current = form.badges || []
     set('badges', current.includes(badge) ? current.filter(b => b !== badge) : [...current, badge])
+  }
+
+  // === Измерения ===
+  const addDimension = () => {
+    const { label, type } = dimModal
+    if (!label.trim()) return
+    const key = label.trim().toLowerCase().replace(/[^a-zа-яё0-9]/g, '-')
+    if (dimensions.find(d => d.key === key)) {
+      toast.error('Такое измерение уже существует')
+      return
+    }
+    setDimensions(prev => [...prev, { key, label: label.trim(), type }])
+    setDimModal({ open: false, label: '', type: 'select' })
+  }
+
+  const removeDimension = (key) => {
+    setDimensions(prev => prev.filter(d => d.key !== key))
+
+    // Убираем атрибут из вариантов + чистим legacy-поля
+    let newVariants = form.variants.map(v => {
+      const cleaned = { ...v }
+      if (cleaned.attributes?.[key]) {
+        const { [key]: _, ...restAttrs } = cleaned.attributes
+        cleaned.attributes = restAttrs
+      }
+      if (key === 'sim') { cleaned.sim_id = null; cleaned.sim_name = null }
+      if (key === 'color') { cleaned.color_name = 'Default'; cleaned.color_hex = '#000000' }
+      if (key === 'memory') { cleaned.memory = null }
+      return cleaned
+    })
+
+    // Дедупликация по оставшимся атрибутам (при удалении dim дубли схлопываются)
+    const seen = new Map()
+    newVariants = newVariants.filter(v => {
+      const a = v.attributes || {}
+      const attrKey = JSON.stringify(
+        Object.keys(a).sort().reduce((acc, k) => { acc[k] = a[k]; return acc }, {})
+      )
+      if (seen.has(attrKey)) return false
+      seen.set(attrKey, true)
+      return true
+    })
+
+    set('variants', newVariants)
+    if (key === 'sim') set('simOptions', [])
   }
 
   // === Валидация ===
@@ -137,34 +221,6 @@ export default function ProductEditPage() {
     set('specs', rest)
   }
 
-  // === SIM ===
-  const openSimModal = (editIndex = null) => {
-    if (editIndex !== null) {
-      const s = form.simOptions[editIndex]
-      setSimModal({ open: true, id: s.sim_id || s.id || '', name: s.name, editIndex })
-    } else {
-      setSimModal({ open: true, id: '', name: '', editIndex: null })
-    }
-  }
-
-  const saveSim = () => {
-    const { id: simId, name, editIndex } = simModal
-    if (!name.trim()) return
-    const finalId = simId.trim() || name.trim().toLowerCase().replace(/\s+/g, '-')
-    const newOptions = [...form.simOptions]
-    if (editIndex !== null) {
-      newOptions[editIndex] = { sim_id: finalId, name: name.trim() }
-    } else {
-      newOptions.push({ sim_id: finalId, name: name.trim() })
-    }
-    set('simOptions', newOptions)
-    setSimModal({ open: false, id: '', name: '', editIndex: null })
-  }
-
-  const removeSim = (i) => {
-    set('simOptions', form.simOptions.filter((_, idx) => idx !== i))
-  }
-
   // === Связанные товары ===
   const toggleRelated = (product) => {
     const ids = form.relatedIds || []
@@ -186,7 +242,7 @@ export default function ProductEditPage() {
     if (!validate()) return toast.error('Исправьте ошибки в форме')
     setSaving(true)
     try {
-      const payload = { ...form }
+      const payload = { ...form, dimensions }
       if (isNew) {
         await productService.create(payload)
         toast.success('Товар создан')
@@ -208,14 +264,53 @@ export default function ProductEditPage() {
     `w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent ${errors[field] ? 'border-red-400 ring-1 ring-red-400' : 'border-gray-300'}`
 
   return (
-    <div className="max-w-4xl">
-      <button onClick={() => navigate('/admin/products')} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4">
-        <ArrowLeft size={16} /> Назад к товарам
-      </button>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">{isNew ? 'Новый товар' : `Редактирование: ${form.name}`}</h1>
+    <div>
+      <div className="max-w-4xl">
+        <button onClick={() => navigate('/admin/products')} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4">
+          <ArrowLeft size={16} /> Назад к товарам
+        </button>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">{isNew ? 'Новый товар' : `Редактирование: ${form.name}`}</h1>
+      </div>
 
       <form onSubmit={handleSave} className="space-y-6">
-        {/* Основная информация */}
+        {/* 1. Модификации и цены — полная ширина */}
+        <section className={`bg-white rounded-xl border p-6 space-y-6 ${errors.variants ? 'border-red-400' : 'border-gray-200'}`}>
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-gray-900">Модификации и цены</h2>
+            <button
+              type="button"
+              onClick={() => setDimModal({ open: true, label: '', type: 'select' })}
+              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700"
+            >
+              <Plus size={14} /> Добавить измерение
+            </button>
+          </div>
+
+          {/* Chips измерений */}
+          {dimensions.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {dimensions.map(d => (
+                <div key={d.key} className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1">
+                  <span className="text-sm">{d.label}</span>
+                  <span className="text-xs text-gray-400">({d.type === 'color' ? 'цвет' : 'текст'})</span>
+                  <button type="button" onClick={() => removeDimension(d.key)} className="text-gray-400 hover:text-red-500">
+                    <X size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <VariantMatrix
+            variants={form.variants}
+            onChange={v => set('variants', v)}
+            dimensions={dimensions}
+          />
+          {errors.variants && <p className="text-xs text-red-500">{errors.variants}</p>}
+        </section>
+
+        <div className="max-w-4xl space-y-6">
+        {/* 2. Основная информация */}
         <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
           <h2 className="font-semibold text-gray-900">Основная информация</h2>
 
@@ -263,32 +358,10 @@ export default function ProductEditPage() {
                 className={inputClass('brand_id')}
               >
                 <option value="">Выберите бренд</option>
-                <option value={1}>Apple</option>
-                <option value={2}>Samsung</option>
-                <option value={3}>Dyson</option>
+                {brands?.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
               {errors.brand_id && <p className="text-xs text-red-500 mt-1">{errors.brand_id}</p>}
             </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Краткое описание</label>
-            <input
-              type="text"
-              value={form.short_description || ''}
-              onChange={e => set('short_description', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Полное описание</label>
-            <textarea
-              value={form.description || ''}
-              onChange={e => set('description', e.target.value)}
-              rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none"
-            />
           </div>
 
           <div>
@@ -317,7 +390,7 @@ export default function ProductEditPage() {
           </label>
         </section>
 
-        {/* Б/У */}
+        {/* 3. Б/У */}
         <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
           <label className="flex items-center gap-2">
             <input type="checkbox" checked={!!form.is_used} onChange={e => set('is_used', e.target.checked ? 1 : 0)} className="rounded" />
@@ -346,44 +419,30 @@ export default function ProductEditPage() {
           )}
         </section>
 
-        {/* Варианты */}
-        <section className={`bg-white rounded-xl border p-6 space-y-4 ${errors.variants ? 'border-red-400' : 'border-gray-200'}`}>
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-gray-900">Варианты</h2>
-            <label className="flex items-center gap-2 text-sm text-gray-600">
-              <input type="checkbox" checked={hasMemory} onChange={e => setHasMemory(e.target.checked)} className="rounded" />
-              Товар с памятью
-            </label>
-          </div>
-          <VariantMatrix
-            variants={form.variants}
-            onChange={v => set('variants', v)}
-            hasMemory={hasMemory}
-          />
-          {errors.variants && <p className="text-xs text-red-500">{errors.variants}</p>}
-        </section>
-
-        {/* SIM-опции */}
+        {/* 4. Описание */}
         <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-gray-900">SIM-опции</h2>
-            <button type="button" onClick={() => openSimModal()} className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700">
-              <Plus size={14} /> Добавить
-            </button>
+          <h2 className="font-semibold text-gray-900">Описание</h2>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Краткое описание</label>
+            <input
+              type="text"
+              value={form.short_description || ''}
+              onChange={e => set('short_description', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+            />
           </div>
-          <div className="flex flex-wrap gap-2">
-            {form.simOptions.map((s, i) => (
-              <div key={i} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-1.5">
-                <span className="text-sm">{s.name}</span>
-                <button type="button" onClick={() => openSimModal(i)} className="text-gray-400 hover:text-blue-500"><X size={12} /></button>
-                <button type="button" onClick={() => removeSim(i)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
-              </div>
-            ))}
-            {form.simOptions.length === 0 && <p className="text-sm text-gray-400">Нет SIM-опций</p>}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Полное описание</label>
+            <textarea
+              value={form.description || ''}
+              onChange={e => set('description', e.target.value)}
+              rows={4}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none"
+            />
           </div>
         </section>
 
-        {/* Характеристики */}
+        {/* 5. Характеристики */}
         <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-gray-900">Характеристики</h2>
@@ -412,11 +471,10 @@ export default function ProductEditPage() {
           )}
         </section>
 
-        {/* Связанные товары */}
+        {/* 6. Связанные товары */}
         <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
           <h2 className="font-semibold text-gray-900">Связанные товары</h2>
 
-          {/* Выбранные чипы */}
           {form.relatedIds?.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {form.relatedIds.map(rid => (
@@ -430,7 +488,6 @@ export default function ProductEditPage() {
             </div>
           )}
 
-          {/* Поиск */}
           <div className="relative">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
@@ -479,6 +536,7 @@ export default function ProductEditPage() {
             Отмена
           </button>
         </div>
+        </div>
       </form>
 
       {/* Модалка спеков */}
@@ -514,35 +572,48 @@ export default function ProductEditPage() {
         </div>
       </AdminModal>
 
-      {/* Модалка SIM */}
+      {/* Модалка нового измерения */}
       <AdminModal
-        open={simModal.open}
-        title={simModal.editIndex !== null ? 'Редактировать SIM-опцию' : 'Добавить SIM-опцию'}
-        onClose={() => setSimModal(s => ({ ...s, open: false }))}
-        onConfirm={saveSim}
-        confirmText={simModal.editIndex !== null ? 'Сохранить' : 'Добавить'}
+        open={dimModal.open}
+        title="Добавить измерение"
+        onClose={() => setDimModal({ open: false, label: '', type: 'select' })}
+        onConfirm={addDimension}
+        confirmText="Добавить"
       >
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Название</label>
             <input
               type="text"
-              value={simModal.name}
-              onChange={e => setSimModal(s => ({ ...s, name: e.target.value }))}
-              placeholder="nanoSIM + eSIM"
+              value={dimModal.label}
+              onChange={e => setDimModal(s => ({ ...s, label: e.target.value }))}
+              placeholder="Оперативная память"
               autoFocus
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">ID (необязательно)</label>
-            <input
-              type="text"
-              value={simModal.id}
-              onChange={e => setSimModal(s => ({ ...s, id: e.target.value }))}
-              placeholder="Авто-генерация из названия"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Тип</label>
+            <div className="flex gap-3">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  checked={dimModal.type === 'select'}
+                  onChange={() => setDimModal(s => ({ ...s, type: 'select' }))}
+                  className="accent-gray-900"
+                />
+                <span className="text-sm">Текстовые кнопки</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  checked={dimModal.type === 'color'}
+                  onChange={() => setDimModal(s => ({ ...s, type: 'color' }))}
+                  className="accent-gray-900"
+                />
+                <span className="text-sm">Цветные кружки</span>
+              </label>
+            </div>
           </div>
         </div>
       </AdminModal>

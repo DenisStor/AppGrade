@@ -4,7 +4,7 @@ export const formatPrice = (price) => {
 
 export const formatMemory = (memory) => {
   if (memory >= 1024) {
-    return `${memory / 1024} ТБ`
+    return `${Math.round(memory / 1024)} ТБ`
   }
   return `${memory} ГБ`
 }
@@ -18,12 +18,23 @@ export const hasDiscount = (product) => {
   return product?.variants?.some((v) => v.oldPrice && v.oldPrice > v.price)
 }
 
+export const getAvailableDimensionValues = (product, dimensionKey) => {
+  if (!product?.variants?.length) return []
+  const valueMap = new Map()
+  product.variants.forEach((v) => {
+    const val = v.attributes?.[dimensionKey]
+    if (val && !valueMap.has(val.id)) valueMap.set(val.id, val)
+  })
+  return Array.from(valueMap.values())
+}
+
 export const getAvailableColors = (product) => {
   if (!product?.variants?.length) return []
   const colorMap = new Map()
   product.variants.forEach((v) => {
-    if (!colorMap.has(v.color.id)) {
-      colorMap.set(v.color.id, v.color)
+    const color = v.attributes?.color || v.color
+    if (color && !colorMap.has(color.id)) {
+      colorMap.set(color.id, color)
     }
   })
   return Array.from(colorMap.values())
@@ -33,7 +44,7 @@ export const getAvailableMemory = (product) => {
   if (!product?.variants?.length) return []
   const memorySet = new Set(
     product.variants
-      .map((v) => v.memory)
+      .map((v) => v.attributes?.memory ? Number(v.attributes.memory.id) : v.memory)
       .filter((m) => m !== null && m !== undefined)
   )
   return Array.from(memorySet).sort((a, b) => a - b)
@@ -61,6 +72,18 @@ export const getAvailableMemoryFromProducts = (products) => {
     })
   })
   return Array.from(memorySet).sort((a, b) => a - b)
+}
+
+export const getAvailableSims = (product) => {
+  if (!product?.variants?.length) return []
+  const simMap = new Map()
+  product.variants.forEach((v) => {
+    const sim = v.attributes?.sim || v.sim
+    if (sim && !simMap.has(sim.id)) {
+      simMap.set(sim.id, sim)
+    }
+  })
+  return Array.from(simMap.values())
 }
 
 export const getBrandSlug = (brandName) => {

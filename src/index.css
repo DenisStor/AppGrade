@@ -165,6 +165,10 @@ h1, h2, h3, h4, h5, h6 {
     @apply px-6 lg:px-60;
   }
 
+  .catalog-padding {
+    @apply px-4 lg:px-20;
+  }
+
   .section-margin {
     @apply mx-6 lg:mx-60;
   }
@@ -184,33 +188,33 @@ h1, h2, h3, h4, h5, h6 {
 /* Range Slider */
 .range-slider-thumb::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 22px;
-  height: 22px;
-  background: linear-gradient(145deg, #2a2a2c, #1d1d1f);
+  width: 20px;
+  height: 20px;
+  background: #1d1d1f;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  border: none;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .range-slider-thumb::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+  transform: scale(1.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .range-slider-thumb::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  background: linear-gradient(145deg, #2a2a2c, #1d1d1f);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  width: 20px;
+  height: 20px;
+  background: #1d1d1f;
+  border: none;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .range-slider-thumb::-moz-range-thumb:hover {
-  transform: scale(1.15);
+  transform: scale(1.12);
 }
 
 /* Heart-beat animation */
@@ -245,6 +249,28 @@ h1, h2, h3, h4, h5, h6 {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Filter collapse animation */
+.filter-collapse {
+  interpolate-size: allow-keywords;
+  height: 0;
+  overflow: clip;
+  opacity: 0;
+  transition: height 0.2s ease, opacity 0.1s ease;
+}
+
+.filter-collapse[data-open="true"] {
+  height: auto;
+  opacity: 1;
+  transition: height 0.2s ease, opacity 0.15s 0.05s ease;
+}
+
+@supports not (interpolate-size: allow-keywords) {
+  .filter-collapse,
+  .filter-collapse[data-open="true"] {
+    transition: none;
+  }
+}
+
 /* Dark underline inputs */
 .input-dark {
   width: 100%;
@@ -264,5 +290,18 @@ h1, h2, h3, h4, h5, h6 {
 .input-dark:focus {
   outline: none;
   border-bottom-color: white;
+}
+
+/* Safe area для нижней навигации (iPhone notch) */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-card-appear,
+  .animate-scale-in,
+  .animate-fade-in {
+    animation: none !important;
+  }
 }
 

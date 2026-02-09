@@ -5,9 +5,7 @@ import { PRICE } from '../../data/constants'
 
 export function ActiveFilters({
   filters,
-  availableColors = [],
   availableMemory = [],
-  onRemoveColor,
   onRemoveMemory,
   onRemoveBrand,
   onResetPrice,
@@ -16,7 +14,6 @@ export function ActiveFilters({
   className = '',
 }) {
   const hasFilters = useMemo(() =>
-    filters.colors.length > 0 ||
     filters.memory.length > 0 ||
     filters.brands?.length > 0 ||
     filters.inStock ||
@@ -25,11 +22,6 @@ export function ActiveFilters({
   , [filters])
 
   if (!hasFilters) return null
-
-  const getColorName = (colorId) => {
-    const color = availableColors.find((c) => c.id === colorId)
-    return color?.name || colorId
-  }
 
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
@@ -51,15 +43,6 @@ export function ActiveFilters({
           onRemove={onResetPrice}
         />
       )}
-
-      {/* Цвета */}
-      {filters.colors.map((colorId) => (
-        <Tag
-          key={colorId}
-          label={getColorName(colorId)}
-          onRemove={() => onRemoveColor(colorId)}
-        />
-      ))}
 
       {/* Память */}
       {filters.memory.map((memory) => (
@@ -88,7 +71,7 @@ export function ActiveFilters({
 
 function Tag({ label, onRemove }) {
   return (
-    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 rounded-full text-sm">
+    <span className="animate-scale-in inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 rounded-full text-sm">
       <span className="text-gray-dark">{label}</span>
       <button
         onClick={onRemove}

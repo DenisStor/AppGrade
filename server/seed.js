@@ -7,6 +7,7 @@ import db from './db.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const productsDir = join(__dirname, '..', 'src', 'data', 'products')
+const dataDir = join(__dirname, '..', 'src', 'data')
 
 // Маппинг Vite-импортов на реальные URL в server/uploads/
 const imagePathMap = {
@@ -21,8 +22,8 @@ function resolveImagePath(importPath) {
 }
 
 // Загрузка JS-файлов с заменой Vite-импортов на строки-заглушки
-function loadProductFile(filename) {
-  let code = readFileSync(join(productsDir, filename), 'utf-8')
+function loadProductFile(filename, baseDir = productsDir) {
+  let code = readFileSync(join(baseDir, filename), 'utf-8')
 
   // Заменяем import X from '...' на const X = resolved url
   code = code.replace(
@@ -62,6 +63,8 @@ const allProducts = [
 ]
 
 const allUsed = usedProducts || []
+
+const { SERVICE_PRICING } = loadProductFile('service.js', dataDir)
 
 // Категории (хардкод — в исходниках используют Vite image imports)
 const categoriesData = [
@@ -138,6 +141,8 @@ const seedTransaction = db.transaction(() => {
     DELETE FROM categories;
     DELETE FROM banners;
     DELETE FROM blog_posts;
+    DELETE FROM service_prices;
+    DELETE FROM service_items;
     DELETE FROM requests;
     DELETE FROM admin_users;
   `)
@@ -192,12 +197,12 @@ const seedTransaction = db.transaction(() => {
   console.log('Создание товаров...')
   const productIdMap = {} // original string id → db id
   const insertProduct = db.prepare(`
-    INSERT INTO products (name, slug, category_id, brand_id, short_description, description, badges, specs, is_used, condition, condition_label, warranty, sort_order, active)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+    INSERT INTO products (name, slug, category_id, brand_id, short_description, description, badges, specs, is_used, condition, condition_label, warranty, sort_order, active, dimensions)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
   `)
   const insertVariant = db.prepare(`
-    INSERT INTO product_variants (product_id, color_name, color_hex, memory, price, old_price, stock_status, sort_order)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO product_variants (product_id, color_name, color_hex, memory, price, old_price, stock_status, sort_order, sim_id, sim_name, attributes)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
   const insertImage = db.prepare(
     'INSERT INTO product_images (variant_id, url, sort_order) VALUES (?, ?, ?)'
@@ -214,6 +219,15 @@ const seedTransaction = db.transaction(() => {
       return
     }
 
+    // Вычисляем dimensions из наличия color/memory/sim
+    const dims = []
+    const hasColor = p.variants?.some(v => v.color && v.color.name !== 'Default')
+    const hasMemory = p.variants?.some(v => v.memory)
+    const hasSim = p.simOptions?.length > 0
+    if (hasColor) dims.push({ key: 'color', label: 'Цвет', type: 'color' })
+    if (hasMemory) dims.push({ key: 'memory', label: 'Память', type: 'select' })
+    if (hasSim) dims.push({ key: 'sim', label: 'Связь', type: 'select' })
+
     const result = insertProduct.run(
       p.name, p.slug, catId, brandId,
       p.shortDescription || null,
@@ -224,26 +238,56 @@ const seedTransaction = db.transaction(() => {
       p.condition || null,
       p.conditionLabel || null,
       p.warranty || null,
-      order
+      order,
+      JSON.stringify(dims)
     )
     const productId = result.lastInsertRowid
     productIdMap[p.id] = productId
 
-    // Варианты
+    // Варианты — разворачиваем в комбинации с sim если есть simOptions
     if (p.variants?.length) {
-      p.variants.forEach((v, vi) => {
+      const variantsToSeed = []
+      if (hasSim && p.simOptions?.length) {
+        for (const v of p.variants) {
+          for (const sim of p.simOptions) {
+            variantsToSeed.push({ ...v, _sim: sim })
+          }
+        }
+      } else {
+        variantsToSeed.push(...p.variants.map(v => ({ ...v, _sim: null })))
+      }
+
+      variantsToSeed.forEach((v, vi) => {
         const colorName = v.color?.name || 'Default'
         const colorHex = v.color?.hex || '#000000'
         const stockStatus = v.inStock === false ? 'out_of_stock' : 'in_stock'
 
+        // Собираем attributes
+        const attrs = {}
+        if (v.color && v.color.name !== 'Default') {
+          const colorId = v.color.hex
+            ? v.color.hex.replace('#', '').toLowerCase()
+            : v.color.id || v.color.name.toLowerCase().replace(/[^a-zа-яё0-9]/g, '-')
+          attrs.color = { id: colorId, name: v.color.name, hex: v.color.hex || '#000000' }
+        }
+        if (v.memory) {
+          attrs.memory = { id: String(v.memory), name: v.memory >= 1024 ? `${v.memory / 1024} ТБ` : `${v.memory} ГБ` }
+        }
+        if (v._sim) {
+          attrs.sim = { id: v._sim.id, name: v._sim.name }
+        }
+
         const vResult = insertVariant.run(
           productId, colorName, colorHex,
           v.memory || null, v.price, v.oldPrice || null,
-          stockStatus, vi
+          stockStatus, vi,
+          v._sim?.id || null, v._sim?.name || null,
+          JSON.stringify(attrs)
         )
 
-        // Изображения
-        if (v.images?.length) {
+        // Изображения — только у первого sim-варианта (или если sim нет)
+        const isFirstSim = !v._sim || v._sim === p.simOptions[0]
+        if (isFirstSim && v.images?.length) {
           v.images.forEach((img, ii) => {
             const url = typeof img === 'string' ? img : String(img)
             insertImage.run(vResult.lastInsertRowid, url, ii)
@@ -309,6 +353,25 @@ const seedTransaction = db.transaction(() => {
     insertBanner.run(b.title, b.image_desktop, b.image_mobile, b.alt, b.link, i)
   })
 
+  // 9. Услуги ремонта
+  console.log('Создание услуг ремонта...')
+  const servicePricing = SERVICE_PRICING || []
+  const insertService = db.prepare(
+    'INSERT INTO service_items (name, time, sort_order, active) VALUES (?, ?, ?, 1)'
+  )
+  const insertServicePrice = db.prepare(
+    'INSERT INTO service_prices (service_item_id, model_id, price) VALUES (?, ?, ?)'
+  )
+  servicePricing.forEach((s, i) => {
+    const result = insertService.run(s.name, s.time, i)
+    const serviceId = result.lastInsertRowid
+    if (s.prices) {
+      for (const [modelId, price] of Object.entries(s.prices)) {
+        if (price) insertServicePrice.run(serviceId, modelId, price)
+      }
+    }
+  })
+
   // Итоги
   const stats = {
     categories: db.prepare('SELECT COUNT(*) as c FROM categories').get().c,
@@ -318,6 +381,7 @@ const seedTransaction = db.transaction(() => {
     images: db.prepare('SELECT COUNT(*) as c FROM product_images').get().c,
     blogPosts: db.prepare('SELECT COUNT(*) as c FROM blog_posts').get().c,
     banners: db.prepare('SELECT COUNT(*) as c FROM banners').get().c,
+    services: db.prepare('SELECT COUNT(*) as c FROM service_items').get().c,
   }
 
   console.log('\nГотово!')
@@ -328,6 +392,7 @@ const seedTransaction = db.transaction(() => {
   console.log(`  Изображений: ${stats.images}`)
   console.log(`  Статей: ${stats.blogPosts}`)
   console.log(`  Баннеров: ${stats.banners}`)
+  console.log(`  Услуг: ${stats.services}`)
   console.log(`\n  Логин: admin@appgrade.ru`)
 })
 

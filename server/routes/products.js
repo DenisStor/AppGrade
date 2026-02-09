@@ -13,6 +13,7 @@ function getProductFull(id) {
 
   product.badges = safeJsonParse(product.badges, [])
   product.specs = safeJsonParse(product.specs, {})
+  product.dimensions = safeJsonParse(product.dimensions, [])
 
   const variants = db.prepare(
     'SELECT * FROM product_variants WHERE product_id = ? ORDER BY sort_order ASC, id ASC'
@@ -22,6 +23,7 @@ function getProductFull(id) {
     v.images = db.prepare(
       'SELECT * FROM product_images WHERE variant_id = ? ORDER BY sort_order ASC'
     ).all(v.id)
+    v.attributes = safeJsonParse(v.attributes, {})
   }
   product.variants = variants
 
@@ -100,7 +102,7 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  const { name, slug, category_id, brand_id, short_description, description, badges, specs, is_used, condition, condition_label, warranty, active, variants, simOptions, relatedIds } = req.body
+  const { name, slug, category_id, brand_id, short_description, description, badges, specs, dimensions, is_used, condition, condition_label, warranty, active, variants, simOptions, relatedIds } = req.body
 
   if (!name || !slug || !category_id || !brand_id) {
     return res.status(400).json({ error: 'Название, slug, категория и бренд обязательны' })
@@ -117,12 +119,13 @@ router.post('/', (req, res) => {
 
   const insertProduct = db.transaction(() => {
     const result = db.prepare(`
-      INSERT INTO products (name, slug, category_id, brand_id, short_description, description, badges, specs, is_used, condition, condition_label, warranty, active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO products (name, slug, category_id, brand_id, short_description, description, badges, specs, dimensions, is_used, condition, condition_label, warranty, active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       name, slug, category_id, brand_id,
       short_description || null, description || null,
       JSON.stringify(badges || []), JSON.stringify(specs || {}),
+      JSON.stringify(dimensions || []),
       is_used || 0, condition || null, condition_label || null, warranty || null,
       active ?? 1
     )
@@ -131,17 +134,24 @@ router.post('/', (req, res) => {
 
     if (variants?.length) {
       const insertVariant = db.prepare(`
-        INSERT INTO product_variants (product_id, color_name, color_hex, memory, price, old_price, stock_status, sort_order)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO product_variants (product_id, color_name, color_hex, memory, price, old_price, stock_status, sim_id, sim_name, attributes, sort_order)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `)
       const insertImage = db.prepare(
         'INSERT INTO product_images (variant_id, url, sort_order) VALUES (?, ?, ?)'
       )
 
       variants.forEach((v, vi) => {
+        const attrs = v.attributes || {}
+        const colorName = attrs.color?.name || v.color_name || 'Default'
+        const colorHex = attrs.color?.hex || v.color_hex || '#000000'
+        const memory = attrs.memory ? Number(attrs.memory.id) : (v.memory ?? null)
+        const simId = attrs.sim?.id || v.sim_id || null
+        const simName = attrs.sim?.name || v.sim_name || null
         const vResult = insertVariant.run(
-          productId, v.color_name, v.color_hex, v.memory || null,
-          v.price, v.old_price || null, v.stock_status || 'in_stock', vi
+          productId, colorName, colorHex, memory ?? null,
+          v.price, v.old_price ?? null, v.stock_status || 'in_stock',
+          simId, simName, JSON.stringify(attrs), vi
         )
         if (v.images?.length) {
           v.images.forEach((img, ii) => {
@@ -153,9 +163,9 @@ router.post('/', (req, res) => {
 
     if (simOptions?.length) {
       const insertSim = db.prepare(
-        'INSERT INTO product_sim_options (product_id, sim_id, name, sort_order) VALUES (?, ?, ?, ?)'
+        'INSERT INTO product_sim_options (product_id, sim_id, name, price_modifier, sort_order) VALUES (?, ?, ?, ?, ?)'
       )
-      simOptions.forEach((s, i) => insertSim.run(productId, s.sim_id || s.id, s.name, i))
+      simOptions.forEach((s, i) => insertSim.run(productId, s.sim_id || s.id, s.name, s.price_modifier || 0, i))
     }
 
     if (relatedIds?.length) {
@@ -178,7 +188,7 @@ router.put('/:id', (req, res) => {
   const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(id)
   if (!existing) return res.status(404).json({ error: 'Товар не найден' })
 
-  const { name, slug, category_id, brand_id, short_description, description, badges, specs, is_used, condition, condition_label, warranty, active, variants, simOptions, relatedIds } = req.body
+  const { name, slug, category_id, brand_id, short_description, description, badges, specs, dimensions, is_used, condition, condition_label, warranty, active, variants, simOptions, relatedIds } = req.body
 
   if (slug && slug !== existing.slug) {
     const dup = db.prepare('SELECT id FROM products WHERE slug = ? AND id != ?').get(slug, id)
@@ -188,7 +198,7 @@ router.put('/:id', (req, res) => {
   const updateProduct = db.transaction(() => {
     db.prepare(`
       UPDATE products SET name = ?, slug = ?, category_id = ?, brand_id = ?, short_description = ?, description = ?,
-        badges = ?, specs = ?, is_used = ?, condition = ?, condition_label = ?, warranty = ?, active = ?, updated_at = datetime('now')
+        badges = ?, specs = ?, dimensions = ?, is_used = ?, condition = ?, condition_label = ?, warranty = ?, active = ?, updated_at = datetime('now')
       WHERE id = ?
     `).run(
       name ?? existing.name,
@@ -199,6 +209,7 @@ router.put('/:id', (req, res) => {
       description !== undefined ? description : existing.description,
       JSON.stringify(badges ?? JSON.parse(existing.badges || '[]')),
       JSON.stringify(specs ?? JSON.parse(existing.specs || '{}')),
+      JSON.stringify(dimensions ?? safeJsonParse(existing.dimensions, [])),
       is_used ?? existing.is_used,
       condition !== undefined ? condition : existing.condition,
       condition_label !== undefined ? condition_label : existing.condition_label,
@@ -212,17 +223,24 @@ router.put('/:id', (req, res) => {
 
       if (variants?.length) {
         const insertVariant = db.prepare(`
-          INSERT INTO product_variants (product_id, color_name, color_hex, memory, price, old_price, stock_status, sort_order)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO product_variants (product_id, color_name, color_hex, memory, price, old_price, stock_status, sim_id, sim_name, attributes, sort_order)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `)
         const insertImage = db.prepare(
           'INSERT INTO product_images (variant_id, url, sort_order) VALUES (?, ?, ?)'
         )
 
         variants.forEach((v, vi) => {
+          const attrs = v.attributes || {}
+          const colorName = attrs.color?.name || v.color_name || 'Default'
+          const colorHex = attrs.color?.hex || v.color_hex || '#000000'
+          const memory = attrs.memory ? Number(attrs.memory.id) : (v.memory ?? null)
+          const simId = attrs.sim?.id || v.sim_id || null
+          const simName = attrs.sim?.name || v.sim_name || null
           const vResult = insertVariant.run(
-            id, v.color_name, v.color_hex, v.memory || null,
-            v.price, v.old_price || null, v.stock_status || 'in_stock', vi
+            id, colorName, colorHex, memory ?? null,
+            v.price, v.old_price ?? null, v.stock_status || 'in_stock',
+            simId, simName, JSON.stringify(attrs), vi
           )
           if (v.images?.length) {
             v.images.forEach((img, ii) => {
@@ -237,9 +255,9 @@ router.put('/:id', (req, res) => {
       db.prepare('DELETE FROM product_sim_options WHERE product_id = ?').run(id)
       if (simOptions?.length) {
         const insertSim = db.prepare(
-          'INSERT INTO product_sim_options (product_id, sim_id, name, sort_order) VALUES (?, ?, ?, ?)'
+          'INSERT INTO product_sim_options (product_id, sim_id, name, price_modifier, sort_order) VALUES (?, ?, ?, ?, ?)'
         )
-        simOptions.forEach((s, i) => insertSim.run(id, s.sim_id || s.id, s.name, i))
+        simOptions.forEach((s, i) => insertSim.run(id, s.sim_id || s.id, s.name, s.price_modifier || 0, i))
       }
     }
 

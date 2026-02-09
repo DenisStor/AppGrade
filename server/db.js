@@ -147,7 +147,39 @@ function migrate() {
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS service_items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      time TEXT NOT NULL,
+      sort_order INTEGER DEFAULT 0,
+      active INTEGER DEFAULT 1,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS service_prices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      service_item_id INTEGER NOT NULL REFERENCES service_items(id) ON DELETE CASCADE,
+      model_id TEXT NOT NULL,
+      price TEXT NOT NULL,
+      UNIQUE(service_item_id, model_id)
+    );
   `)
+
+  // Миграции для существующих таблиц
+  try {
+    db.exec('ALTER TABLE product_sim_options ADD COLUMN price_modifier INTEGER DEFAULT 0')
+  } catch { /* колонка уже существует */ }
+
+  try { db.exec('ALTER TABLE product_variants ADD COLUMN sim_id TEXT') } catch {}
+  try { db.exec('ALTER TABLE product_variants ADD COLUMN sim_name TEXT') } catch {}
+
+  // Произвольные измерения (dimensions/attributes)
+  try { db.exec("ALTER TABLE products ADD COLUMN dimensions TEXT DEFAULT '[]'") } catch {}
+  try { db.exec("ALTER TABLE product_variants ADD COLUMN attributes TEXT DEFAULT '{}'") } catch {}
+
+  migrateToAttributes()
 
   // Индексы для производительности
   db.exec(`
@@ -166,7 +198,58 @@ function migrate() {
     CREATE INDEX IF NOT EXISTS idx_categories_active ON categories(active);
     CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
     CREATE INDEX IF NOT EXISTS idx_blog_posts_status ON blog_posts(status);
+    CREATE INDEX IF NOT EXISTS idx_service_prices_item ON service_prices(service_item_id);
+    CREATE INDEX IF NOT EXISTS idx_service_items_active ON service_items(active);
   `)
+}
+
+function migrateToAttributes() {
+  // Заполняет attributes/dimensions из legacy-колонок (однократно)
+  const needMigration = db.prepare(
+    "SELECT COUNT(*) as count FROM product_variants WHERE attributes = '{}' AND color_name IS NOT NULL AND color_name != ''"
+  ).get()
+  if (!needMigration.count) return
+
+  const products = db.prepare('SELECT id FROM products').all()
+
+  const updateVariant = db.prepare('UPDATE product_variants SET attributes = ? WHERE id = ?')
+  const updateProduct = db.prepare('UPDATE products SET dimensions = ? WHERE id = ?')
+
+  const tx = db.transaction(() => {
+    for (const p of products) {
+      const variants = db.prepare('SELECT * FROM product_variants WHERE product_id = ?').all(p.id)
+      if (!variants.length) continue
+
+      const dims = []
+      const hasColor = variants.some(v => v.color_name)
+      const hasMemory = variants.some(v => v.memory)
+      const hasSim = variants.some(v => v.sim_id)
+
+      if (hasColor) dims.push({ key: 'color', label: 'Цвет', type: 'color' })
+      if (hasMemory) dims.push({ key: 'memory', label: 'Память', type: 'select' })
+      if (hasSim) dims.push({ key: 'sim', label: 'Связь', type: 'select' })
+
+      updateProduct.run(JSON.stringify(dims), p.id)
+
+      for (const v of variants) {
+        const attrs = {}
+        if (v.color_name) {
+          const colorId = v.color_hex
+            ? v.color_hex.replace('#', '').toLowerCase()
+            : v.color_name.toLowerCase().replace(/[^a-zа-яё0-9]/g, '-')
+          attrs.color = { id: colorId, name: v.color_name, hex: v.color_hex || '#000000' }
+        }
+        if (v.memory) {
+          attrs.memory = { id: String(v.memory), name: `${v.memory >= 1024 ? `${v.memory / 1024} ТБ` : `${v.memory} ГБ`}` }
+        }
+        if (v.sim_id) {
+          attrs.sim = { id: v.sim_id, name: v.sim_name || v.sim_id }
+        }
+        updateVariant.run(JSON.stringify(attrs), v.id)
+      }
+    }
+  })
+  tx()
 }
 
 migrate()

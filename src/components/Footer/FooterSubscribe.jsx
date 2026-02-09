@@ -1,16 +1,19 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
 
 export function FooterSubscribe() {
   const [email, setEmail] = useState('')
+  const [agreed, setAgreed] = useState(false)
   const { toast } = useToast()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!email.trim()) return
+    if (!email.trim() || !agreed) return
     toast('Вы подписались на новости!')
     setEmail('')
+    setAgreed(false)
   }
 
   return (
@@ -32,6 +35,20 @@ export function FooterSubscribe() {
           OK
         </Button>
       </form>
+      <label className="flex items-center gap-2 cursor-pointer mt-3">
+        <input
+          type="checkbox"
+          checked={agreed}
+          onChange={(e) => setAgreed(e.target.checked)}
+          className="w-3.5 h-3.5 accent-gray-dark"
+        />
+        <span className="text-xs text-gray-medium">
+          Согласен на обработку{' '}
+          <Link to="/privacy" className="underline hover:text-gray-dark">
+            персональных данных
+          </Link>
+        </span>
+      </label>
     </div>
   )
 }

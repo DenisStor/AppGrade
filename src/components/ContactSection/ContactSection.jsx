@@ -34,7 +34,7 @@ export function ContactSection() {
         {/* Левая часть — Карта */}
         <div className="h-[250px] lg:h-auto lg:min-h-[400px] order-2 lg:order-1">
           <iframe
-            src={`https://yandex.ru/map-widget/v1/?z=14&ol=biz&oid=${CONTACTS.mapId}`}
+            src={`https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=${CONTACTS.mapId}`}
             width="100%"
             height="100%"
             frameBorder="0"
@@ -83,7 +83,7 @@ export function ContactSection() {
               href={CONTACTS.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-9 h-9 border border-white/20 hover:border-white/40 text-white/60 hover:text-white transition-all"
+              className="flex items-center justify-center w-9 h-9 border border-white/20 rounded-xl hover:border-white/40 text-white/60 hover:text-white transition-all"
               aria-label="WhatsApp"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -94,7 +94,7 @@ export function ContactSection() {
               href={CONTACTS.telegram}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-9 h-9 border border-white/20 hover:border-white/40 text-white/60 hover:text-white transition-all"
+              className="flex items-center justify-center w-9 h-9 border border-white/20 rounded-xl hover:border-white/40 text-white/60 hover:text-white transition-all"
               aria-label="Telegram"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -105,7 +105,7 @@ export function ContactSection() {
               href={CONTACTS.vk}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-9 h-9 border border-white/20 hover:border-white/40 text-white/60 hover:text-white transition-all"
+              className="flex items-center justify-center w-9 h-9 border border-white/20 rounded-xl hover:border-white/40 text-white/60 hover:text-white transition-all"
               aria-label="VK"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -136,7 +136,7 @@ export function ContactSection() {
               <button
                 type="submit"
                 disabled={!agreed || isLoading}
-                className="w-full lg:w-auto px-6 py-3 bg-white text-black font-semibold text-sm uppercase tracking-wider hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                className="w-full lg:w-auto px-6 py-3 bg-white text-black font-semibold text-sm uppercase tracking-wider rounded-btn hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
@@ -155,7 +155,7 @@ export function ContactSection() {
                   onChange={(e) => setAgreed(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-3.5 h-3.5 border border-white/30 peer-checked:border-white peer-checked:bg-white transition-all flex items-center justify-center">
+                <div className="w-3.5 h-3.5 border border-white/30 rounded peer-checked:border-white peer-checked:bg-white transition-all flex items-center justify-center">
                   {agreed && (
                     <svg className="w-2 h-2 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                       <polyline points="20 6 9 17 4 12" />

@@ -14,7 +14,7 @@ export function ProductJsonLd({ product, variant, category, brand }) {
     image: variant.images?.[0],
     brand: {
       '@type': 'Brand',
-      name: product.brand || 'Apple',
+      name: product.brand || COMPANY.name,
     },
     offers: {
       '@type': 'Offer',

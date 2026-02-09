@@ -14,6 +14,7 @@ export function RepairForm() {
     problem: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [agreed, setAgreed] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -22,6 +23,8 @@ export function RepairForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (!agreed) return
 
     if (!formData.name || !formData.phone) {
       toast('Заполните обязательные поля', 'error')
@@ -118,21 +121,29 @@ export function RepairForm() {
               />
             </div>
 
+            <label className="flex items-center gap-2.5 cursor-pointer mb-6">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="w-4 h-4 accent-gray-dark"
+              />
+              <span className="text-xs text-gray-medium">
+                Согласен на обработку{' '}
+                <Link to="/privacy" className="underline hover:text-gray-dark">
+                  персональных данных
+                </Link>
+              </span>
+            </label>
+
             <Button
               type="submit"
               className="w-full"
               size="lg"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !agreed}
             >
               {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
             </Button>
-
-            <p className="text-center text-xs text-gray-medium mt-4">
-              Нажимая кнопку, вы соглашаетесь с{' '}
-              <Link to="/privacy" className="underline hover:text-gray-dark">
-                политикой конфиденциальности
-              </Link>
-            </p>
           </form>
         </div>
       </Container>

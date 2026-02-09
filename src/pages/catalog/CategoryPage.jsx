@@ -1,5 +1,6 @@
+import { useState, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Package } from 'lucide-react'
+import { Package, Search, X } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { ImageWithSkeleton } from '../../components/ui/ImageWithSkeleton'
@@ -11,6 +12,7 @@ import { usePageTitle } from '../../hooks/usePageTitle'
 
 export default function CategoryPage() {
   const { category } = useParams()
+  const [searchQuery, setSearchQuery] = useState('')
 
   const { data, loading, error } = useCatalogQuery(
     () => catalogApi.getCategoryBrands(category),
@@ -20,11 +22,17 @@ export default function CategoryPage() {
   const categoryData = data?.category
   const brands = data?.brands || []
 
+  const filteredBrands = useMemo(() => {
+    if (!searchQuery.trim()) return brands
+    const q = searchQuery.toLowerCase()
+    return brands.filter(b => (b.display_name || b.name).toLowerCase().includes(q))
+  }, [brands, searchQuery])
+
   usePageTitle(categoryData ? `${categoryData.name} — купить в APPGRADE` : null)
 
   if (error) {
     return (
-      <div className="section-padding py-20 text-center">
+      <div className="catalog-padding py-20 text-center">
         <p className="text-red-500 text-lg mb-2">Ошибка загрузки категории</p>
         <p className="text-gray-medium text-sm mb-4">{error}</p>
         <Link to="/catalog" className="text-blue-500 hover:underline">
@@ -36,7 +44,7 @@ export default function CategoryPage() {
 
   if (!loading && !categoryData) {
     return (
-      <div className="section-padding py-20 text-center">
+      <div className="catalog-padding py-20 text-center">
         <h1 className="text-2xl font-bold text-gray-dark mb-4">Категория не найдена</h1>
         <Link to="/catalog" className="text-blue-500 hover:underline">
           Вернуться в каталог
@@ -51,28 +59,53 @@ export default function CategoryPage() {
   ]
 
   return (
-    <div className="section-padding py-6 lg:py-10">
+    <div className="catalog-padding py-6 lg:py-10">
       <Breadcrumbs items={breadcrumbs} className="mb-6" />
 
-      <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark">
-          {categoryData?.name || '...'}
-        </h1>
-        {categoryData?.description && (
-          <p className="text-gray-medium mt-2">{categoryData.description}</p>
-        )}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark">
+            {categoryData?.name || '...'}
+          </h1>
+          {categoryData?.description && (
+            <p className="text-gray-medium mt-2">{categoryData.description}</p>
+          )}
+        </div>
+        <div className="relative hidden lg:block">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-medium" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Поиск..."
+            className="w-48 pl-9 pr-8 py-2 bg-white border border-gray-200 rounded-lg text-sm
+                       focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <X className="w-3.5 h-3.5 text-gray-medium" />
+            </button>
+          )}
+        </div>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7">
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="aspect-[3/4] rounded-3xl" />
           ))}
         </div>
-      ) : brands.length > 0 ? (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-          {brands.map((brand) => (
-            <BrandCard key={brand.id} brand={brand} category={category} />
+      ) : filteredBrands.length > 0 ? (
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7">
+          {filteredBrands.map((brand, index) => (
+            <div key={brand.id} className="animate-card-appear"
+                 style={{ animationDelay: `${Math.min(index * 80, 600)}ms` }}>
+              <BrandCard brand={brand} category={category} />
+            </div>
           ))}
         </div>
       ) : (

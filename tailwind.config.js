@@ -37,7 +37,8 @@ export default {
       animation: {
         'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
         'shimmer': 'shimmer 1.5s infinite',
-        'scale-in': 'scale-in 0.3s ease-out forwards',
+        'card-appear': 'card-appear 0.5s ease-out both',
+        'scale-in': 'scale-in 0.3s ease-out both',
         'ripple': 'ripple 0.6s linear',
         'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
       },
@@ -49,6 +50,10 @@ export default {
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
+        },
+        'card-appear': {
+          '0%': { opacity: '0', transform: 'translateY(12px) scale(0.97)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
         },
         'scale-in': {
           '0%': { transform: 'scale(0.95)', opacity: '0' },

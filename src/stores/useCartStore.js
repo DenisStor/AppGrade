@@ -4,12 +4,10 @@ import { persist } from 'zustand/middleware'
 export const useCartStore = create(
   persist(
     (set, get) => ({
-      items: [], // { id, productId, variantId, quantity, color, memory, sim, price, name, image }
+      items: [],
 
-      addItem: (product, variant, sim = null) => {
-        const itemId = sim
-          ? `${product.id}-${variant.id}-${sim}`
-          : `${product.id}-${variant.id}`
+      addItem: (product, variant) => {
+        const itemId = `${product.id}-${variant.id}`
         const { items } = get()
         const existing = items.find(i => i.id === itemId)
 
@@ -26,9 +24,9 @@ export const useCartStore = create(
               productId: product.id,
               variantId: variant.id,
               quantity: 1,
+              attributes: variant.attributes || {},
               color: variant.color,
               memory: variant.memory,
-              sim,
               price: variant.price,
               name: product.name,
               image: variant.images?.[0]
@@ -64,10 +62,24 @@ export const useCartStore = create(
     }),
     {
       name: 'cart',
-      version: 1,
+      version: 2,
       migrate: (persisted, version) => {
-        if (version === 0) {
-          return { ...persisted, items: persisted.items || [] }
+        if (version < 2) {
+          const items = (persisted.items || []).map(item => {
+            if (item.attributes && Object.keys(item.attributes).length > 0) return item
+            const attributes = {}
+            if (item.color) {
+              attributes.color = item.color
+            }
+            if (item.memory) {
+              attributes.memory = { id: String(item.memory), name: `${item.memory} ГБ` }
+            }
+            if (item.sim) {
+              attributes.sim = { id: item.sim, name: item.sim }
+            }
+            return { ...item, attributes }
+          })
+          return { ...persisted, items }
         }
         return persisted
       },

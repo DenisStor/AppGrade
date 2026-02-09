@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Image, FolderTree, Package, MessageSquare, FileText, X } from 'lucide-react'
+import { LayoutDashboard, Image, FolderTree, Package, MessageSquare, FileText, Wrench, X } from 'lucide-react'
 import { useQuery } from '../hooks/useQuery'
 
 const navItems = [
@@ -9,6 +9,7 @@ const navItems = [
   { to: '/admin/categories', icon: FolderTree, label: 'Категории' },
   { to: '/admin/products', icon: Package, label: 'Товары' },
   { to: '/admin/requests', icon: MessageSquare, label: 'Заявки', badge: true },
+  { to: '/admin/services', icon: Wrench, label: 'Услуги' },
   { to: '/admin/blog', icon: FileText, label: 'Блог' },
 ]
 

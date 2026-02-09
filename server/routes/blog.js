@@ -5,20 +5,22 @@ const router = Router()
 
 router.get('/', (req, res) => {
   const { status, page = 1, limit = 50 } = req.query
+  const safePage = Math.max(1, Number(page) || 1)
+  const safeLimit = Math.min(50, Math.max(1, Number(limit) || 50))
   let where = []
   let params = []
 
   if (status) { where.push('status = ?'); params.push(status) }
 
   const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : ''
-  const offset = (Number(page) - 1) * Number(limit)
+  const offset = (safePage - 1) * safeLimit
 
   const total = db.prepare(`SELECT COUNT(*) as count FROM blog_posts ${whereClause}`).get(...params)
   const items = db.prepare(`
     SELECT * FROM blog_posts ${whereClause} ORDER BY created_at DESC LIMIT ? OFFSET ?
-  `).all(...params, Number(limit), offset)
+  `).all(...params, safeLimit, offset)
 
-  res.json({ items, total: total.count, page: Number(page), limit: Number(limit) })
+  res.json({ items, total: total.count, page: safePage, limit: safeLimit })
 })
 
 router.get('/:id', (req, res) => {

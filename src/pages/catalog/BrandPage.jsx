@@ -1,8 +1,8 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { Search, X } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
-import { Skeleton } from '../../components/ui/Skeleton'
-import { ProductGrid } from '../../components/catalog/ProductGrid'
+import { ProductGrid, ProductGridSkeleton } from '../../components/catalog/ProductGrid'
 import { SortDropdown } from '../../components/catalog/SortDropdown'
 import { FilterSidebar } from '../../components/filters/FilterSidebar'
 import { ActiveFilters } from '../../components/filters/ActiveFilters'
@@ -12,7 +12,7 @@ import { EmptyFilterResults } from '../../components/filters/EmptyFilterResults'
 import { catalogApi } from '../../services/catalogApi'
 import { useCatalogQuery } from '../../hooks/useCatalogQuery'
 import { mapProducts } from '../../services/productMapper'
-import { getMinPrice, getAvailableColorsFromProducts, getAvailableMemoryFromProducts } from '../../utils/product'
+import { getMinPrice, getAvailableMemoryFromProducts } from '../../utils/product'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import {
   useFilterSync,
@@ -26,11 +26,6 @@ import { usePageTitle } from '../../hooks/usePageTitle'
 import { useProductFiltering } from '../../hooks/useProductFiltering'
 
 const brandExtraFilters = (result, filters) => {
-  if (filters.colors.length) {
-    result = result.filter((p) =>
-      p.variants.some((v) => filters.colors.includes(v.color.id))
-    )
-  }
   if (filters.memory.length) {
     result = result.filter((p) =>
       p.variants.some((v) => filters.memory.includes(v.memory))
@@ -53,6 +48,7 @@ const BRAND_FILTERING_OPTIONS = {
 export default function BrandPage() {
   const { category, brand } = useParams()
   const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const isDesktop = useMatchMedia('(min-width: 1024px)')
 
   const buildUrl = useCallback(buildBrandPageUrl, [])
@@ -63,7 +59,7 @@ export default function BrandPage() {
   )
 
   const { data: rawProducts, loading, error } = useCatalogQuery(
-    () => catalogApi.getProducts({ category, brand }),
+    () => catalogApi.getProducts({ category, brand, is_used: 0 }),
     [category, brand]
   )
 
@@ -83,7 +79,12 @@ export default function BrandPage() {
 
   const filteredProducts = useProductFiltering(allProducts, filters, sortBy, BRAND_FILTERING_OPTIONS)
 
-  const availableColors = useMemo(() => getAvailableColorsFromProducts(allProducts), [allProducts])
+  const displayProducts = useMemo(() => {
+    if (!searchQuery.trim()) return filteredProducts
+    const q = searchQuery.toLowerCase()
+    return filteredProducts.filter(p => p.name.toLowerCase().includes(q))
+  }, [filteredProducts, searchQuery])
+
   const availableMemory = useMemo(() => getAvailableMemoryFromProducts(allProducts), [allProducts])
 
   const priceRange = useMemo(() => {
@@ -93,7 +94,6 @@ export default function BrandPage() {
   }, [allProducts])
 
   const activeFiltersCount =
-    filters.colors.length +
     filters.memory.length +
     (filters.inStock ? 1 : 0) +
     (filters.priceRange[0] > priceRange[0] || filters.priceRange[1] < priceRange[1] ? 1 : 0)
@@ -106,7 +106,7 @@ export default function BrandPage() {
 
   if (error) {
     return (
-      <div className="section-padding py-20 text-center">
+      <div className="catalog-padding py-20 text-center">
         <p className="text-red-500 text-lg mb-2">Ошибка загрузки товаров</p>
         <p className="text-gray-medium text-sm mb-4">{error}</p>
         <Link to="/catalog" className="text-blue-500 hover:underline">
@@ -118,7 +118,7 @@ export default function BrandPage() {
 
   if (!loading && !allProducts.length && !rawProducts?.length) {
     return (
-      <div className="section-padding py-20 text-center">
+      <div className="catalog-padding py-20 text-center">
         <h1 className="text-2xl font-bold text-gray-dark mb-4">Товары не найдены</h1>
         <Link to="/catalog" className="text-blue-500 hover:underline">
           Вернуться в каталог
@@ -134,7 +134,7 @@ export default function BrandPage() {
   ]
 
   return (
-    <div className="section-padding py-6 lg:py-10">
+    <div className="catalog-padding py-6 lg:py-10">
       <Breadcrumbs items={breadcrumbs} className="mb-6" />
 
       <div className="flex items-center justify-between mb-6 lg:mb-8">
@@ -143,11 +143,31 @@ export default function BrandPage() {
             {brandName} {categoryName}
           </h1>
           <p className="text-gray-medium mt-1">
-            {formatProductCount(filteredProducts.length)}
+            {formatProductCount(displayProducts.length)}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
+          <div className="relative hidden lg:block">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-medium" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Поиск..."
+              className="w-48 pl-9 pr-8 py-2 bg-white border border-gray-200 rounded-lg text-sm
+                         focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-3.5 h-3.5 text-gray-medium" />
+              </button>
+            )}
+          </div>
           {!isDesktop && (
             <MobileFilterButton
               onClick={() => setIsFilterOpen(true)}
@@ -160,11 +180,7 @@ export default function BrandPage() {
 
       <ActiveFilters
         filters={filters}
-        availableColors={availableColors}
         availableMemory={availableMemory}
-        onRemoveColor={(colorId) =>
-          setFilter('colors', filters.colors.filter((c) => c !== colorId))
-        }
         onRemoveMemory={(memory) =>
           setFilter('memory', filters.memory.filter((m) => m !== memory))
         }
@@ -175,13 +191,13 @@ export default function BrandPage() {
         className="mb-6"
       />
 
-      <div className="flex gap-8">
+      <div className="flex gap-10">
         {isDesktop && (
-          <aside className="w-64 flex-shrink-0">
+          <aside className="w-72 flex-shrink-0 sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto scrollbar-hide">
             <FilterSidebar
               filters={filters}
               availableBrands={[]}
-              availableColors={availableColors}
+
               availableMemory={availableMemory}
               priceRange={priceRange}
               onFilterChange={setFilter}
@@ -193,13 +209,9 @@ export default function BrandPage() {
 
         <div className="flex-1">
           {loading ? (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={i} className="aspect-[3/4] rounded-3xl" />
-              ))}
-            </div>
-          ) : filteredProducts.length > 0 ? (
-            <ProductGrid products={filteredProducts} category={category} brand={brand} />
+            <ProductGridSkeleton count={6} />
+          ) : displayProducts.length > 0 ? (
+            <ProductGrid products={displayProducts} category={category} brand={brand} />
           ) : (
             <EmptyFilterResults onReset={resetFilters} />
           )}
@@ -210,12 +222,11 @@ export default function BrandPage() {
         <FilterDrawer
           isOpen={isFilterOpen}
           onClose={() => setIsFilterOpen(false)}
-          filteredCount={filteredProducts.length}
+          filteredCount={displayProducts.length}
         >
           <FilterSidebar
             filters={filters}
             availableBrands={[]}
-            availableColors={availableColors}
             availableMemory={availableMemory}
             priceRange={priceRange}
             onFilterChange={setFilter}

@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
 import { api } from '../../services/api'
@@ -7,6 +8,7 @@ import { useToast } from '../../hooks/useToast'
 export function QuickBuyModal({ isOpen, onClose, product, variant }) {
   const [form, setForm] = useState({ name: '', phone: '' })
   const [isLoading, setIsLoading] = useState(false)
+  const [agreed, setAgreed] = useState(false)
   const { toast } = useToast()
 
   const handleSubmit = useCallback(async (e) => {
@@ -17,12 +19,15 @@ export function QuickBuyModal({ isOpen, onClose, product, variant }) {
         name: form.name,
         phone: form.phone,
         productName: product?.name,
-        variantInfo: [variant?.color?.name, variant?.memory && `${variant.memory} ГБ`].filter(Boolean).join(', ') || undefined,
+        variantInfo: variant?.attributes && Object.keys(variant.attributes).length > 0
+          ? Object.values(variant.attributes).map(a => a.name).filter(Boolean).join(', ')
+          : [variant?.color?.name, variant?.memory && `${variant.memory} ГБ`].filter(Boolean).join(', ') || undefined,
         productId: product?._dbId,
       })
       toast('Заявка отправлена! Мы скоро свяжемся с вами', 'success')
       onClose()
       setForm({ name: '', phone: '' })
+      setAgreed(false)
     } catch {
       toast('Ошибка отправки. Попробуйте позже', 'error')
     } finally {
@@ -59,10 +64,21 @@ export function QuickBuyModal({ isOpen, onClose, product, variant }) {
             placeholder="+7 (___) ___-__-__"
           />
         </div>
-        <p className="text-sm text-gray-medium">
-          Мы перезвоним вам для подтверждения заказа
-        </p>
-        <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading}>
+        <label className="flex items-center gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="w-4 h-4 accent-gray-dark"
+          />
+          <span className="text-xs text-gray-medium">
+            Согласен на обработку{' '}
+            <Link to="/privacy" className="underline hover:text-gray-dark">
+              персональных данных
+            </Link>
+          </span>
+        </label>
+        <Button type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading || !agreed}>
           {isLoading ? 'Отправка...' : 'Отправить заявку'}
         </Button>
       </form>

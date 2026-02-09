@@ -161,7 +161,20 @@ docs/
 *                         → NotFoundPage (lazy)
 ```
 
-Каталог и Home — синхронные (часто посещаемые). Остальное — `lazy()` с `<Suspense fallback={<PageSkeleton />}>`.
+Каталог и Home — синхронные (часто посещаемые). Остальное — `lazy()` с `<Suspense>` и page-specific скелетами:
+
+| Роут | Скелет |
+|------|--------|
+| `/search` | `SearchPageSkeleton` — breadcrumbs + grid 2×3 карточек |
+| `/cart` | `CartPageSkeleton` — title + 2/3 товары + 1/3 sidebar |
+| `/service` | `ServicePageSkeleton` — hero + 2 колонки + прайс |
+| `/used` | `UsedPageSkeleton` — hero-banner + sidebar + grid |
+| `/blog` | `BlogPageSkeleton` — title + grid статей (aspect 2:1) |
+| `/about` | `AboutPageSkeleton` — 2 колонки + 4 feature-карточки |
+| `/admin/*` | `null` (свой Loader внутри AdminApp) |
+| `*` (404) | `null` (крохотный чанк) |
+
+Все скелеты обёрнуты в `PageLayout` — Header и Footer видны сразу при загрузке.
 
 Редиректы со старых URL — через `REDIRECTS` из `src/data/redirects.js`.
 

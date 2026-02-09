@@ -14,11 +14,13 @@ export function Modal({
 }) {
   const dialogRef = useRef(null)
   const previousFocusRef = useRef(null)
+  const onCloseRef = useRef(onClose)
+  useEffect(() => { onCloseRef.current = onClose })
 
   const handleKeyDown = useCallback(
     (e) => {
       if (e.key === 'Escape') {
-        onClose()
+        onCloseRef.current()
         return
       }
 
@@ -42,7 +44,7 @@ export function Modal({
         }
       }
     },
-    [onClose]
+    []
   )
 
   useEffect(() => {
@@ -63,7 +65,7 @@ export function Modal({
         previousFocusRef.current?.focus()
       }
     }
-  }, [isOpen, handleKeyDown])
+  }, [isOpen])
 
   if (!isOpen) return null
 

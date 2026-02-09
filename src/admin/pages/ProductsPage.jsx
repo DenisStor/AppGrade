@@ -8,20 +8,34 @@ import StatusBadge from '../components/StatusBadge'
 import ConfirmDialog from '../components/ConfirmDialog'
 import toast from 'react-hot-toast'
 
+const TABS = [
+  { key: 'new', label: 'Новые', is_used: 0 },
+  { key: 'used', label: 'Б/У', is_used: 1 },
+]
+
 export default function ProductsPage() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [categoryFilter, setCategoryFilter] = useState('')
+  const [activeTab, setActiveTab] = useState('new')
   const [deleteId, setDeleteId] = useState(null)
   const [deleting, setDeleting] = useState(false)
 
-  const qs = new URLSearchParams({ page, limit: 30 })
+  const currentTab = TABS.find(t => t.key === activeTab)
+  const isUsedTab = activeTab === 'used'
+
+  const qs = new URLSearchParams({ page, limit: 30, is_used: currentTab.is_used })
   if (search) qs.set('search', search)
   if (categoryFilter) qs.set('category_id', categoryFilter)
 
-  const { data, loading, refetch } = useQuery(`/products?${qs}`, [page, search, categoryFilter])
+  const { data, loading, refetch } = useQuery(`/products?${qs}`, [page, search, categoryFilter, activeTab])
   const { data: categories } = useQuery('/categories')
+
+  const handleTabChange = (key) => {
+    setActiveTab(key)
+    setPage(1)
+  }
 
   const handleDelete = async () => {
     setDeleting(true)
@@ -37,7 +51,7 @@ export default function ProductsPage() {
     }
   }
 
-  const columns = [
+  const baseColumns = [
     { key: 'name', label: 'Название', sortable: true, render: (_, row) => (
       <div>
         <p className="font-medium text-gray-900">{row.name}</p>
@@ -46,6 +60,10 @@ export default function ProductsPage() {
     )},
     { key: 'category_name', label: 'Категория', sortable: true, width: '120px' },
     { key: 'brand_name', label: 'Бренд', sortable: true, width: '100px' },
+  ]
+
+  const newColumns = [
+    ...baseColumns,
     { key: 'variantCount', label: 'Варианты', width: '90px', className: 'text-center' },
     { key: 'minPrice', label: 'Цена от', sortable: true, width: '110px', render: (v) => v ? `${v.toLocaleString('ru')} ₽` : '—' },
     { key: 'active', label: 'Статус', width: '100px', render: (v) => <StatusBadge status={v ? 'active' : 'draft'} /> },
@@ -59,13 +77,49 @@ export default function ProductsPage() {
     )},
   ]
 
+  const usedColumns = [
+    ...baseColumns,
+    { key: 'condition_label', label: 'Состояние', width: '120px', render: (v) => v || '—' },
+    { key: 'minPrice', label: 'Цена от', sortable: true, width: '110px', render: (v) => v ? `${v.toLocaleString('ru')} ₽` : '—' },
+    { key: 'active', label: 'Статус', width: '100px', render: (v) => <StatusBadge status={v ? 'active' : 'draft'} /> },
+    { key: 'actions', label: '', width: '50px', render: (_, row) => (
+      <button
+        onClick={(e) => { e.stopPropagation(); setDeleteId(row.id) }}
+        className="p-1 hover:bg-gray-100 rounded"
+      >
+        <Trash2 size={14} className="text-red-500" />
+      </button>
+    )},
+  ]
+
+  const columns = isUsedTab ? usedColumns : newColumns
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Товары</h1>
-        <Link to="/admin/products/new" className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800">
-          <Plus size={16} /> Добавить
+        <Link
+          to={isUsedTab ? '/admin/products/new?used=1' : '/admin/products/new'}
+          className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800"
+        >
+          <Plus size={16} /> {isUsedTab ? 'Добавить Б/У' : 'Добавить'}
         </Link>
+      </div>
+
+      <div className="flex gap-1 border-b border-gray-200">
+        {TABS.map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => handleTabChange(tab.key)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === tab.key
+                ? 'border-gray-900 text-gray-900'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       <div className="flex gap-3 flex-wrap">
@@ -100,7 +154,7 @@ export default function ProductsPage() {
           limit={30}
           onPageChange={setPage}
           onRowClick={(row) => navigate(`/admin/products/${row.id}`)}
-          emptyMessage="Нет товаров"
+          emptyMessage={isUsedTab ? 'Нет Б/У товаров' : 'Нет товаров'}
         />
       )}
 

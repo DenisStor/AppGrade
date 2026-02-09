@@ -60,28 +60,87 @@ export const ProductListCard = memo(function ProductListCard({ product, category
 
   return (
     <>
-      {/* Мобильная версия — компактная карточка */}
-      <article className="lg:hidden">
-        <Link to={productUrl} className="block">
-          <div className="aspect-square flex items-center justify-center">
+      {/* Мобильная версия */}
+      <article className="lg:hidden flex flex-col rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <Link to={productUrl} className="block relative">
+          <div className="aspect-[4/5] flex items-center justify-center bg-gray-light/30 p-2">
             <ImageWithSkeleton
               src={selectedVariant?.images?.[0]}
               alt={product.name}
               className="w-full h-full object-contain"
             />
           </div>
-          <h3 className="text-sm font-semibold text-gray-dark mt-3 pb-2 text-center line-clamp-2">
-            {product.name}
-          </h3>
+
+          {product.badges?.length > 0 && (
+            <BadgeGroup
+              badges={product.badges}
+              className="absolute top-2 left-2"
+            />
+          )}
+
+          <button
+            onClick={handleFavoriteClick}
+            className={`absolute top-2 right-2 p-1.5 rounded-full transition-all duration-200 ${
+              isFavorite(product.id)
+                ? 'bg-red-50 text-red-500'
+                : 'bg-white/80 text-gray-dark'
+            }`}
+            aria-label={isFavorite(product.id) ? 'Удалить из избранного' : 'В избранное'}
+          >
+            <Heart
+              className={`w-4 h-4 ${isHeartAnimating ? 'animate-heart-beat' : ''}`}
+              fill={isFavorite(product.id) ? 'currentColor' : 'none'}
+            />
+          </button>
         </Link>
+
+        <div className="p-3 flex flex-col flex-1">
+          <Link to={productUrl}>
+            <h3 className="text-sm font-semibold text-gray-dark line-clamp-2 mb-2">
+              {product.name}
+            </h3>
+          </Link>
+
+          <div className="flex items-baseline gap-1.5 mb-3">
+            <span className="text-base font-bold text-gray-dark">
+              {formatPrice(minPrice)}
+            </span>
+            {hasDiscount && (
+              <span className="text-xs text-gray-medium line-through">
+                {formatPrice(selectedVariant.oldPrice)}
+              </span>
+            )}
+          </div>
+
+          <div className="mt-auto">
+            {inCart ? (
+              <Link
+                to="/cart"
+                onClick={(e) => e.stopPropagation()}
+                className="animate-scale-in w-full py-2.5 rounded-btn bg-white border border-gray-dark text-gray-dark text-xs font-medium active:scale-[0.98] transition-all flex items-center justify-center gap-1.5"
+              >
+                <Check className="w-3.5 h-3.5" />
+                В корзине
+              </Link>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                className="w-full py-2.5 rounded-btn bg-gray-dark text-white text-xs font-medium active:scale-[0.98] transition-all flex items-center justify-center gap-1.5"
+              >
+                <ShoppingCart className="w-3.5 h-3.5" />
+                В корзину
+              </button>
+            )}
+          </div>
+        </div>
       </article>
 
       {/* Десктопная версия — flexbox с фиксированными высотами */}
-      <article className="hidden lg:flex group flex-col h-full bg-white p-5 rounded-card border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      <article className="hidden lg:flex group flex-col h-full bg-white p-6 rounded-card border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         {/* Изображение */}
         <Link
           to={productUrl}
-          className="block relative aspect-square rounded-card overflow-hidden mb-4"
+          className="block relative aspect-[4/5] rounded-card overflow-hidden mb-3"
         >
           <ImageWithSkeleton
             src={selectedVariant?.images?.[0]}
@@ -113,7 +172,7 @@ export const ProductListCard = memo(function ProductListCard({ product, category
         </Link>
 
         {/* Цвета — фиксированная высота */}
-        <div className="h-6 mb-3">
+        <div className="h-7 mb-3">
           {colors.length > 1 && (
             <div className="flex gap-1.5">
               {colors.slice(0, 5).map((color) => (
@@ -121,7 +180,7 @@ export const ProductListCard = memo(function ProductListCard({ product, category
                   key={color.id}
                   color={color}
                   selected={selectedColorId === color.id}
-                  size="sm"
+                  size="md"
                   showCheck={false}
                   onClick={(e) => handleColorClick(e, color.id)}
                 />
@@ -134,21 +193,21 @@ export const ProductListCard = memo(function ProductListCard({ product, category
         </div>
 
         {/* Название — минимальная высота для 2 строк */}
-        <Link to={productUrl} className="block min-h-[3rem] mb-1">
-          <h3 className="text-base font-medium text-gray-dark line-clamp-2 group-hover:text-gray-medium transition-colors">
+        <Link to={productUrl} className="block min-h-[3.5rem] mb-1">
+          <h3 className="text-lg font-semibold text-gray-dark line-clamp-2 group-hover:text-gray-medium transition-colors">
             {product.name}
           </h3>
         </Link>
 
         {/* Описание — фиксированная высота для 2 строк */}
-        <p className="text-sm text-gray-medium line-clamp-2 h-10 mb-3">
+        <p className="text-sm text-gray-medium line-clamp-2 h-10 mb-4">
           {product.shortDescription}
         </p>
 
         {/* Цена + скидка — фиксированная высота */}
         <div className="min-h-14 mb-3">
           <div className="flex items-baseline gap-x-2 flex-wrap">
-            <span className="text-xl font-bold text-gray-dark whitespace-nowrap">
+            <span className="text-2xl font-bold text-gray-dark whitespace-nowrap">
               {formatPrice(minPrice)}
             </span>
             {hasDiscount && (
@@ -170,7 +229,7 @@ export const ProductListCard = memo(function ProductListCard({ product, category
             <Link
               to="/cart"
               onClick={(e) => e.stopPropagation()}
-              className="group/btn w-full py-3 px-4 rounded-btn bg-white border border-gray-dark text-gray-dark text-sm font-medium hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              className="animate-scale-in group/btn w-full py-3.5 px-5 rounded-btn bg-white border border-gray-dark text-gray-dark text-sm font-medium hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               <Check className="w-4 h-4" />
               В корзине
@@ -178,7 +237,7 @@ export const ProductListCard = memo(function ProductListCard({ product, category
           ) : (
             <button
               onClick={handleAddToCart}
-              className="group/btn w-full py-3 px-4 rounded-btn bg-gray-dark text-white text-sm font-medium hover:bg-black active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              className="group/btn w-full py-3.5 px-5 rounded-btn bg-gray-dark text-white text-sm font-medium hover:bg-black active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               <ShoppingCart className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
               В корзину

@@ -1,8 +1,33 @@
-import { useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
+import { ChevronDown, RotateCcw } from 'lucide-react'
 import { RangeSlider } from '../ui/RangeSlider'
 import { CheckboxFilter } from './CheckboxFilter'
 import { formatMemory } from '../../utils/product'
 import { PRICE } from '../../data/constants'
+
+function FilterSection({ title, defaultOpen = true, children }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+
+  return (
+    <div className="py-5 first:pt-0">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between"
+      >
+        <h3 className="text-[13px] font-bold uppercase tracking-wide text-gray-medium">
+          {title}
+        </h3>
+        <ChevronDown
+          className={`w-4 h-4 text-gray-medium transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+      <div className="filter-collapse" data-open={isOpen}>
+        <div className="pt-4">{children}</div>
+      </div>
+    </div>
+  )
+}
 
 export function FilterSidebar({
   filters,
@@ -22,12 +47,15 @@ export function FilterSidebar({
     filters.priceRange[1] < priceRange[1]
   , [filters, priceRange])
 
+  const handleToggleInStock = useCallback(() => {
+    onFilterChange('inStock', !filters.inStock)
+  }, [filters.inStock, onFilterChange])
+
   return (
-    <aside className={`space-y-6 ${className}`}>
+    <aside className={`divide-y divide-gray-200/60 ${className}`}>
       {/* Бренд */}
       {!hideBrandFilter && availableBrands.length > 1 && (
-        <div>
-          <h3 className="text-sm font-semibold text-gray-dark mb-4">Бренд</h3>
+        <FilterSection title="Бренд">
           <CheckboxFilter
             options={availableBrands.map((b) => ({
               value: b,
@@ -36,12 +64,11 @@ export function FilterSidebar({
             selected={filters.brands}
             onChange={(brands) => onFilterChange('brands', brands)}
           />
-        </div>
+        </FilterSection>
       )}
 
       {/* Цена */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-dark mb-4">Цена, ₽</h3>
+      <FilterSection title="Цена, ₽">
         <RangeSlider
           min={priceRange[0]}
           max={priceRange[1]}
@@ -49,12 +76,11 @@ export function FilterSidebar({
           value={filters.priceRange}
           onChange={(value) => onFilterChange('priceRange', value)}
         />
-      </div>
+      </FilterSection>
 
       {/* Память */}
       {availableMemory.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-gray-dark mb-4">Память</h3>
+        <FilterSection title="Память">
           <CheckboxFilter
             options={availableMemory.map((m) => ({
               value: m,
@@ -63,48 +89,44 @@ export function FilterSidebar({
             selected={filters.memory}
             onChange={(memory) => onFilterChange('memory', memory)}
           />
-        </div>
+        </FilterSection>
       )}
 
-      {/* В наличии */}
-      <div>
-        <label className="flex items-center gap-3 cursor-pointer group">
-          <div className="relative">
-            <input
-              type="checkbox"
-              checked={filters.inStock}
-              onChange={(e) => onFilterChange('inStock', e.target.checked)}
-              className="sr-only peer"
-            />
-            <div className="w-5 h-5 border-2 border-gray-300 rounded peer-checked:border-gray-dark peer-checked:bg-gray-dark transition-colors" />
-            <svg
-              className="absolute top-0.5 left-0.5 w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={3}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </div>
-          <span className="text-sm text-gray-dark group-hover:text-gray-medium transition-colors">
-            Только в наличии
+      {/* В наличии — toggle switch */}
+      <div className="py-5">
+        <button
+          type="button"
+          onClick={handleToggleInStock}
+          className="w-full flex items-center justify-between cursor-pointer group"
+        >
+          <span className="text-[13px] font-bold uppercase tracking-wide text-gray-medium">
+            В наличии
           </span>
-        </label>
+          <div
+            className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
+              filters.inStock ? 'bg-gray-dark' : 'bg-gray-300'
+            }`}
+          >
+            <div
+              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                filters.inStock ? 'translate-x-5' : 'translate-x-0'
+              }`}
+            />
+          </div>
+        </button>
       </div>
 
       {/* Сброс */}
       {hasActiveFilters && (
-        <button
-          onClick={onReset}
-          className="w-full py-2.5 text-sm font-medium text-gray-medium hover:text-gray-dark border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
-        >
-          Сбросить фильтры
-        </button>
+        <div className="py-5 animate-scale-in">
+          <button
+            onClick={onReset}
+            className="w-full py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 border border-red-200 rounded-lg transition-colors flex items-center justify-center gap-2"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            Сбросить фильтры
+          </button>
+        </div>
       )}
     </aside>
   )

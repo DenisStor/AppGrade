@@ -6,9 +6,28 @@ import { SERVICE_PRICING, IPHONE_MODELS } from '../../data/service'
 
 export function ServicePricing() {
   const [selectedModel, setSelectedModel] = useState('all')
+  const [servicePricing, setServicePricing] = useState(SERVICE_PRICING)
   const scrollRef = useRef(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/public/services')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        const mapped = data.map(s => ({
+          id: s.id,
+          name: s.name,
+          time: s.time,
+          prices: (s.prices || []).reduce((acc, p) => {
+            acc[p.model_id] = p.price
+            return acc
+          }, {}),
+        }))
+        if (mapped.length) setServicePricing(mapped)
+      })
+      .catch(() => {})
+  }, [])
 
   const checkScroll = useCallback(() => {
     const el = scrollRef.current
@@ -96,7 +115,7 @@ export function ServicePricing() {
         {/* Таблица цен */}
         <div className="bg-white overflow-hidden rounded-3xl">
           <div className="divide-y divide-gray-100">
-            {SERVICE_PRICING.map((service) => {
+            {servicePricing.map((service) => {
               const price = getPrice(service)
               const isUnavailable = price === '—'
 

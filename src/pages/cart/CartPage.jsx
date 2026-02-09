@@ -18,6 +18,7 @@ export default function CartPage() {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
   const [orderForm, setOrderForm] = useState({ name: '', phone: '' })
   const [isOrderSuccess, setIsOrderSuccess] = useState(false)
+  const [orderAgreed, setOrderAgreed] = useState(false)
 
   usePageTitle('Корзина — APPGRADE')
 
@@ -47,6 +48,7 @@ export default function CartPage() {
     setIsOrderModalOpen(false)
     setIsOrderSuccess(false)
     setOrderForm({ name: '', phone: '' })
+    setOrderAgreed(false)
   }
 
   if (items.length === 0 && !isOrderSuccess) {
@@ -225,10 +227,21 @@ export default function CartPage() {
                 placeholder="+7 (___) ___-__-__"
               />
             </div>
-            <p className="text-sm text-gray-medium">
-              Мы перезвоним вам для подтверждения заказа
-            </p>
-            <Button type="submit" variant="primary" size="lg" className="w-full">
+            <label className="flex items-center gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={orderAgreed}
+                onChange={(e) => setOrderAgreed(e.target.checked)}
+                className="w-4 h-4 accent-gray-dark"
+              />
+              <span className="text-xs text-gray-medium">
+                Согласен на обработку{' '}
+                <Link to="/privacy" className="underline hover:text-gray-dark">
+                  персональных данных
+                </Link>
+              </span>
+            </label>
+            <Button type="submit" variant="primary" size="lg" className="w-full" disabled={!orderAgreed}>
               Подтвердить заказ
             </Button>
           </form>
