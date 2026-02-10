@@ -63,13 +63,15 @@ export default function CatalogPage() {
               <div className="hidden lg:block relative overflow-hidden rounded-card aspect-[4/3] transition-all duration-300 hover:shadow-liquid bg-gray-light">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
                 {category.image && (
-                  <ImageWithSkeleton
-                    src={category.image}
-                    alt={category.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="33vw"
-                    widths={[400, 800]}
-                  />
+                  <div className="absolute inset-0">
+                    <ImageWithSkeleton
+                      src={category.image}
+                      alt={category.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="33vw"
+                      widths={[400, 800]}
+                    />
+                  </div>
                 )}
                 <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
                   <h2 className="text-xl font-bold text-white mb-1">
