@@ -68,15 +68,15 @@ const { SERVICE_PRICING } = loadProductFile('service.js', dataDir)
 
 // Категории (хардкод — в исходниках используют Vite image imports)
 const categoriesData = [
-  { slug: 'smartphones', name: 'Смартфоны', description: 'iPhone, Samsung Galaxy', image_url: '/uploads/categories/smartphones.jpg' },
-  { slug: 'laptops', name: 'Ноутбуки', description: 'MacBook Pro, MacBook Air, iMac', image_url: '/uploads/categories/laptops.jpg' },
-  { slug: 'tablets', name: 'Планшеты', description: 'iPad Pro, iPad Air, iPad', image_url: '/uploads/categories/tablets.jpg' },
-  { slug: 'watches', name: 'Умные часы', description: 'Apple Watch, Samsung Watch', image_url: '/uploads/categories/watches.jpg' },
-  { slug: 'headphones', name: 'Наушники', description: 'AirPods, Galaxy Buds', image_url: '/uploads/categories/headphones.jpg' },
-  { slug: 'hairdryers', name: 'Фены', description: 'Dyson Supersonic', image_url: '/uploads/categories/hairdryers.jpg' },
-  { slug: 'stylers', name: 'Стайлеры', description: 'Dyson Airwrap, Corrale', image_url: null },
-  { slug: 'accessories', name: 'Аксессуары', description: 'Чехлы, зарядки, кабели', image_url: '/uploads/categories/accessories.jpg' },
-  { slug: 'gaming', name: 'Игровые консоли', description: 'PlayStation 5, DualSense', image_url: null },
+  { slug: 'smartphones', name: 'Смартфоны', description: 'iPhone, Samsung Galaxy', image_url: '/uploads/categories/smartphones.png' },
+  { slug: 'laptops', name: 'Ноутбуки', description: 'MacBook Pro, MacBook Air, iMac', image_url: '/uploads/categories/laptops.png' },
+  { slug: 'tablets', name: 'Планшеты', description: 'iPad Pro, iPad Air, iPad', image_url: '/uploads/categories/tablets.png' },
+  { slug: 'watches', name: 'Умные часы', description: 'Apple Watch, Samsung Watch', image_url: '/uploads/categories/watches.png' },
+  { slug: 'headphones', name: 'Наушники', description: 'AirPods, Galaxy Buds', image_url: '/uploads/categories/headphones.png' },
+  { slug: 'hairdryers', name: 'Фены', description: 'Dyson Supersonic', image_url: '/uploads/categories/hairdryers.png' },
+  { slug: 'stylers', name: 'Стайлеры', description: 'Dyson Airwrap, Corrale', image_url: '/uploads/categories/stylers.png' },
+  { slug: 'accessories', name: 'Аксессуары', description: 'Чехлы, зарядки, кабели', image_url: '/uploads/categories/accessories.png' },
+  { slug: 'gaming', name: 'Игровые консоли', description: 'PlayStation 5, DualSense', image_url: '/uploads/categories/gaming.png' },
 ]
 
 const brandsData = [
