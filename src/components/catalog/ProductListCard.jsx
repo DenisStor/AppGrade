@@ -1,19 +1,16 @@
 import { useState, useMemo, memo } from 'react'
 import { Link } from 'react-router-dom'
-import { Heart, ShoppingCart, Check } from 'lucide-react'
+import { ShoppingCart, Check } from 'lucide-react'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 import { BadgeGroup } from '../ui/Badge'
 import { ColorSwatch } from '../ui/ColorSwatch'
 import { getMinPrice, formatPrice, getAvailableColors } from '../../utils/product'
-import { useFavoritesStore } from '../../stores/useFavoritesStore'
 import { useCartStore } from '../../stores/useCartStore'
 import { useToast } from '../../hooks/useToast'
 
 export const ProductListCard = memo(function ProductListCard({ product, category, brand }) {
-  const { toggleItem, isFavorite } = useFavoritesStore()
   const { addItem: addToCart, isInCart } = useCartStore()
   const { toast } = useToast()
-  const [isHeartAnimating, setIsHeartAnimating] = useState(false)
   const [selectedColorId, setSelectedColorId] = useState(null)
 
   const colors = getAvailableColors(product)
@@ -30,14 +27,6 @@ export const ProductListCard = memo(function ProductListCard({ product, category
   const discount = hasDiscount
     ? Math.round((1 - selectedVariant.price / selectedVariant.oldPrice) * 100)
     : 0
-
-  const handleFavoriteClick = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsHeartAnimating(true)
-    toggleItem(product.id)
-    setTimeout(() => setIsHeartAnimating(false), 400)
-  }
 
   const handleAddToCart = (e) => {
     e.preventDefault()
@@ -80,20 +69,6 @@ export const ProductListCard = memo(function ProductListCard({ product, category
             />
           )}
 
-          <button
-            onClick={handleFavoriteClick}
-            className={`absolute top-2 right-2 p-1.5 rounded-full transition-all duration-200 ${
-              isFavorite(product.id)
-                ? 'bg-red-50 text-red-500'
-                : 'bg-white/80 text-gray-dark'
-            }`}
-            aria-label={isFavorite(product.id) ? 'Удалить из избранного' : 'В избранное'}
-          >
-            <Heart
-              className={`w-4 h-4 ${isHeartAnimating ? 'animate-heart-beat' : ''}`}
-              fill={isFavorite(product.id) ? 'currentColor' : 'none'}
-            />
-          </button>
         </Link>
 
         <div className="p-3 flex flex-col flex-1">
@@ -159,20 +134,6 @@ export const ProductListCard = memo(function ProductListCard({ product, category
             />
           )}
 
-          <button
-            onClick={handleFavoriteClick}
-            className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-200 hover:scale-110 ${
-              isFavorite(product.id)
-                ? 'bg-red-50 text-red-500'
-                : 'bg-white/80 text-gray-dark hover:bg-white'
-            }`}
-            aria-label={isFavorite(product.id) ? 'Удалить из избранного' : 'В избранное'}
-          >
-            <Heart
-              className={`w-5 h-5 ${isHeartAnimating ? 'animate-heart-beat' : ''}`}
-              fill={isFavorite(product.id) ? 'currentColor' : 'none'}
-            />
-          </button>
         </Link>
 
         {/* Цвета — фиксированная высота */}

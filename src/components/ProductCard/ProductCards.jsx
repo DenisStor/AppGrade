@@ -14,11 +14,11 @@ export function ProductCards() {
       </div>
       <div className="grid md:grid-cols-2 gap-6 px-6 lg:px-60">
         {/* Проверенное б/у */}
-        <Link to="/used" className="group aspect-[2/1] relative overflow-hidden rounded-card hover:scale-[1.02] transition-transform duration-300 block">
+        <Link to="/used" className="group aspect-[2/1] relative overflow-hidden rounded-card block">
           <ImageWithSkeleton
             src={buPhoto}
             alt="Проверенное б/у"
-            className="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-110 transition-all duration-300"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
           />
           <div className="absolute bottom-5 left-5 text-white">
             <h3 className="text-xl lg:text-2xl font-bold">Проверенное б/у</h3>
@@ -29,11 +29,11 @@ export function ProductCards() {
           </div>
         </Link>
         {/* Сервис */}
-        <Link to="/service" className="group aspect-[2/1] relative overflow-hidden rounded-card hover:scale-[1.02] transition-transform duration-300 block">
+        <Link to="/service" className="group aspect-[2/1] relative overflow-hidden rounded-card block">
           <ImageWithSkeleton
             src={servicePhoto}
             alt="Сервис"
-            className="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-110 transition-all duration-300"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
           />
           <div className="absolute bottom-5 left-5 text-white">
             <h3 className="text-xl lg:text-2xl font-bold">Сервис</h3>

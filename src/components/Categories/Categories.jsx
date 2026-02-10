@@ -12,6 +12,7 @@ export function Categories() {
         <SectionHeader
           title="Лучшие устройства в одном магазине"
           subtitle="Выберите нужную категорию"
+          subtitleClassName="hidden sm:block"
           linkText="Смотреть все категории"
           linkHref="/catalog"
         />

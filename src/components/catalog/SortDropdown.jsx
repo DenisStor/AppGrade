@@ -29,11 +29,13 @@ export function SortDropdown({ value, onChange, className = '' }) {
     <div ref={dropdownRef} className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+        className="flex items-center justify-center gap-2 h-11 px-4 w-full
+          bg-white border border-gray-200 rounded-[10px]
+          hover:border-gray-300 transition-colors"
       >
-        <span className="text-sm text-gray-dark">{currentOption.label}</span>
+        <span className="text-sm text-gray-dark truncate">{currentOption.label}</span>
         <ChevronDown
-          className={`w-4 h-4 text-gray-medium transition-transform ${
+          className={`w-4 h-4 text-gray-medium flex-shrink-0 transition-transform ${
             isOpen ? 'rotate-180' : ''
           }`}
         />

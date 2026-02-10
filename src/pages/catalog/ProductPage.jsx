@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Heart, Share2, Check } from 'lucide-react'
+import { Share2, Check } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { Badge, BadgeGroup } from '../../components/ui/Badge'
@@ -17,7 +17,7 @@ import { catalogApi } from '../../services/catalogApi'
 import { useCatalogQuery } from '../../hooks/useCatalogQuery'
 import { mapProduct } from '../../services/productMapper'
 import { formatPrice } from '../../utils/product'
-import { useFavoritesStore } from '../../stores/useFavoritesStore'
+
 import { useRecentlyViewedStore } from '../../stores/useRecentlyViewedStore'
 import { useCartStore } from '../../stores/useCartStore'
 import { useProductVariant } from '../../hooks/useProductVariant'
@@ -33,7 +33,6 @@ export default function ProductPage() {
 
   const product = useMemo(() => mapProduct(rawProduct), [rawProduct])
 
-  const { toggleItem, isFavorite } = useFavoritesStore()
   const { addItem } = useRecentlyViewedStore()
   const { addItem: addToCart, isInCart } = useCartStore()
 
@@ -160,28 +159,15 @@ export default function ProductPage() {
               </h1>
               <p className="text-gray-medium mt-1">{product.shortDescription}</p>
             </div>
-            <div className="flex gap-2">
+            {navigator.share && (
               <button
-                onClick={() => toggleItem(product.id)}
-                className={`p-3 rounded-full transition-colors ${
-                  isFavorite(product.id)
-                    ? 'bg-red-50 text-red-500'
-                    : 'bg-gray-100 text-gray-dark hover:bg-gray-200'
-                }`}
-                aria-label={isFavorite(product.id) ? 'Удалить из избранного' : 'В избранное'}
+                onClick={() => navigator.share({ url: window.location.href, title: product.name })}
+                className="p-3 rounded-full bg-gray-100 text-gray-dark hover:bg-gray-200 transition-colors"
+                aria-label="Поделиться"
               >
-                <Heart className="w-5 h-5" fill={isFavorite(product.id) ? 'currentColor' : 'none'} />
+                <Share2 className="w-5 h-5" />
               </button>
-              {navigator.share && (
-                <button
-                  onClick={() => navigator.share({ url: window.location.href, title: product.name })}
-                  className="p-3 rounded-full bg-gray-100 text-gray-dark hover:bg-gray-200 transition-colors"
-                  aria-label="Поделиться"
-                >
-                  <Share2 className="w-5 h-5" />
-                </button>
-              )}
-            </div>
+            )}
           </div>
 
           <div className="mb-6" key={currentVariant?.id}>

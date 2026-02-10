@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 export function SectionHeader({
   title,
   subtitle,
+  subtitleClassName = '',
   linkText,
   linkHref,
   className = ''
@@ -23,7 +24,7 @@ export function SectionHeader({
         )}
       </div>
       {subtitle && (
-        <p className="text-gray-medium mt-1 sm:mt-2">{subtitle}</p>
+        <p className={`text-gray-medium mt-1 sm:mt-2 ${subtitleClassName}`}>{subtitle}</p>
       )}
     </div>
   )

@@ -28,7 +28,7 @@ export function CartItem({ item, onRemove, onUpdateQuantity }) {
           <p className="text-sm text-gray-medium mt-1">{options}</p>
         )}
 
-        <div className="flex items-center justify-between mt-3">
+        <div className="flex items-center justify-between gap-3 mt-3 flex-wrap">
           <div className="flex items-center gap-2">
             <button
               onClick={() => onUpdateQuantity(item.quantity - 1)}
@@ -47,7 +47,7 @@ export function CartItem({ item, onRemove, onUpdateQuantity }) {
             </button>
           </div>
 
-          <span className="font-bold text-gray-dark">
+          <span className="font-bold text-gray-dark whitespace-nowrap">
             {formatPrice(item.price * item.quantity)}
           </span>
         </div>

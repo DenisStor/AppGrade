@@ -9,7 +9,7 @@ import logo from '../../assets/logo.png'
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden">
+    <footer className="relative overflow-hidden pb-20 lg:pb-0">
       {/* Градиентная линия сверху */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 

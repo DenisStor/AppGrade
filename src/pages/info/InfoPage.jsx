@@ -15,8 +15,9 @@ function PolicyContent({ content }) {
           <h2 className="text-xl font-semibold mb-3">{section.title}</h2>
           <ul className="space-y-2">
             {section.items.map((item, i) => (
-              <li key={i} className="text-gray-medium pl-4 relative before:content-['—'] before:absolute before:left-0">
-                {item}
+              <li key={i} className="text-gray-medium flex gap-2">
+                <span className="shrink-0 text-gray-medium/60">—</span>
+                <span>{item}</span>
               </li>
             ))}
           </ul>

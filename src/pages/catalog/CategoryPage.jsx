@@ -102,7 +102,7 @@ export default function CategoryPage() {
       ) : filteredBrands.length > 0 ? (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7">
           {filteredBrands.map((brand, index) => (
-            <div key={brand.id} className="animate-card-appear"
+            <div key={brand.id} className="animate-card-appear h-full"
                  style={{ animationDelay: `${Math.min(index * 80, 600)}ms` }}>
               <BrandCard brand={brand} category={category} />
             </div>
@@ -123,7 +123,7 @@ function BrandCard({ brand, category }) {
   return (
     <Link
       to={`/catalog/${category}/${brand.slug}`}
-      className="group flex flex-col bg-white rounded-card border border-gray-100 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+      className="group flex flex-col h-full bg-white rounded-card border border-gray-100 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
     >
       <div className="bg-gray-light aspect-[3/4] flex items-center justify-center p-6">
         {brand.flagshipImage ? (
