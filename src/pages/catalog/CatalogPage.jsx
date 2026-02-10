@@ -41,45 +41,25 @@ export default function CatalogPage() {
           {categories.map((category, index) => (
             <Link key={category.id} to={category.href} className="group animate-card-appear"
                   style={{ animationDelay: `${Math.min(index * 80, 600)}ms` }}>
-              {/* Мобильная версия */}
-              <div className="lg:hidden">
-                <div className="bg-gray-light aspect-square flex items-center justify-center p-4 rounded-xl">
+              <div className="overflow-hidden rounded-2xl lg:rounded-3xl bg-white border border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div className="bg-[#f5f5f7] aspect-[4/3] flex items-center justify-center">
                   {category.image && (
                     <ImageWithSkeleton
                       src={category.image}
                       alt={category.name}
-                      className="w-3/4 h-3/4 object-contain transition-transform duration-300 group-hover:scale-105"
-                      sizes="50vw"
-                      widths={[200, 400]}
+                      className={`w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 ${category.slug === 'watches' ? 'scale-110 group-hover:scale-[1.15]' : ''}`}
+                      sizes="(min-width: 1024px) 33vw, 50vw"
+                      widths={[400, 800]}
                     />
                   )}
                 </div>
-                <h2 className="text-sm font-semibold text-gray-dark mt-2 text-center">
-                  {category.name}
-                </h2>
-              </div>
-
-              {/* Десктопная версия */}
-              <div className="hidden lg:block relative overflow-hidden rounded-card aspect-[4/3] transition-all duration-300 hover:shadow-liquid bg-gray-light">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
-                {category.image && (
-                  <div className="absolute inset-0">
-                    <ImageWithSkeleton
-                      src={category.image}
-                      alt={category.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="33vw"
-                      widths={[400, 800]}
-                    />
-                  </div>
-                )}
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-                  <h2 className="text-xl font-bold text-white mb-1">
+                <div className="p-3 lg:p-4 border-t border-gray-100">
+                  <h2 className="text-sm lg:text-lg font-bold text-gray-dark mb-0.5">
                     {category.name}
                   </h2>
-                  <p className="text-white/70 text-sm flex items-center gap-1">
-                    {category.description}
-                    <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  <p className="text-gray-medium text-xs lg:text-sm flex items-center justify-between">
+                    <span>{category.description}</span>
+                    <ChevronRight className="w-3.5 h-3.5 lg:w-4 lg:h-4 flex-shrink-0 transition-transform group-hover:translate-x-1" />
                   </p>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { join, extname } from 'path'
-import { existsSync, mkdirSync } from 'fs'
+import { existsSync, mkdirSync, readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import sharp from 'sharp'
@@ -48,12 +48,16 @@ router.get(/\.(png|jpe?g|webp)$/i, async (req, res, next) => {
   const cacheKey = `${pathKey}-${snappedWidth || 'orig'}.${ext}`
   const cachePath = join(cacheDir, cacheKey)
 
-  if (existsSync(cachePath)) {
-    res.type(`image/${ext === 'jpg' ? 'jpeg' : ext}`)
-    return res.sendFile(cachePath)
-  }
+  const contentType = `image/${ext === 'jpg' ? 'jpeg' : ext}`
 
   try {
+    if (existsSync(cachePath)) {
+      const buf = readFileSync(cachePath)
+      res.type(contentType)
+      res.send(buf)
+      return
+    }
+
     let pipeline = sharp(sourcePath)
 
     if (snappedWidth) {
@@ -75,10 +79,13 @@ router.get(/\.(png|jpe?g|webp)$/i, async (req, res, next) => {
         break
     }
 
-    await pipeline.toFile(cachePath)
+    const buffer = await pipeline.toBuffer()
+    mkdirSync(dirname(cachePath), { recursive: true })
+    const { writeFileSync } = await import('fs')
+    writeFileSync(cachePath, buffer)
 
-    res.type(`image/${ext === 'jpg' ? 'jpeg' : ext}`)
-    res.sendFile(cachePath)
+    res.type(contentType)
+    res.send(buffer)
   } catch (err) {
     console.error('Image resize error:', err.message)
     next()

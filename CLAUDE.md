@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for Claude Code when working with this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Команды
 
@@ -11,7 +11,10 @@ npm run dev:all      # Оба сервера через concurrently
 npm run build        # Сборка в dist/
 npm run preview      # Превью сборки
 npm run seed         # Заполнить БД из src/data/
+npm run optimize-assets  # Оптимизация изображений (scripts/optimize-assets.mjs)
 ```
+
+Dev-прокси: `/api` и `/uploads` проксируются на `http://localhost:3001` через Vite.
 
 ## Стек
 
@@ -207,6 +210,23 @@ Mobile-first, основной брейкпоинт `lg:` (1024px). Шрифты
 Логин: `admin@appgrade.ru` / `admin123`, JWT 4 часа
 
 Подробнее: [docs/API.md](./docs/API.md) | БД: [docs/DATABASE.md](./docs/DATABASE.md)
+
+### Обработка изображений
+
+`server/routes/image.js` — Sharp-пайплайн с кэшированием в `server/uploads/.cache/`:
+- Допустимые ширины: 200, 400, 800, 1200, 1920px (snap к ближайшей)
+- Форматы: WebP, AVIF, JPEG, PNG
+- Запрос: `/uploads/image.jpg?w=800&format=webp`
+- Vite-плагин `ViteImageOptimizer` сжимает при сборке (WebP/JPEG 80%, PNG уровень 9)
+
+### Env-переменные (`.env.example`)
+
+```
+JWT_SECRET=your-secret-key-change-me
+PORT=3001
+NODE_ENV=development
+CORS_ORIGINS=http://localhost:5173,http://localhost:4173
+```
 
 ## Добавление нового товара
 

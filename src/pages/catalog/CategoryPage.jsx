@@ -96,7 +96,7 @@ export default function CategoryPage() {
       {loading ? (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-7">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-[3/4] rounded-3xl" />
+            <Skeleton key={i} className="aspect-square rounded-3xl" />
           ))}
         </div>
       ) : filteredBrands.length > 0 ? (
@@ -125,7 +125,7 @@ function BrandCard({ brand, category }) {
       to={`/catalog/${category}/${brand.slug}`}
       className="group flex flex-col h-full bg-white rounded-card border border-gray-100 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
     >
-      <div className="bg-gray-light aspect-[3/4] flex items-center justify-center p-6">
+      <div className="bg-gray-light aspect-square flex items-center justify-center p-6">
         {brand.flagshipImage ? (
           <ImageWithSkeleton
             src={brand.flagshipImage}
