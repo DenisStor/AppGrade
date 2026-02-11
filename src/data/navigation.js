@@ -57,5 +57,17 @@ export const FOOTER_SECTIONS = {
   },
 }
 
+export const MOBILE_MENU_SECTIONS = [
+  { title: 'Каталог', links: CATALOG_LINKS },
+  {
+    title: 'Информация',
+    links: [
+      ...INFO_LINKS,
+      { label: 'Блог', href: '/blog' },
+      { label: 'О нас', href: '/about' },
+    ],
+  },
+]
+
 // Экспорт базовых для переиспользования
 export { CATALOG_LINKS, INFO_LINKS }

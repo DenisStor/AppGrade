@@ -1,7 +1,7 @@
 // Данные для страницы сервиса (ремонта)
 import serviceFast from '../assets/service-fast.jpg'
 import serviceHome from '../assets/service-home.jpg'
-import serviceContact from '../assets/service-contact.jpg'
+import loanerPhone from '../assets/loaner-phone.png'
 import iphoneImg from '../assets/categories/iphone.png'
 import iphone11 from '../assets/iphone-models/iphone-11.jpg'
 import iphone12 from '../assets/iphone-models/iphone-12.png'
@@ -33,9 +33,9 @@ export const SERVICE_FEATURES = [
   },
   {
     id: 3,
-    title: 'На связи.',
-    description: 'Информируем о статусе ремонта в мессенджерах. Отвечаем на все вопросы до, во время и после ремонта.',
-    image: serviceContact,
+    title: 'Подменный iPhone.',
+    description: 'Предоставляем подменный iPhone на время сложного ремонта — бесплатно. Перенесите SIM-карту и продолжайте пользоваться как обычно.',
+    image: loanerPhone,
   },
 ]
 
