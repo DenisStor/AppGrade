@@ -50,7 +50,7 @@ export const ProductListCard = memo(function ProductListCard({ product, category
   return (
     <>
       {/* Мобильная версия */}
-      <article className="lg:hidden flex flex-col rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <article className="lg:hidden flex flex-col h-full rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <Link to={productUrl} className="block relative">
           <div className="aspect-[4/5] flex items-center justify-center bg-gray-light/30 p-2">
             <ImageWithSkeleton
