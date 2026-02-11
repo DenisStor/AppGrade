@@ -14,10 +14,8 @@ const ENTER_ANIMATION = {
   right: 'animate-slide-in-right',
 }
 
-const EXIT_ANIMATION = {
-  left: 'animate-slide-out-left',
-  right: 'animate-slide-out-right',
-}
+// Фазы: closed → entering → open ↔ swiping → closing → closed
+//                                  ↔ snapping (возврат)
 
 export function Drawer({
   isOpen,
@@ -25,27 +23,54 @@ export function Drawer({
   title,
   children,
   side = 'right',
+  maxWidth = 'max-w-sm',
   className = '',
 }) {
-  const [isClosing, setIsClosing] = useState(false)
+  const [phase, setPhase] = useState('closed') // closed | entering | open | swiping | snapping | closing
   const [swipeOffset, setSwipeOffset] = useState(0)
   const touchStartRef = useRef(null)
   const panelRef = useRef(null)
   const isDraggingRef = useRef(false)
 
+  // isOpen: true → entering, false → closing (если был открыт)
+  useEffect(() => {
+    if (isOpen && phase === 'closed') {
+      setPhase('entering')
+    } else if (!isOpen && phase !== 'closed') {
+      setPhase('closed')
+      setSwipeOffset(0)
+    }
+  }, [isOpen, phase])
+
   const handleClose = useCallback(() => {
-    setIsClosing(true)
+    setPhase('closing')
   }, [])
 
+  // entering → open (по окончании CSS keyframe)
   const handleAnimationEnd = useCallback(
     (e) => {
-      if (isClosing && e.target === panelRef.current) {
-        setIsClosing(false)
-        setSwipeOffset(0)
-        onClose()
+      if (phase === 'entering' && e.target === panelRef.current) {
+        setPhase('open')
       }
     },
-    [isClosing, onClose]
+    [phase]
+  )
+
+  // closing/snapping → завершение transition
+  const handleTransitionEnd = useCallback(
+    (e) => {
+      if (e.target !== panelRef.current || e.propertyName !== 'transform') return
+
+      if (phase === 'closing') {
+        setPhase('closed')
+        setSwipeOffset(0)
+        onClose()
+      } else if (phase === 'snapping') {
+        setPhase('open')
+        setSwipeOffset(0)
+      }
+    },
+    [phase, onClose]
   )
 
   const handleEscape = useCallback(
@@ -67,14 +92,6 @@ export function Drawer({
     }
   }, [isOpen, handleEscape])
 
-  // Сбрасываем isClosing когда drawer закрыт снаружи
-  useEffect(() => {
-    if (!isOpen) {
-      setIsClosing(false)
-      setSwipeOffset(0)
-    }
-  }, [isOpen])
-
   const handleTouchStart = useCallback((e) => {
     touchStartRef.current = {
       x: e.touches[0].clientX,
@@ -90,7 +107,6 @@ export function Drawer({
       const dx = e.touches[0].clientX - touchStartRef.current.x
       const dy = e.touches[0].clientY - touchStartRef.current.y
 
-      // Определяем горизонтальный свайп (угол < 30°)
       if (!isDraggingRef.current) {
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return
         isDraggingRef.current = Math.abs(dx) > Math.abs(dy)
@@ -98,6 +114,7 @@ export function Drawer({
           touchStartRef.current = null
           return
         }
+        setPhase('swiping')
       }
 
       // left drawer: свайп влево (dx < 0), right drawer: свайп вправо (dx > 0)
@@ -120,28 +137,54 @@ export function Drawer({
     const panelWidth = panelRef.current?.offsetWidth || 384
 
     if (absOffset > SWIPE_THRESHOLD || absOffset > panelWidth * 0.3) {
-      handleClose()
+      // Закрываем: transition от текущей позиции свайпа до -100%/100%
+      setPhase('closing')
+    } else {
+      // Возвращаем: transition от текущей позиции до 0
+      setPhase('snapping')
     }
-    setSwipeOffset(0)
     touchStartRef.current = null
     isDraggingRef.current = false
-  }, [swipeOffset, handleClose])
+  }, [swipeOffset])
 
-  if (!isOpen && !isClosing) return null
+  if (phase === 'closed') return null
 
-  const animClass = isClosing
-    ? EXIT_ANIMATION[side]
-    : swipeOffset === 0
-      ? ENTER_ANIMATION[side]
-      : ''
+  // --- Стили панели ---
+  const panelStyle = {}
 
-  const panelStyle =
-    swipeOffset !== 0 ? { transform: `translateX(${swipeOffset}px)` } : undefined
+  if (phase === 'swiping') {
+    panelStyle.transform = `translateX(${swipeOffset}px)`
+    panelStyle.transition = 'none'
+  } else if (phase === 'closing') {
+    const target = side === 'left' ? '-100%' : '100%'
+    panelStyle.transform = `translateX(${target})`
+    panelStyle.transition = 'transform 0.25s ease-in'
+  } else if (phase === 'snapping') {
+    panelStyle.transform = 'translateX(0)'
+    panelStyle.transition = 'transform 0.2s ease-out'
+  }
+
+  const animClass = phase === 'entering' ? ENTER_ANIMATION[side] : ''
+
+  // --- Overlay opacity ---
+  let overlayOpacity = 1
+  if (phase === 'swiping' || phase === 'closing') {
+    const panelWidth = panelRef.current?.offsetWidth || 384
+    const progress = Math.min(Math.abs(swipeOffset) / panelWidth, 1)
+    overlayOpacity = 1 - progress
+  }
+
+  const overlayStyle = phase === 'swiping'
+    ? { opacity: overlayOpacity, transition: 'none' }
+    : phase === 'closing'
+      ? { opacity: 0, transition: 'opacity 0.25s ease-in' }
+      : undefined
 
   return createPortal(
     <div className="fixed inset-0 z-50">
       <div
-        className={`fixed inset-0 bg-black/50 backdrop-blur-sm ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}`}
+        className={`fixed inset-0 bg-black/50 backdrop-blur-sm ${phase === 'entering' ? 'animate-fade-in' : ''}`}
+        style={overlayStyle}
         onClick={handleClose}
         aria-hidden="true"
       />
@@ -149,7 +192,7 @@ export function Drawer({
       <div
         ref={panelRef}
         className={`
-          fixed top-0 bottom-0 w-full max-w-sm bg-white shadow-xl
+          fixed top-0 bottom-0 w-full ${maxWidth} bg-white shadow-xl
           flex flex-col ${SIDE_CLASSES[side]} ${animClass} ${className}
         `}
         style={panelStyle}
@@ -160,6 +203,7 @@ export function Drawer({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onAnimationEnd={handleAnimationEnd}
+        onTransitionEnd={handleTransitionEnd}
       >
         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
           {title && (
