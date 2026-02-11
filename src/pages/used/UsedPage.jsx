@@ -6,9 +6,9 @@ import { UsedFilterSidebar } from '../../components/filters/UsedFilterSidebar'
 import { MobileFilterButton } from '../../components/filters/MobileFilterButton'
 import { FilterDrawer } from '../../components/filters/FilterDrawer'
 import { EmptyFilterResults } from '../../components/filters/EmptyFilterResults'
-import { ProductListCard } from '../../components/catalog/ProductListCard'
+import { ProductGrid } from '../../components/catalog/ProductGrid'
 import { usedProducts } from '../../data/products'
-import { getBrandSlug, getMinPrice } from '../../utils/product'
+import { getMinPrice } from '../../utils/product'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import {
   useFilterSync,
@@ -81,15 +81,6 @@ export default function UsedPage() {
     { label: 'Проверенное б/у' },
   ]
 
-  // Формирование URL для ProductListCard
-  const getProductUrl = (product) => {
-    const brandSlug = getBrandSlug(product.brand) || product.brand?.toLowerCase()
-    return {
-      category: product.category,
-      brand: brandSlug,
-    }
-  }
-
   return (
     <PageLayout className="flex-1">
       <div className="section-padding py-6 lg:py-10">
@@ -153,19 +144,7 @@ export default function UsedPage() {
 
           <div className="flex-1">
             {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-                {filteredProducts.map((product) => {
-                  const { category, brand } = getProductUrl(product)
-                  return (
-                    <ProductListCard
-                      key={product.id}
-                      product={product}
-                      category={category}
-                      brand={brand}
-                    />
-                  )
-                })}
-              </div>
+              <ProductGrid products={filteredProducts} />
             ) : (
               <EmptyFilterResults onReset={resetFilters} />
             )}

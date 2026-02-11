@@ -41,7 +41,7 @@ export default function CatalogPage() {
           {categories.map((category, index) => (
             <Link key={category.id} to={category.href} className="group animate-card-appear"
                   style={{ animationDelay: `${Math.min(index * 80, 600)}ms` }}>
-              <div className="overflow-hidden rounded-2xl lg:rounded-3xl bg-white border border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div className="h-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white border border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <div className="bg-[#f5f5f7] aspect-[4/3] flex items-center justify-center">
                   {category.image && (
                     <ImageWithSkeleton
