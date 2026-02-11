@@ -7,6 +7,7 @@ import { FAQ } from '../components/FAQ/FAQ'
 import { ContactSection } from '../components/ContactSection/ContactSection'
 import { AnimatedSection } from '../components/ui/AnimatedSection'
 import { PageLayout } from '../layouts/PageLayout'
+import { FloatingCallButton } from '../components/ui/FloatingCallButton'
 import { usePageTitle } from '../hooks/usePageTitle'
 
 export default function Home() {
@@ -33,6 +34,7 @@ export default function Home() {
       <AnimatedSection delay={300}>
         <ContactSection />
       </AnimatedSection>
+      <FloatingCallButton />
     </PageLayout>
   )
 }

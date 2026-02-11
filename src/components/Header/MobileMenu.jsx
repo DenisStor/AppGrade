@@ -22,7 +22,7 @@ export function MobileMenu({ isOpen, onClose }) {
                   <Link
                     to={link.href}
                     onClick={onClose}
-                    className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
+                    className={`block px-4 py-3 rounded-lg text-sm transition-colors ${
                       pathname === link.href
                         ? 'bg-gray-100 text-gray-dark font-medium'
                         : 'text-gray-dark/80 hover:bg-gray-50'
@@ -37,19 +37,19 @@ export function MobileMenu({ isOpen, onClose }) {
         ))}
       </nav>
 
-      <div className="border-t border-gray-100 mt-6 pt-6 space-y-3">
+      <div className="border-t border-gray-100 mt-6 pt-6 space-y-1">
         <a
           href={CONTACTS.phoneLink}
-          className="flex items-center gap-3 text-sm text-gray-dark"
+          className="flex items-center gap-3 py-2.5 text-sm text-gray-dark"
         >
           <Phone size={16} className="text-gray-medium" />
           {CONTACTS.phone}
         </a>
-        <div className="flex items-center gap-3 text-sm text-gray-dark/70">
+        <div className="flex items-center gap-3 py-2.5 text-sm text-gray-dark/70">
           <MapPin size={16} className="text-gray-medium" />
           {CONTACTS.fullAddress}
         </div>
-        <div className="flex items-center gap-3 text-sm text-gray-dark/70">
+        <div className="flex items-center gap-3 py-2.5 text-sm text-gray-dark/70">
           <Clock size={16} className="text-gray-medium" />
           {CONTACTS.workHours}
         </div>
