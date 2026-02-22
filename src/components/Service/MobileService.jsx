@@ -17,7 +17,7 @@ export function MobileService() {
             <span className="inline-block px-4 py-1.5 bg-gray-dark text-white text-sm font-medium rounded-full mb-6 lg:self-start">
               Выездной сервис
             </span>
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-dark mb-6">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-6">
               Сервис на выезд
             </h2>
             <p className="text-lg text-gray-medium mb-4">

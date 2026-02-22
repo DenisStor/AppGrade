@@ -11,7 +11,7 @@ export function SectionHeader({
   return (
     <div className={className}>
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-        <h2 className="text-fluid-2xl font-bold text-gray-dark">
+        <h2 className="text-2xl lg:text-3xl font-bold text-gray-dark">
           {title}
         </h2>
         {linkHref && (

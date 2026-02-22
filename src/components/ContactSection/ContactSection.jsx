@@ -3,11 +3,12 @@ import { Phone, MapPin, Clock, ArrowRight } from 'lucide-react'
 import { CONTACTS } from '../../data/config'
 import { api } from '../../services/api'
 import { useToast } from '../../hooks/useToast'
+import { formatPhoneInput } from '../../utils/phone'
 
 export function ContactSection() {
   const [agreed, setAgreed] = useState(false)
   const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
+  const [phone, setPhone] = useState('+7')
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
 
@@ -19,7 +20,7 @@ export function ContactSection() {
       await api.submitContactForm({ name, phone })
       toast('Заявка отправлена! Мы скоро свяжемся с вами', 'success')
       setName('')
-      setPhone('')
+      setPhone('+7')
       setAgreed(false)
     } catch {
       toast('Ошибка отправки. Попробуйте позже', 'error')
@@ -128,7 +129,7 @@ export function ContactSection() {
               <input
                 type="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(formatPhoneInput(e.target.value, phone))}
                 placeholder="Телефон"
                 className="input-dark flex-1 py-3"
               />

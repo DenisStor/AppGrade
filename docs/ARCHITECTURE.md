@@ -65,16 +65,23 @@ src/
 │   ├── navigation.js       # NAV_MAIN, NAV_MOBILE, FOOTER_SECTIONS
 │   ├── categories.js       # CATEGORIES
 │   ├── constants.js        # PRICE, SORT_OPTIONS
+│   ├── benefits.js         # Преимущества
+│   ├── faq.js              # FAQ-данные
+│   ├── infoPages.js        # Информационные страницы
+│   ├── news.js             # Новости
+│   ├── redirects.js        # Редиректы со старых URL
+│   ├── service.js          # Данные сервиса
 │   └── products/           # iphone.js, mac.js, samsung.js, dyson.js, used.js
 ├── hooks/                  # useProductVariant, useDebounce, useCatalogQuery...
 ├── services/
 │   ├── catalogApi.js       # Публичный API (/api/public/*)
-│   └── productMapper.js    # snake_case → camelCase маппинг
+│   ├── productMapper.js    # snake_case → camelCase маппинг
+│   └── api.js              # Отправка форм (заявки, обратная связь)
 ├── utils/
 │   ├── product.js          # formatPrice, getMinPrice, hasDiscount...
 │   ├── color.js            # isLightColor(hex)
 │   └── pluralize.js        # pluralize(count, forms)
-├── stores/                 # Zustand: cart, favorites, products, search, toast, recentlyViewed
+├── stores/                 # Zustand: cart, products, search, toast, recentlyViewed
 ├── layouts/
 │   ├── CatalogLayout.jsx   # Header + Outlet + Footer + ErrorBoundary
 │   └── PageLayout.jsx      # Header + children + Footer

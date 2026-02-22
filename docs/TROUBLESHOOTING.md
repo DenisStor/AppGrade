@@ -24,7 +24,7 @@
 ## Корзина не сохраняется
 
 1. Проверить localStorage в DevTools (`cart` key)
-2. `persist` настроен в `useCartStore` (name: 'cart', version: 1)
+2. `persist` настроен в `useCartStore` (name: 'cart', version: 2)
 3. Попробовать очистить localStorage и перезагрузить
 
 ## Роутинг 404 на продакшене

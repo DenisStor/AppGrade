@@ -10,13 +10,14 @@ import { formatPrice } from '../../utils/product'
 import { useToast } from '../../hooks/useToast'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import { api } from '../../services/api'
+import { formatPhoneInput } from '../../utils/phone'
 import { PageLayout } from '../../layouts/PageLayout'
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore()
   const { toast } = useToast()
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
-  const [orderForm, setOrderForm] = useState({ name: '', phone: '' })
+  const [orderForm, setOrderForm] = useState({ name: '', phone: '+7' })
   const [isOrderSuccess, setIsOrderSuccess] = useState(false)
   const [orderAgreed, setOrderAgreed] = useState(false)
 
@@ -47,7 +48,7 @@ export default function CartPage() {
   const handleCloseModal = () => {
     setIsOrderModalOpen(false)
     setIsOrderSuccess(false)
-    setOrderForm({ name: '', phone: '' })
+    setOrderForm({ name: '', phone: '+7' })
     setOrderAgreed(false)
   }
 
@@ -221,7 +222,7 @@ export default function CartPage() {
                 required
                 value={orderForm.phone}
                 onChange={(e) =>
-                  setOrderForm((prev) => ({ ...prev, phone: e.target.value }))
+                  setOrderForm((prev) => ({ ...prev, phone: formatPhoneInput(e.target.value, prev.phone) }))
                 }
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400"
                 placeholder="+7 (___) ___-__-__"

@@ -92,7 +92,7 @@ PRAGMA foreign_keys = ON;
 | memory | INTEGER | NULL для товаров без памяти |
 | price | INTEGER | NOT NULL (в рублях) |
 | old_price | INTEGER | Для скидок |
-| stock_status | TEXT | DEFAULT 'in_stock' CHECK(in_stock, on_order, out_of_stock) |
+| stock_status | TEXT | DEFAULT 'in_stock' CHECK(stock_status IN ('in_stock','on_order','out_of_stock')) |
 | sim_id | TEXT | NULL (связь, миграция из SIM-опций) |
 | sim_name | TEXT | NULL |
 | attributes | TEXT | DEFAULT '{}' (JSON: произвольные атрибуты варианта) |
@@ -152,7 +152,7 @@ PRAGMA foreign_keys = ON;
 | image_url | TEXT | |
 | excerpt | TEXT | |
 | content | TEXT | HTML |
-| status | TEXT | DEFAULT 'draft' CHECK(draft, published) |
+| status | TEXT | DEFAULT 'draft' CHECK(status IN ('draft','published')) |
 | published_at | TEXT | |
 | created_at | TEXT | DEFAULT datetime('now') |
 | updated_at | TEXT | DEFAULT datetime('now') |
@@ -162,8 +162,8 @@ PRAGMA foreign_keys = ON;
 | Колонка | Тип | Ограничения |
 |---------|-----|------------|
 | id | INTEGER | PRIMARY KEY AUTOINCREMENT |
-| type | TEXT | DEFAULT 'order' CHECK(order, quick_buy, repair, contact) |
-| status | TEXT | DEFAULT 'new' CHECK(new, processing, closed) |
+| type | TEXT | DEFAULT 'order' CHECK(type IN ('order','quick_buy','repair','contact')) |
+| status | TEXT | DEFAULT 'new' CHECK(status IN ('new','processing','closed')) |
 | name | TEXT | NOT NULL |
 | phone | TEXT | NOT NULL |
 | email | TEXT | |

@@ -31,7 +31,7 @@ src/
 ├── hooks/          # 11 хуков (useProductVariant, useDebounce, useCatalogQuery...)
 ├── services/       # catalogApi.js, productMapper.js
 ├── utils/          # product.js, color.js, pluralize.js
-├── stores/         # Zustand: cart, favorites, products, search, toast, recentlyViewed
+├── stores/         # Zustand: cart, products, search, toast, recentlyViewed
 ├── layouts/        # CatalogLayout, PageLayout
 ├── pages/          # catalog/, info/, blog/, cart/, service/, used/
 └── admin/          # Lazy-loaded: hooks, services, components, pages
@@ -130,14 +130,19 @@ import {
 | navigation.js | `NAV_MAIN`, `NAV_MOBILE`, `FOOTER_SECTIONS` |
 | categories.js | `CATEGORIES` |
 | constants.js | `PRICE`, `SORT_OPTIONS` |
+| benefits.js | Преимущества |
+| faq.js | FAQ-данные |
+| infoPages.js | Информационные страницы |
+| news.js | Новости |
+| redirects.js | Редиректы со старых URL |
+| service.js | Данные сервиса |
 | products/ | iphone.js, mac.js, samsung.js, dyson.js, used.js, index.js |
 
 ## Stores (Zustand)
 
 | Store | Persist | Ключевые методы |
 |-------|---------|----------------|
-| useCartStore | `cart` | addItem(product, variant, sim?), removeItem, getTotal, getCount |
-| useFavoritesStore | `favorites` | toggleItem, isFavorite |
+| useCartStore | `cart` (v2) | addItem(product, variant), removeItem, getTotal, getCount |
 | useProductStore | — | setFilter, toggleArrayFilter, resetFilters, setSortBy |
 | useRecentlyViewedStore | `recently-viewed` | addItem(productId), макс. 10 |
 | useSearchStore | — | setQuery, setResults, setIsOpen |
@@ -149,7 +154,7 @@ import {
 
 | Хук | Сигнатура |
 |-----|-----------|
-| useProductVariant | `(product)` → selectedColor, currentVariant, setSelectedColor |
+| useProductVariant | `(product)` → selections, setSelection, dimensions, currentVariant |
 | useDebounce | `(value, delay=300)` → debouncedValue |
 | useCatalogQuery | `(fetcher, deps)` → { data, loading, error, refetch } |
 | useProductFiltering | `(products, filters, sortBy, options)` → filteredProducts |
@@ -163,11 +168,11 @@ import {
 
 Полная документация: [docs/COMPONENTS.md](./docs/COMPONENTS.md)
 
-**Витрина:** Button, Modal, Drawer, Tabs, Badge, Breadcrumbs, Toast, RangeSlider, Skeleton, ColorSwatch, ImageWithSkeleton, AnimatedSection
+**Витрина:** Button, Modal, Drawer, Tabs, Badge, Breadcrumbs, Toast, RangeSlider, Skeleton, CardSkeleton, PageSkeleton, ColorSwatch, ImageWithSkeleton, AnimatedSection, Container, FloatingCallButton, SectionDivider, SectionHeader, StaggeredList
 **Каталог:** ProductGrid, ProductListCard, SortDropdown
-**Товар:** ColorSelector, MemorySelector, SimSelector, ProductGallery, ProductConfig, QuickBuyModal
-**Фильтры:** FilterSidebar, CheckboxFilter, ColorFilter, ActiveFilters
-**Админка:** DataTable, ImageUploader, VariantMatrix, RichTextEditor, SortableList, StatusBadge, ConfirmDialog
+**Товар:** ColorSelector, MemorySelector, SimSelector, DimensionSelector, ProductGallery, ProductConfig, ProductActions, ProductBenefits, QuickBuyModal, RecentlyViewed, RelatedProducts
+**Фильтры:** FilterSidebar, CheckboxFilter, ColorFilter, ActiveFilters, EmptyFilterResults, FilterDrawer, MobileFilterButton, UsedFilterSidebar
+**Админка:** DataTable, ImageUploader, VariantMatrix, RichTextEditor, SortableList, StatusBadge, ConfirmDialog, AdminHeader, AdminModal, AdminSidebar, SortableImages
 
 ## Сервисы
 
@@ -176,6 +181,7 @@ import {
 ```js
 import { catalogApi } from '../services/catalogApi'       // /api/public/*
 import { mapProducts, mapProduct } from '../services/productMapper'  // snake→camel
+import { submitForm } from '../services/api'              // Отправка форм
 ```
 
 ### Админка (`src/admin/services/`)

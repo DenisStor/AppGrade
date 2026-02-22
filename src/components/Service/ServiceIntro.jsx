@@ -14,10 +14,7 @@ export function ServiceIntro() {
       <Container>
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <div className="lg:self-stretch lg:flex lg:flex-col">
-            <span className="inline-block px-4 py-1.5 bg-gray-dark text-white text-sm font-medium rounded-full mb-6 lg:self-start">
-              Ремонт iPhone
-            </span>
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-dark mb-6">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-6">
               Сервис от 990 ₽
             </h2>
             <p className="text-lg text-gray-medium mb-4">

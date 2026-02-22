@@ -4,9 +4,10 @@ import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
 import { api } from '../../services/api'
 import { useToast } from '../../hooks/useToast'
+import { formatPhoneInput } from '../../utils/phone'
 
 export function QuickBuyModal({ isOpen, onClose, product, variant }) {
-  const [form, setForm] = useState({ name: '', phone: '' })
+  const [form, setForm] = useState({ name: '', phone: '+7' })
   const [isLoading, setIsLoading] = useState(false)
   const [agreed, setAgreed] = useState(false)
   const { toast } = useToast()
@@ -26,7 +27,7 @@ export function QuickBuyModal({ isOpen, onClose, product, variant }) {
       })
       toast('Заявка отправлена! Мы скоро свяжемся с вами', 'success')
       onClose()
-      setForm({ name: '', phone: '' })
+      setForm({ name: '', phone: '+7' })
       setAgreed(false)
     } catch {
       toast('Ошибка отправки. Попробуйте позже', 'error')
@@ -59,7 +60,7 @@ export function QuickBuyModal({ isOpen, onClose, product, variant }) {
             type="tel"
             required
             value={form.phone}
-            onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
+            onChange={(e) => setForm((prev) => ({ ...prev, phone: formatPhoneInput(e.target.value, prev.phone) }))}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400"
             placeholder="+7 (___) ___-__-__"
           />

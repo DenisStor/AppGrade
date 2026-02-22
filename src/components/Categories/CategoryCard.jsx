@@ -1,24 +1,29 @@
 import { Link } from 'react-router-dom'
-import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
 
-export function CategoryCard({ name, image, link }) {
+export function CategoryCard({ name, subtitle, image, link, imageClassName = '', imageContainerClassName = '' }) {
   return (
-    <Link to={link} className="group block w-[160px] xs:w-[180px] sm:w-[200px] md:w-[240px] lg:w-[280px]">
-      <div className="aspect-[0.78125] overflow-hidden liquid-glass rounded-card group-hover:shadow-liquid-hover group-hover:scale-[1.02] transition-all duration-liquid p-3 flex items-center justify-center">
-        <div className="w-4/5 h-4/5">
-          <ImageWithSkeleton
+    <Link
+      to={link}
+      className="group block w-[220px] xs:w-[240px] sm:w-[260px] md:w-[280px] lg:w-[300px]"
+    >
+      <div className="relative aspect-[0.7] overflow-hidden bg-gray-light rounded-3xl flex flex-col">
+        <div className="p-5 pb-0 relative z-10">
+          <h3 className="text-xl md:text-2xl font-bold text-gray-dark leading-tight">
+            {name}
+          </h3>
+          <p className="text-sm md:text-base text-gray-medium mt-1">
+            {subtitle}
+          </p>
+        </div>
+        <div className={`flex-1 flex justify-center overflow-hidden ${imageContainerClassName || 'items-center'}`}>
+          <img
             src={image}
             alt={name}
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
-            skeletonClassName="rounded"
-            sizes="(max-width: 640px) 160px, 280px"
-            widths={[200, 400]}
+            loading="eager"
+            className={`block group-hover:scale-105 transition-transform duration-500 ${imageClassName}`}
           />
         </div>
       </div>
-      <p className="text-fluid-lg font-semibold text-gray-dark text-center mt-5 tracking-tight">
-        {name}
-      </p>
     </Link>
   )
 }

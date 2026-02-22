@@ -4,12 +4,13 @@ import { Container } from '../ui/Container'
 import { Button } from '../ui/Button'
 import { useToast } from '../../hooks/useToast'
 import { api } from '../../services/api'
+import { formatPhoneInput } from '../../utils/phone'
 
 export function RepairForm() {
   const { toast } = useToast()
   const [formData, setFormData] = useState({
     name: '',
-    phone: '',
+    phone: '+7',
     device: '',
     problem: '',
   })
@@ -18,7 +19,10 @@ export function RepairForm() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === 'phone' ? formatPhoneInput(value, prev.phone) : value,
+    }))
   }
 
   const handleSubmit = async (e) => {
@@ -36,7 +40,7 @@ export function RepairForm() {
     try {
       await api.submitRepairRequest(formData)
       toast('Заявка отправлена! Мы свяжемся с вами в ближайшее время', 'success')
-      setFormData({ name: '', phone: '', device: '', problem: '' })
+      setFormData({ name: '', phone: '+7', device: '', problem: '' })
     } catch {
       toast('Не удалось отправить заявку. Попробуйте позже', 'error')
     } finally {
@@ -49,7 +53,7 @@ export function RepairForm() {
       <Container>
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-dark mb-4">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-4">
               Записаться на ремонт
             </h2>
             <p className="text-gray-medium">

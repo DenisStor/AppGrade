@@ -22,7 +22,7 @@
 
 ## useProductVariant
 
-Управляет выбором варианта товара (цвет, память, SIM).
+Управляет выбором варианта товара через универсальную систему dimensions (цвет, память, SIM и любые другие атрибуты).
 
 **Путь:** `src/hooks/useProductVariant.js`
 
@@ -30,15 +30,22 @@
 
 ```js
 const {
+  // Dimensions API (основной)
+  selections,
+  setSelection,
+  dimensions,
+  getOptionsForDimension,
+  currentVariant,
+  // Legacy API (обратная совместимость)
   selectedColor,
   selectedMemory,
   selectedSim,
   setSelectedColor,
   setSelectedMemory,
   setSelectedSim,
-  currentVariant,
   colors,
   memoryOptions,
+  simOptions,
   availableMemoryForColor,
 } = useProductVariant(product)
 ```
@@ -47,22 +54,34 @@ const {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `product` | object | Объект товара с `variants` и `simOptions` |
+| `product` | object | Объект товара с `variants`, `dimensions` и `simOptions` |
 
 ### Возвращает
 
+**Dimensions API:**
+
 | Свойство | Тип | Описание |
 |----------|-----|----------|
-| `selectedColor` | string | ID выбранного цвета |
-| `selectedMemory` | number | Выбранный объём памяти |
-| `selectedSim` | string | ID выбранного SIM |
-| `setSelectedColor` | function | Установка цвета (с автоподбором памяти) |
-| `setSelectedMemory` | function | Установка памяти |
-| `setSelectedSim` | function | Установка SIM |
-| `currentVariant` | object | Текущий вариант товара |
+| `selections` | object | `{ [dimKey]: valueId }` — текущие выборы |
+| `setSelection` | function | `(dimKey, valueId)` — установка значения с автоподбором совместимой комбинации |
+| `dimensions` | array | `product.dimensions` — массив измерений |
+| `getOptionsForDimension` | function | `(dimKey)` — доступные опции для измерения |
+| `currentVariant` | object\|null | Найденный вариант по текущим selections |
+
+**Legacy API (обратная совместимость):**
+
+| Свойство | Тип | Описание |
+|----------|-----|----------|
+| `selectedColor` | string\|null | `selections.color` |
+| `selectedMemory` | number\|null | `Number(selections.memory)` |
+| `selectedSim` | string\|null | `selections.sim` |
+| `setSelectedColor` | function | Обёртка: `setSelection('color', id)` |
+| `setSelectedMemory` | function | Обёртка: `setSelection('memory', String(mem))` |
+| `setSelectedSim` | function | Обёртка: `setSelection('sim', id)` |
 | `colors` | array | Доступные цвета |
 | `memoryOptions` | array | Доступные варианты памяти |
-| `availableMemoryForColor` | array | Память, доступная для выбранного цвета |
+| `simOptions` | array | Доступные SIM-опции |
+| `availableMemoryForColor` | array | `[{ memory, inStock }]` для выбранного цвета |
 
 ### Пример
 
@@ -71,30 +90,24 @@ import { useProductVariant } from '../hooks/useProductVariant'
 
 function ProductPage({ product }) {
   const {
-    selectedColor,
-    selectedMemory,
-    setSelectedColor,
-    setSelectedMemory,
+    selections,
+    setSelection,
+    dimensions,
+    getOptionsForDimension,
     currentVariant,
-    colors,
-    memoryOptions,
-    availableMemoryForColor,
   } = useProductVariant(product)
 
   return (
     <>
-      <ColorSelector
-        colors={colors}
-        selected={selectedColor}
-        onChange={setSelectedColor}
-        variants={product.variants}
-      />
-      <MemorySelector
-        options={memoryOptions}
-        selected={selectedMemory}
-        onChange={setSelectedMemory}
-        availableForColor={availableMemoryForColor}
-      />
+      {dimensions.map(dim => (
+        <DimensionSelector
+          key={dim.key}
+          dimension={dim}
+          options={getOptionsForDimension(dim.key)}
+          selected={selections[dim.key]}
+          onChange={(val) => setSelection(dim.key, val)}
+        />
+      ))}
       <div>Цена: {currentVariant?.price}</div>
     </>
   )
@@ -103,9 +116,10 @@ function ProductPage({ product }) {
 
 ### Особенности
 
+- **Dimensions:** `product.dimensions` — массив объектов с полем `key`. Варианты матчатся через `v.attributes?.[key]?.id`
+- **Auto-fallback:** при выборе несовместимой комбинации автоматически переключает другие dimensions на ближайший совместимый вариант
+- **Legacy-compat:** если `dimensions` пуст — используется legacy-режим (`color`, `memory`, `sim`). Legacy-свойства (`selectedColor`, `colors` и т.д.) работают всегда как обёртки над dimensions API
 - Автоматически выбирает первый вариант в наличии при инициализации
-- При смене цвета автоматически подбирает доступную память
-- Для товаров без памяти (например, AirPods) ищет вариант только по цвету
 
 ---
 

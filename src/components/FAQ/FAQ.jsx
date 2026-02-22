@@ -20,18 +20,18 @@ function FAQItem({ icon: Icon, question, answer, isOpen, onToggle }) {
       <div className="relative">
         <button
           onClick={onToggle}
-          className="w-full px-6 py-6 lg:px-8 lg:py-7 flex items-center gap-5 text-left cursor-pointer group"
+          className="w-full px-6 py-5 lg:px-8 lg:py-6 flex items-center gap-4 text-left cursor-pointer group"
         >
           {/* Иконка */}
           <div
-            className={`w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+            className={`w-10 h-10 lg:w-12 lg:h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
               isOpen
                 ? 'bg-white/10 shadow-none'
                 : 'bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)]'
             }`}
           >
             <Icon
-              className={`w-6 h-6 lg:w-7 lg:h-7 transition-colors duration-300 ${
+              className={`w-5 h-5 lg:w-6 lg:h-6 transition-colors duration-300 ${
                 isOpen ? 'text-white' : 'text-gray-dark'
               }`}
             />
@@ -48,16 +48,16 @@ function FAQItem({ icon: Icon, question, answer, isOpen, onToggle }) {
 
           {/* Кнопка +/- */}
           <div
-            className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+            className={`w-9 h-9 lg:w-10 lg:h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
               isOpen
                 ? 'bg-white text-gray-dark rotate-180'
                 : 'bg-gray-200 text-gray-medium rotate-0'
             }`}
           >
             {isOpen ? (
-              <Minus className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2.5} />
+              <Minus className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
             ) : (
-              <Plus className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2.5} />
+              <Plus className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.5} />
             )}
           </div>
         </button>
@@ -69,7 +69,7 @@ function FAQItem({ icon: Icon, question, answer, isOpen, onToggle }) {
           }`}
         >
           <div className="overflow-hidden">
-            <p className="px-6 pb-6 lg:px-8 lg:pb-8 pl-[5.5rem] lg:pl-[6.5rem] text-white/80 text-base lg:text-lg leading-relaxed">
+            <p className="px-6 pb-6 lg:px-8 lg:pb-8 pl-[4.5rem] lg:pl-[5.25rem] text-white/80 text-base lg:text-lg leading-relaxed">
               {answer}
             </p>
           </div>
@@ -95,13 +95,13 @@ export function FAQ() {
           <span className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-3 block">
             Ответы на вопросы
           </span>
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-dark">
+          <h2 className="text-2xl lg:text-3xl font-bold text-gray-dark">
             Часто задаваемые вопросы
           </h2>
         </div>
 
         {/* Список */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {FAQ_ITEMS.map((item) => (
             <FAQItem
               key={item.id}

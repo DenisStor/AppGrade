@@ -1,12 +1,12 @@
 # Zustand Stores
 
-6 stores в `src/stores/`. Импорт через barrel: `import { useCartStore } from '../stores'`
+5 stores в `src/stores/`. Импорт через barrel: `import { useCartStore } from '../stores'`
 
 ## useCartStore
 
 Корзина с сохранением в localStorage.
 
-**Persist:** `name: 'cart'`, `version: 1`
+**Persist:** `name: 'cart'`, `version: 2`
 
 ### State
 
@@ -17,13 +17,13 @@
 **CartItem:**
 ```js
 {
-  id: string,          // `${productId}-${variantId}-${sim?.id || 'no-sim'}`
+  id: string,          // `${productId}-${variantId}`
   productId: string,
   variantId: string,
   quantity: number,
+  attributes: object,  // произвольные атрибуты варианта (color, memory и т.д.)
   color: { id, name, hex },
   memory: number,
-  sim: { id, name } | null,
   price: number,
   name: string,
   image: string
@@ -34,7 +34,7 @@
 
 | Метод | Сигнатура | Описание |
 |-------|-----------|---------|
-| addItem | `(product, variant, sim?)` | Добавить или +1 к quantity |
+| addItem | `(product, variant)` | Добавить или +1 к quantity |
 | removeItem | `(itemId)` | Удалить из корзины |
 | updateQuantity | `(itemId, quantity)` | Обновить количество (≤0 → удаление) |
 | clearCart | `()` | Очистить корзину |
@@ -42,42 +42,18 @@
 | getTotal | `()` | Сумма (price × quantity) |
 | getCount | `()` | Общее количество товаров |
 
+### Миграция v1 → v2
+
+При обновлении с v1 автоматическая миграция:
+- Для элементов без `attributes` собирает объект из `color`, `memory`, `sim`
+- Поле `sim` убрано из CartItem, данные перенесены в `attributes`
+- Формула `id` упрощена: `${productId}-${variantId}` (без sim)
+
 ### Пример
 
 ```js
 const { items, addItem, getTotal, getCount } = useCartStore()
-addItem(product, selectedVariant, selectedSim)
-```
-
----
-
-## useFavoritesStore
-
-Избранные товары.
-
-**Persist:** `name: 'favorites'`, `version: 1`
-
-### State
-
-| Поле | Тип | Начальное |
-|------|-----|----------|
-| items | string[] | [] (массив productId) |
-
-### Actions
-
-| Метод | Сигнатура | Описание |
-|-------|-----------|---------|
-| addItem | `(productId)` | Добавить в избранное |
-| removeItem | `(productId)` | Удалить из избранного |
-| toggleItem | `(productId)` | Переключить |
-| isFavorite | `(productId)` | Проверить наличие |
-| clearItems | `()` | Очистить |
-
-### Пример
-
-```js
-const { toggleItem, isFavorite } = useFavoritesStore()
-toggleItem(product.id)
+addItem(product, selectedVariant)
 ```
 
 ---
@@ -199,8 +175,7 @@ addItem(product.id) // При просмотре товара
 
 | Store | Persist | localStorage key |
 |-------|---------|-----------------|
-| useCartStore | Да | `cart` |
-| useFavoritesStore | Да | `favorites` |
+| useCartStore | Да | `cart` (v2) |
 | useProductStore | Нет | — |
 | useRecentlyViewedStore | Да | `recently-viewed` |
 | useSearchStore | Нет | — |
