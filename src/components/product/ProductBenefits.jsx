@@ -1,9 +1,10 @@
+import { memo } from 'react'
 import { Truck, Shield, CreditCard } from 'lucide-react'
 import { PRODUCT_BENEFITS } from '../../data/benefits'
 
 const ICON_MAP = { Truck, Shield, CreditCard }
 
-export function ProductBenefits() {
+export const ProductBenefits = memo(function ProductBenefits() {
   return (
     <div className="grid grid-cols-3 gap-4 p-4 bg-gray-light rounded-card">
       {PRODUCT_BENEFITS.map(({ icon, label }) => {
@@ -17,4 +18,4 @@ export function ProductBenefits() {
       })}
     </div>
   )
-}
+})

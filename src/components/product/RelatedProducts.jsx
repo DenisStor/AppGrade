@@ -1,8 +1,8 @@
+import { memo } from 'react'
 import { ProductGrid } from '../catalog/ProductGrid'
 import { SectionHeader } from '../ui/SectionHeader'
 
-export function RelatedProducts({ relatedProducts = [], className = '' }) {
-  // relatedProducts передаются из ProductPage (уже замапленные)
+export const RelatedProducts = memo(function RelatedProducts({ relatedProducts = [], className = '' }) {
   if (!relatedProducts?.length) return null
 
   return (
@@ -11,4 +11,4 @@ export function RelatedProducts({ relatedProducts = [], className = '' }) {
       <ProductGrid products={relatedProducts.slice(0, 4)} />
     </section>
   )
-}
+})

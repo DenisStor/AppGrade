@@ -179,6 +179,9 @@ function migrate() {
   try { db.exec("ALTER TABLE products ADD COLUMN dimensions TEXT DEFAULT '[]'") } catch {}
   try { db.exec("ALTER TABLE product_variants ADD COLUMN attributes TEXT DEFAULT '{}'") } catch {}
 
+  // Серия товара (iPhone 16, MacBook Pro, Galaxy S24...)
+  try { db.exec('ALTER TABLE products ADD COLUMN series TEXT') } catch {}
+
   migrateToAttributes()
 
   // Индексы для производительности

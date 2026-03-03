@@ -582,6 +582,45 @@ Multipart form data.
 
 ---
 
+## Image pipeline
+
+Sharp-обработка изображений на лету с кэшированием.
+
+**Путь:** `server/routes/image.js`
+
+### Запрос
+
+```
+GET /uploads/products/image.jpg?w=800&format=webp
+```
+
+| Параметр | Тип | Описание |
+|----------|-----|----------|
+| `w` | number | Ширина (snap к: 200, 400, 800, 1200, 1920) |
+| `format` | string | Формат: `webp`, `jpeg`, `png`, `avif` |
+
+### Качество
+
+| Формат | Quality | Доп. параметры |
+|--------|---------|----------------|
+| WebP | 80 | — |
+| AVIF | 65 | — |
+| JPEG | 80 | progressive |
+| PNG | 80 | compressionLevel 9 |
+
+### Кэш
+
+Обработанные изображения кэшируются в `server/uploads/.cache/`. Ключ: `{path}-{width}.{format}`. При повторном запросе отдаётся из кэша без обработки.
+
+### Rate limiting
+
+| Эндпоинт | Лимит |
+|----------|-------|
+| `POST /api/auth/login` | 10 запросов / 15 мин на IP |
+| `POST /api/requests` | 5 запросов / мин на IP |
+
+---
+
 ## Формат ошибок
 
 ```json

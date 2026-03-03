@@ -41,6 +41,17 @@ export default defineConfig({
     }),
     heroPreloadPlugin(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'swiper': ['swiper'],
+          'ui-vendor': ['zustand', 'lucide-react'],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       '/api': 'http://localhost:3001',

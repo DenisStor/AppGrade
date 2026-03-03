@@ -107,6 +107,16 @@ router.put('/reorder', (req, res) => {
   res.json({ success: true })
 })
 
+router.get('/series-suggestions', (req, res) => {
+  const { category_id } = req.query
+  const where = category_id
+    ? 'WHERE category_id = ? AND series IS NOT NULL AND series != ""'
+    : 'WHERE series IS NOT NULL AND series != ""'
+  const params = category_id ? [category_id] : []
+  const rows = db.prepare(`SELECT DISTINCT series FROM products ${where} ORDER BY series`).all(...params)
+  res.json(rows.map(r => r.series))
+})
+
 router.get('/:id', (req, res) => {
   const product = getProductFull(Number(req.params.id))
   if (!product) return res.status(404).json({ error: 'Товар не найден' })
@@ -114,7 +124,7 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  const { name, slug, category_id, brand_id, short_description, description, badges, specs, dimensions, is_used, condition, condition_label, warranty, active, variants, simOptions, relatedIds } = req.body
+  const { name, slug, category_id, brand_id, short_description, description, badges, specs, dimensions, series, is_used, condition, condition_label, warranty, active, variants, simOptions, relatedIds } = req.body
 
   if (!name || !slug || !category_id || !brand_id) {
     return res.status(400).json({ error: 'Название, slug, категория и бренд обязательны' })
@@ -131,13 +141,14 @@ router.post('/', (req, res) => {
 
   const insertProduct = db.transaction(() => {
     const result = db.prepare(`
-      INSERT INTO products (name, slug, category_id, brand_id, short_description, description, badges, specs, dimensions, is_used, condition, condition_label, warranty, active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO products (name, slug, category_id, brand_id, short_description, description, badges, specs, dimensions, series, is_used, condition, condition_label, warranty, active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       name, slug, category_id, brand_id,
       short_description || null, description || null,
       JSON.stringify(badges || []), JSON.stringify(specs || {}),
       JSON.stringify(dimensions || []),
+      series || null,
       is_used || 0, condition || null, condition_label || null, warranty || null,
       active ?? 1
     )
@@ -200,7 +211,7 @@ router.put('/:id', (req, res) => {
   const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(id)
   if (!existing) return res.status(404).json({ error: 'Товар не найден' })
 
-  const { name, slug, category_id, brand_id, short_description, description, badges, specs, dimensions, is_used, condition, condition_label, warranty, active, variants, simOptions, relatedIds } = req.body
+  const { name, slug, category_id, brand_id, short_description, description, badges, specs, dimensions, series, is_used, condition, condition_label, warranty, active, variants, simOptions, relatedIds } = req.body
 
   if (slug && slug !== existing.slug) {
     const dup = db.prepare('SELECT id FROM products WHERE slug = ? AND id != ?').get(slug, id)
@@ -210,7 +221,7 @@ router.put('/:id', (req, res) => {
   const updateProduct = db.transaction(() => {
     db.prepare(`
       UPDATE products SET name = ?, slug = ?, category_id = ?, brand_id = ?, short_description = ?, description = ?,
-        badges = ?, specs = ?, dimensions = ?, is_used = ?, condition = ?, condition_label = ?, warranty = ?, active = ?, updated_at = datetime('now')
+        badges = ?, specs = ?, dimensions = ?, series = ?, is_used = ?, condition = ?, condition_label = ?, warranty = ?, active = ?, updated_at = datetime('now')
       WHERE id = ?
     `).run(
       name ?? existing.name,
@@ -222,6 +233,7 @@ router.put('/:id', (req, res) => {
       JSON.stringify(badges ?? JSON.parse(existing.badges || '[]')),
       JSON.stringify(specs ?? JSON.parse(existing.specs || '{}')),
       JSON.stringify(dimensions ?? safeJsonParse(existing.dimensions, [])),
+      series !== undefined ? (series || null) : existing.series,
       is_used ?? existing.is_used,
       condition !== undefined ? condition : existing.condition,
       condition_label !== undefined ? condition_label : existing.condition_label,

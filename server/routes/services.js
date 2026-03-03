@@ -38,7 +38,7 @@ router.put('/reorder', (req, res) => {
   const { ids } = req.body
   if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids обязателен' })
 
-  const stmt = db.prepare('UPDATE service_items SET sort_order = ?, updated_at = datetime("now") WHERE id = ?')
+  const stmt = db.prepare(`UPDATE service_items SET sort_order = ?, updated_at = datetime('now') WHERE id = ?`)
   const update = db.transaction((ids) => {
     ids.forEach((id, i) => stmt.run(i, id))
   })
@@ -96,7 +96,7 @@ router.put('/:id', (req, res) => {
 
   const updateTx = db.transaction(() => {
     db.prepare(
-      'UPDATE service_items SET name = ?, time = ?, active = ?, updated_at = datetime("now") WHERE id = ?'
+      `UPDATE service_items SET name = ?, time = ?, active = ?, updated_at = datetime('now') WHERE id = ?`
     ).run(name ?? existing.name, time ?? existing.time, active ?? existing.active, req.params.id)
 
     if (prices && typeof prices === 'object') {

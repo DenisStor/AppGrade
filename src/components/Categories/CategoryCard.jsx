@@ -19,7 +19,7 @@ export function CategoryCard({ name, subtitle, image, link, imageClassName = '',
           <img
             src={image}
             alt={name}
-            loading="eager"
+            loading="lazy"
             className={`block group-hover:scale-105 transition-transform duration-500 ${imageClassName}`}
           />
         </div>

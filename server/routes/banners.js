@@ -35,7 +35,7 @@ router.put('/reorder', (req, res) => {
   const { ids } = req.body
   if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids обязателен' })
 
-  const stmt = db.prepare('UPDATE banners SET sort_order = ?, updated_at = datetime("now") WHERE id = ?')
+  const stmt = db.prepare(`UPDATE banners SET sort_order = ?, updated_at = datetime('now') WHERE id = ?`)
   const update = db.transaction((ids) => {
     ids.forEach((id, i) => stmt.run(i, id))
   })
@@ -49,7 +49,7 @@ router.put('/:id', (req, res) => {
   if (!existing) return res.status(404).json({ error: 'Баннер не найден' })
 
   db.prepare(
-    'UPDATE banners SET title = ?, image_desktop = ?, image_mobile = ?, alt = ?, link = ?, active = ?, updated_at = datetime("now") WHERE id = ?'
+    `UPDATE banners SET title = ?, image_desktop = ?, image_mobile = ?, alt = ?, link = ?, active = ?, updated_at = datetime('now') WHERE id = ?`
   ).run(
     title ?? existing.title,
     image_desktop ?? existing.image_desktop,

@@ -112,6 +112,47 @@ const { mutate } = useMutation('POST', '/api/products', {
 - Иконки: Lucide React (`import { Heart } from 'lucide-react'`)
 - Карусели: Swiper
 
+## Маска телефона
+
+Во всех формах с телефоном используется `formatPhoneInput` из `src/utils/phone.js`:
+
+```jsx
+import { formatPhoneInput } from '../utils/phone'
+
+const handlePhoneChange = (e) => {
+  setPhone(formatPhoneInput(e.target.value, phone))
+}
+```
+
+Формат: `+7 (999) 123-45-67`. Автоматически удаляет ведущие 7/8, обрезает до 10 цифр.
+
+## Соцсети
+
+`SOCIAL_LINKS` из `src/data/social.jsx` — массив `{ name, href, icon }` (Telegram, VK, WhatsApp). Используется в Footer и ContactSection.
+
+## Лейауты
+
+| Лейаут | Когда использовать |
+|--------|-------------------|
+| `CatalogLayout` | Каталог (вложенные маршруты: catalog, category, brand, product) |
+| `PageLayout` | Обычные страницы (Home, Service, Cart, Blog и др.) |
+| `InfoLayout` | Информационные страницы (delivery, warranty, faq, terms, contacts и др.) |
+
+## Формы (отправка заявок)
+
+Все формы отправляются через `src/services/api.js`:
+
+```js
+import { api } from '../services/api'
+
+await api.submitOrder({ name, phone, items })        // Оформление заказа
+await api.submitQuickBuy({ name, phone, productName, variantInfo, productId })  // Быстрая покупка
+await api.submitContactForm({ name, phone })          // Обратный звонок
+await api.submitRepairRequest({ name, phone, device, problem })  // Запись на ремонт
+```
+
+Все формы включают inline-валидацию и маску телефона.
+
 ## Git
 
 - Коммиты на русском

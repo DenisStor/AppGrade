@@ -53,16 +53,28 @@ export function FilterSidebar({
     onFilterChange('inStock', !filters.inStock)
   }, [filters.inStock, onFilterChange])
 
+  const brandOptions = useMemo(
+    () => availableBrands.map((b) => ({ value: b, label: b })),
+    [availableBrands]
+  )
+
+  const seriesOptions = useMemo(
+    () => availableSeries.map((s) => ({ value: s, label: s })),
+    [availableSeries]
+  )
+
+  const memoryOptions = useMemo(
+    () => availableMemory.map((m) => ({ value: m, label: formatMemory(m) })),
+    [availableMemory]
+  )
+
   return (
     <aside className={`divide-y divide-gray-200/60 ${className}`}>
       {/* Бренд */}
       {!hideBrandFilter && availableBrands.length > 1 && (
         <FilterSection title="Бренд">
           <CheckboxFilter
-            options={availableBrands.map((b) => ({
-              value: b,
-              label: b,
-            }))}
+            options={brandOptions}
             selected={filters.brands}
             onChange={(brands) => onFilterChange('brands', brands)}
           />
@@ -73,10 +85,7 @@ export function FilterSidebar({
       {availableSeries.length > 1 && (
         <FilterSection title="Серия">
           <CheckboxFilter
-            options={availableSeries.map((s) => ({
-              value: s,
-              label: s,
-            }))}
+            options={seriesOptions}
             selected={filters.series || []}
             onChange={(series) => onFilterChange('series', series)}
           />
@@ -98,10 +107,7 @@ export function FilterSidebar({
       {availableMemory.length > 0 && (
         <FilterSection title="Память">
           <CheckboxFilter
-            options={availableMemory.map((m) => ({
-              value: m,
-              label: formatMemory(m),
-            }))}
+            options={memoryOptions}
             selected={filters.memory}
             onChange={(memory) => onFilterChange('memory', memory)}
           />

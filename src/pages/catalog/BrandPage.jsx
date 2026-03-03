@@ -28,7 +28,7 @@ import { useProductFiltering } from '../../hooks/useProductFiltering'
 const brandExtraFilters = (result, filters) => {
   if (filters.series.length) {
     result = result.filter((p) => {
-      const series = extractSeries(p.name)
+      const series = p.series || extractSeries(p.name)
       return series && filters.series.includes(series)
     })
   }

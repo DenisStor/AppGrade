@@ -31,6 +31,9 @@ export default function ProductEditPage() {
 
   const { data: categories } = useQuery('/categories')
   const { data: brands } = useQuery('/brands')
+  const { data: seriesSuggestions } = useQuery(
+    form.category_id ? `/products/series-suggestions?category_id=${form.category_id}` : '/products/series-suggestions'
+  )
 
   // Debounced поиск связанных товаров
   useEffect(() => {
@@ -43,7 +46,7 @@ export default function ProductEditPage() {
   )
 
   const [form, setForm] = useState({
-    name: '', slug: '', category_id: '', brand_id: '',
+    name: '', slug: '', category_id: '', brand_id: '', series: '',
     short_description: '', description: '',
     badges: [], specs: {},
     is_used: isNew && searchParams.get('used') === '1' ? 1 : 0,
@@ -362,6 +365,23 @@ export default function ProductEditPage() {
               </select>
               {errors.brand_id && <p className="text-xs text-red-500 mt-1">{errors.brand_id}</p>}
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Серия <span className="text-gray-400 font-normal">(необязательно)</span>
+            </label>
+            <input
+              type="text"
+              list="series-suggestions"
+              value={form.series || ''}
+              onChange={e => set('series', e.target.value)}
+              placeholder="iPhone 16, MacBook Pro, Galaxy S24..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+            />
+            <datalist id="series-suggestions">
+              {seriesSuggestions?.map(s => <option key={s} value={s} />)}
+            </datalist>
           </div>
 
           <div>

@@ -27,7 +27,7 @@ function cartesianProduct(arrays) {
 }
 
 // === PriceInput ===
-function PriceInput({ value, onChange, placeholder = 'Цена' }) {
+function PriceInput({ value, onChange, placeholder = 'Цена', row, col }) {
   const [focused, setFocused] = useState(false)
   const inputRef = useRef(null)
 
@@ -41,6 +41,8 @@ function PriceInput({ value, onChange, placeholder = 'Цена' }) {
       type="number"
       min={0}
       data-price-input
+      data-row={row}
+      data-col={col}
       placeholder={placeholder}
       value={value || ''}
       onChange={e => onChange(Number(e.target.value))}
@@ -49,9 +51,20 @@ function PriceInput({ value, onChange, placeholder = 'Цена' }) {
         if (e.key === 'Enter' || (e.key === 'Tab' && !e.shiftKey)) {
           e.preventDefault()
           const all = [...document.querySelectorAll('[data-price-input]')]
-          const idx = all.indexOf(e.target)
-          if (idx < all.length - 1) all[idx + 1]?.focus()
-          else e.target.blur()
+          const curRow = Number(e.target.dataset.row)
+          const curCol = Number(e.target.dataset.col)
+          const activate = el => el.tagName === 'BUTTON' ? el.click() : el.focus()
+          // Следующий по столбцу (тот же col, row + 1)
+          const next = all.find(el =>
+            Number(el.dataset.col) === curCol && Number(el.dataset.row) === curRow + 1
+          )
+          if (next) { activate(next); return }
+          // Следующий столбец, минимальный row
+          const nextColEls = all
+            .filter(el => Number(el.dataset.col) > curCol)
+            .sort((a, b) => Number(a.dataset.col) - Number(b.dataset.col) || Number(a.dataset.row) - Number(b.dataset.row))
+          if (nextColEls.length) { activate(nextColEls[0]); return }
+          e.target.blur()
         }
       }}
       autoFocus
@@ -60,6 +73,9 @@ function PriceInput({ value, onChange, placeholder = 'Цена' }) {
   ) : (
     <button
       type="button"
+      data-price-input
+      data-row={row}
+      data-col={col}
       onClick={() => setFocused(true)}
       className={`w-full px-3 py-2 border rounded-lg text-sm font-medium text-left transition-colors tabular-nums ${
         value ? 'border-gray-200 text-gray-900 hover:border-gray-400' : 'border-dashed border-gray-300 text-gray-400 hover:border-gray-400'
@@ -149,7 +165,7 @@ function BulkToolbar({ onApply }) {
 }
 
 // === VariantCell ===
-function VariantCell({ variant, onUpdate }) {
+function VariantCell({ variant, onUpdate, row, col }) {
   const price = variant?.price || 0
   const oldPrice = variant?.old_price || 0
 
@@ -159,12 +175,16 @@ function VariantCell({ variant, onUpdate }) {
         value={price}
         onChange={val => onUpdate({ price: val })}
         placeholder="Цена"
+        row={row}
+        col={col * 2}
       />
       <div className="flex items-center gap-1.5">
         <PriceInput
           value={oldPrice}
           onChange={val => onUpdate({ old_price: val || null })}
           placeholder="Старая цена"
+          row={row}
+          col={col * 2 + 1}
         />
         <DiscountBadge price={price} oldPrice={oldPrice} />
       </div>
@@ -475,7 +495,7 @@ export default function VariantMatrix({ variants = [], onChange, dimensions = []
               </tr>
             </thead>
             <tbody>
-              {rowValues.map(rowVal => (
+              {rowValues.map((rowVal, rowIdx) => (
                 <tr key={rowVal.id} className="border-t border-gray-100">
                   <td className="px-4 py-3 align-top sticky left-0 bg-white z-10">
                     <div className="flex items-center gap-2">
@@ -486,13 +506,15 @@ export default function VariantMatrix({ variants = [], onChange, dimensions = []
                     </div>
                   </td>
                   {columnCombinations.length > 0 ? (
-                    columnCombinations.map((col, i) => {
+                    columnCombinations.map((col, colIdx) => {
                       const v = findVariant(rowVal, col.attrs)
                       return (
-                        <td key={i} className="px-3 py-3 align-top">
+                        <td key={colIdx} className="px-3 py-3 align-top">
                           <VariantCell
                             variant={v}
                             onUpdate={(updates) => updateVariant(rowVal, col.attrs, updates)}
+                            row={rowIdx}
+                            col={colIdx}
                           />
                         </td>
                       )
@@ -502,6 +524,8 @@ export default function VariantMatrix({ variants = [], onChange, dimensions = []
                       <VariantCell
                         variant={findVariant(rowVal, {})}
                         onUpdate={(updates) => updateVariant(rowVal, {}, updates)}
+                        row={rowIdx}
+                        col={0}
                       />
                     </td>
                   )}
@@ -527,6 +551,8 @@ export default function VariantMatrix({ variants = [], onChange, dimensions = []
                   <VariantCell
                     variant={variants[0]}
                     onUpdate={(updates) => onChange([{ ...variants[0], ...updates }])}
+                    row={0}
+                    col={0}
                   />
                 </td>
               </tr>

@@ -8,6 +8,14 @@ import { useCatalogQuery } from '../../hooks/useCatalogQuery'
 import { mapCategory } from '../../services/productMapper'
 import { usePageTitle } from '../../hooks/usePageTitle'
 
+const CATEGORY_LINKS = {
+  smartphones: '/catalog/smartphones/apple',
+  tablets: '/catalog/tablets/apple',
+  headphones: '/catalog/headphones/apple',
+  watches: '/catalog/watches/apple',
+  laptops: '/catalog/laptops/apple',
+}
+
 export default function CatalogPage() {
   usePageTitle('Каталог — APPGRADE')
 
@@ -39,15 +47,15 @@ export default function CatalogPage() {
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-6">
           {categories.map((category, index) => (
-            <Link key={category.id} to={category.href} className="group animate-card-appear"
+            <Link key={category.id} to={CATEGORY_LINKS[category.slug] || category.href} className="group animate-card-appear"
                   style={{ animationDelay: `${Math.min(index * 80, 600)}ms` }}>
               <div className="h-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white border border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <div className="bg-[#f5f5f7] aspect-[4/3] flex items-center justify-center">
+                <div className="bg-[#f5f5f7] aspect-[4/3] flex items-center justify-center overflow-hidden">
                   {category.image && (
                     <ImageWithSkeleton
                       src={category.image}
                       alt={category.name}
-                      className={`w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 ${category.slug === 'watches' ? 'scale-110 group-hover:scale-[1.15]' : ''}`}
+                      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                       sizes="(min-width: 1024px) 33vw, 50vw"
                       widths={[400, 800]}
                     />

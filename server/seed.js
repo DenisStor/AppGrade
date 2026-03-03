@@ -9,6 +9,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const productsDir = join(__dirname, '..', 'src', 'data', 'products')
 const dataDir = join(__dirname, '..', 'src', 'data')
 
+// Копия extractSeries из src/utils/product.js (seed не может использовать ESM-импорт с JSX)
+function extractSeries(productName) {
+  if (!productName) return null
+  const iphoneMatch = productName.match(/iPhone\s+(SE|\d+e?)/i)
+  if (iphoneMatch) return `iPhone ${iphoneMatch[1]}`
+  const galaxyMatch = productName.match(/Galaxy\s+([A-Z]\s*(?:Flip|Fold)?\s*\d+)/i)
+  if (galaxyMatch) return `Galaxy ${galaxyMatch[1]}`
+  return null
+}
+
 // Маппинг Vite-импортов на реальные URL в server/uploads/
 const imagePathMap = {
   'iphone-compare-iphone-17-pro-202509.jpeg': '/uploads/products/iphone-compare-iphone-17-pro-202509.jpeg',
@@ -68,13 +78,13 @@ const { SERVICE_PRICING } = loadProductFile('service.js', dataDir)
 
 // Категории (хардкод — в исходниках используют Vite image imports)
 const categoriesData = [
-  { slug: 'smartphones', name: 'Смартфоны', description: 'iPhone, Samsung Galaxy', image_url: '/uploads/categories/smartphones.png' },
-  { slug: 'laptops', name: 'Ноутбуки', description: 'MacBook Pro, MacBook Air, iMac', image_url: '/uploads/categories/laptops.png' },
-  { slug: 'tablets', name: 'Планшеты', description: 'iPad Pro, iPad Air, iPad', image_url: '/uploads/categories/tablets.png' },
-  { slug: 'watches', name: 'Умные часы', description: 'Apple Watch, Samsung Watch', image_url: '/uploads/categories/watches.png' },
-  { slug: 'headphones', name: 'Наушники', description: 'AirPods, Galaxy Buds', image_url: '/uploads/categories/headphones.png' },
+  { slug: 'smartphones', name: 'Смартфоны', description: 'iPhone, Samsung Galaxy', image_url: '/uploads/categories/smartphones.jpg' },
+  { slug: 'laptops', name: 'Ноутбуки', description: 'MacBook Pro, MacBook Air, iMac', image_url: '/uploads/categories/laptops.jpg' },
+  { slug: 'tablets', name: 'Планшеты', description: 'iPad Pro, iPad Air, iPad', image_url: '/uploads/categories/tablets.jpg' },
+  { slug: 'watches', name: 'Умные часы', description: 'Apple Watch, Samsung Watch', image_url: '/uploads/categories/watches.jpg' },
+  { slug: 'headphones', name: 'Наушники', description: 'AirPods, Galaxy Buds', image_url: '/uploads/categories/headphones.jpg' },
   { slug: 'dyson', name: 'Dyson', description: 'Supersonic, Airwrap, Corrale', image_url: '/uploads/categories/dyson.png' },
-  { slug: 'accessories', name: 'Аксессуары', description: 'Чехлы, зарядки, кабели', image_url: '/uploads/categories/accessories.png' },
+  { slug: 'accessories', name: 'Аксессуары', description: 'Чехлы, зарядки, кабели', image_url: '/uploads/categories/accessories.jpg' },
   { slug: 'gaming', name: 'Игровые консоли', description: 'PlayStation 5, DualSense', image_url: '/uploads/categories/gaming.png' },
 ]
 
@@ -195,8 +205,8 @@ const seedTransaction = db.transaction(() => {
   console.log('Создание товаров...')
   const productIdMap = {} // original string id → db id
   const insertProduct = db.prepare(`
-    INSERT INTO products (name, slug, category_id, brand_id, short_description, description, badges, specs, is_used, condition, condition_label, warranty, sort_order, active, dimensions)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
+    INSERT INTO products (name, slug, category_id, brand_id, short_description, description, badges, specs, is_used, condition, condition_label, warranty, sort_order, active, dimensions, series)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
   `)
   const insertVariant = db.prepare(`
     INSERT INTO product_variants (product_id, color_name, color_hex, memory, price, old_price, stock_status, sort_order, sim_id, sim_name, attributes)
@@ -237,7 +247,8 @@ const seedTransaction = db.transaction(() => {
       p.conditionLabel || null,
       p.warranty || null,
       order,
-      JSON.stringify(dims)
+      JSON.stringify(dims),
+      extractSeries(p.name) || null
     )
     const productId = result.lastInsertRowid
     productIdMap[p.id] = productId

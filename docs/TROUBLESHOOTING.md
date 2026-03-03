@@ -59,3 +59,29 @@ React правило: хуки нельзя вызывать условно ил
 ## JSX в файлах .js
 
 Файлы с JSX должны иметь расширение `.jsx`. Если в хуке есть JSX (например `useAuth`), файл должен быть `.jsx`.
+
+## Видео не воспроизводится
+
+1. Проверить путь в `public/videos/`, формат mp4
+2. Проверить атрибут `poster` (путь к изображению-заглушке)
+3. Видео в AboutUs автовоспроизводится muted (браузерное ограничение)
+4. Volume slider работает только после первого взаимодействия
+
+## Фильтры серии не появляются
+
+1. Проверить `extractSeries(productName)` в `src/utils/product.js` — корректно извлекает серию из названия
+2. `getAvailableSeriesFromProducts(products)` возвращает `string[]`
+3. В `FilterSidebar` должен приходить prop `availableSeries`
+4. В `BRAND_PAGE_INITIAL_FILTERS` есть поле `series: []`
+
+## Маска телефона не работает
+
+1. `formatPhoneInput` из `src/utils/phone.js`
+2. Нужно передавать `prevValue`: `formatPhoneInput(e.target.value, phone)`
+3. Без `prevValue` удаление символов работает некорректно
+
+## Порт занят
+
+1. Vite автоматически выберет следующий свободный порт (5174, 5175...)
+2. Express: изменить `PORT` в `.env` или остановить занимающий процесс
+3. `lsof -i :3001` — найти процесс на порту

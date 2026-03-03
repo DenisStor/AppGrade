@@ -25,6 +25,7 @@ export function mapProduct(raw) {
     badges: raw.badges || [],
     specs: raw.specs || {},
     dimensions,
+    series: raw.series || null,
     isUsed: !!raw.is_used,
     condition: raw.condition,
     conditionLabel: raw.condition_label,

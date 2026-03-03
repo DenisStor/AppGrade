@@ -105,7 +105,7 @@ export const extractSeries = (productName) => {
 export const getAvailableSeriesFromProducts = (products) => {
   const seriesSet = new Set()
   products.forEach((p) => {
-    const series = extractSeries(p.name)
+    const series = p.series || extractSeries(p.name)
     if (series) seriesSet.add(series)
   })
   return Array.from(seriesSet).sort()

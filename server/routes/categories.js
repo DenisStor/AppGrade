@@ -36,7 +36,7 @@ router.put('/reorder', (req, res) => {
   const { ids } = req.body
   if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids обязателен' })
 
-  const stmt = db.prepare('UPDATE categories SET sort_order = ?, updated_at = datetime("now") WHERE id = ?')
+  const stmt = db.prepare(`UPDATE categories SET sort_order = ?, updated_at = datetime('now') WHERE id = ?`)
   const update = db.transaction((ids) => {
     ids.forEach((id, i) => stmt.run(i, id))
   })
@@ -55,7 +55,7 @@ router.put('/:id', (req, res) => {
   }
 
   db.prepare(
-    'UPDATE categories SET name = ?, slug = ?, description = ?, image_url = ?, parent_id = ?, active = ?, updated_at = datetime("now") WHERE id = ?'
+    `UPDATE categories SET name = ?, slug = ?, description = ?, image_url = ?, parent_id = ?, active = ?, updated_at = datetime('now') WHERE id = ?`
   ).run(
     name ?? existing.name,
     slug ?? existing.slug,

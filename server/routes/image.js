@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { join, extname } from 'path'
-import { existsSync, mkdirSync, readFileSync } from 'fs'
+import { existsSync, mkdirSync } from 'fs'
+import { readFile, writeFile, readdir, stat, unlink } from 'fs/promises'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import sharp from 'sharp'
@@ -15,6 +16,28 @@ if (!existsSync(cacheDir)) mkdirSync(cacheDir, { recursive: true })
 const ALLOWED_WIDTHS = [200, 400, 800, 1200, 1920]
 const ALLOWED_FORMATS = ['webp', 'jpeg', 'png', 'avif']
 const MAX_WIDTH = 1920
+const CACHE_MAX_FILES = 500
+
+async function evictCache() {
+  try {
+    const files = await readdir(cacheDir)
+    if (files.length <= CACHE_MAX_FILES) return
+
+    const entries = await Promise.all(
+      files.map(async (name) => {
+        const path = join(cacheDir, name)
+        const s = await stat(path).catch(() => null)
+        return s ? { path, mtimeMs: s.mtimeMs } : null
+      })
+    )
+
+    const sorted = entries.filter(Boolean).sort((a, b) => a.mtimeMs - b.mtimeMs)
+    const toDelete = sorted.slice(0, sorted.length - CACHE_MAX_FILES)
+    await Promise.all(toDelete.map((e) => unlink(e.path).catch(() => {})))
+  } catch {
+    // не критично — пропускаем
+  }
+}
 
 const router = Router()
 
@@ -35,7 +58,6 @@ router.get(/\.(png|jpe?g|webp)$/i, async (req, res, next) => {
   const sourcePath = join(uploadsDir, req.path)
   if (!existsSync(sourcePath)) return next()
 
-  // Snap к ближайшему разрешённому размеру
   const snappedWidth = width
     ? ALLOWED_WIDTHS.reduce((prev, curr) =>
         Math.abs(curr - width) < Math.abs(prev - width) ? curr : prev
@@ -43,7 +65,6 @@ router.get(/\.(png|jpe?g|webp)$/i, async (req, res, next) => {
     : null
 
   const ext = fmt || extname(req.path).slice(1).toLowerCase().replace('jpg', 'jpeg')
-  // Подпапка в пути (/products/uuid.png → products-uuid) для уникальности кэша
   const pathKey = req.path.replace(/^\//, '').replace(/\//g, '-').replace(/\.[^.]+$/, '')
   const cacheKey = `${pathKey}-${snappedWidth || 'orig'}.${ext}`
   const cachePath = join(cacheDir, cacheKey)
@@ -52,7 +73,7 @@ router.get(/\.(png|jpe?g|webp)$/i, async (req, res, next) => {
 
   try {
     if (existsSync(cachePath)) {
-      const buf = readFileSync(cachePath)
+      const buf = await readFile(cachePath)
       res.type(contentType)
       res.send(buf)
       return
@@ -80,9 +101,8 @@ router.get(/\.(png|jpe?g|webp)$/i, async (req, res, next) => {
     }
 
     const buffer = await pipeline.toBuffer()
-    mkdirSync(dirname(cachePath), { recursive: true })
-    const { writeFileSync } = await import('fs')
-    writeFileSync(cachePath, buffer)
+    writeFile(cachePath, buffer).catch(() => {})
+    evictCache().catch(() => {})
 
     res.type(contentType)
     res.send(buffer)

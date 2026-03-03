@@ -22,16 +22,16 @@ export default function Home() {
       <AnimatedSection delay={100}>
         <ProductCards />
       </AnimatedSection>
-      <AnimatedSection delay={150}>
+      <AnimatedSection delay={150} lazyMount>
         <AboutUs />
       </AnimatedSection>
-      <AnimatedSection delay={200}>
+      <AnimatedSection delay={200} lazyMount>
         <News />
       </AnimatedSection>
-      <AnimatedSection delay={250}>
+      <AnimatedSection delay={250} lazyMount>
         <FAQ />
       </AnimatedSection>
-      <AnimatedSection delay={300}>
+      <AnimatedSection delay={300} lazyMount>
         <ContactSection />
       </AnimatedSection>
       <FloatingCallButton />

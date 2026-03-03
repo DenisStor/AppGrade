@@ -38,7 +38,7 @@ npm run preview      # Превью сборки на localhost:4173
 
 Результат: `dist/` — статические файлы (HTML + JS + CSS + assets).
 
-Самый тяжёлый чанк — BlogEditPage (TipTap WYSIWYG): ~387KB / ~124KB gzip.
+Самый тяжёлый чанк — BlogEditPage (TipTap WYSIWYG): ~404KB / ~126KB gzip.
 
 ## Seed БД
 
@@ -90,6 +90,13 @@ NODE_ENV=production JWT_SECRET=your-strong-secret node server/index.js
 ```
 
 Рекомендуется: PM2, Docker или systemd для управления процессом.
+
+## Скрипты оптимизации
+
+| Скрипт | Описание |
+|--------|----------|
+| `npm run optimize-assets` | Оптимизация всех изображений (scripts/optimize-assets.mjs) |
+| `node scripts/optimize-iphone-photos.mjs` | Оптимизация iPhone фото из ~/Desktop/iPhone_Shop_Photos → public/images/iphone/ (Sharp resize 1200px, JPEG 80%) |
 
 ## Файлы в .gitignore
 

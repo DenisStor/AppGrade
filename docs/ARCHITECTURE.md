@@ -49,22 +49,24 @@ src/
 │   ├── News/               # Новости
 │   ├── FAQ/                # FAQ-аккордеон
 │   ├── AboutUs/            # О нас
-│   ├── ContactSection/     # Контакты
+│   ├── ContactSection/     # Контакты + LocationCard
 │   ├── InfoBlocks/         # Информационные блоки
 │   ├── catalog/            # ProductGrid, ProductListCard, SortDropdown
-│   ├── product/            # ColorSelector, MemorySelector, Gallery, Config...
-│   ├── filters/            # FilterSidebar, CheckboxFilter, ColorFilter...
+│   ├── product/            # ColorSelector, MemorySelector, DimensionSelector, Gallery, Config...
+│   ├── filters/            # FilterSidebar, CheckboxFilter, ColorFilter, EmptyFilterResults, FilterDrawer, MobileFilterButton...
 │   ├── search/             # SearchInput, SearchDropdown
 │   ├── cart/               # CartItem, CartRecommendations
 │   ├── seo/                # JSON-LD компоненты
 │   ├── Service/            # Компоненты страницы сервиса
+│   ├── BottomNav.jsx       # Нижняя мобильная навигация
 │   ├── ScrollToTop.jsx     # Скролл при навигации
 │   └── ErrorBoundary.jsx   # Обработка ошибок React
 ├── data/                   # Статические данные, конфиг, товары
-│   ├── config.js           # CONTACTS, COMPANY
+│   ├── config.js           # SITE_URL, LOCATIONS, CONTACTS, COMPANY
 │   ├── navigation.js       # NAV_MAIN, NAV_MOBILE, FOOTER_SECTIONS
 │   ├── categories.js       # CATEGORIES
 │   ├── constants.js        # PRICE, SORT_OPTIONS
+│   ├── social.jsx          # SOCIAL_LINKS (Telegram, VK, WhatsApp)
 │   ├── benefits.js         # Преимущества
 │   ├── faq.js              # FAQ-данные
 │   ├── infoPages.js        # Информационные страницы
@@ -78,13 +80,15 @@ src/
 │   ├── productMapper.js    # snake_case → camelCase маппинг
 │   └── api.js              # Отправка форм (заявки, обратная связь)
 ├── utils/
-│   ├── product.js          # formatPrice, getMinPrice, hasDiscount...
+│   ├── product.js          # formatPrice, getMinPrice, hasDiscount, extractSeries...
 │   ├── color.js            # isLightColor(hex)
-│   └── pluralize.js        # pluralize(count, forms)
+│   ├── pluralize.js        # pluralize(count, forms), formatProductCount
+│   └── phone.js            # formatPhoneInput (маска телефона)
 ├── stores/                 # Zustand: cart, products, search, toast, recentlyViewed
 ├── layouts/
 │   ├── CatalogLayout.jsx   # Header + Outlet + Footer + ErrorBoundary
-│   └── PageLayout.jsx      # Header + children + Footer
+│   ├── PageLayout.jsx      # Header + children + Footer
+│   └── InfoLayout.jsx      # Header + main (max-w-3xl) + Footer + BottomNav
 ├── pages/
 │   ├── Home.jsx
 │   ├── catalog/            # CatalogPage, CategoryPage, BrandPage, ProductPage
@@ -120,6 +124,7 @@ server/
 │   ├── brands.js           # GET /api/brands (список брендов)
 │   ├── services.js         # CRUD /api/services (услуги + цены)
 │   ├── upload.js           # POST multer (jpg/png/webp/gif, 5MB)
+│   ├── image.js            # Sharp обработка изображений на лету + кэш
 │   └── dashboard.js        # GET /api/dashboard/stats
 ├── uploads/                # Загруженные файлы
 │   ├── products/
@@ -150,6 +155,10 @@ docs/
 ### PageLayout (`src/layouts/PageLayout.jsx`)
 
 Обёртка для остальных страниц: `Header → children → Footer`. Принимает `className` для кастомизации `<main>`.
+
+### InfoLayout (`src/layouts/InfoLayout.jsx`)
+
+Обёртка для информационных страниц (delivery, warranty, faq, terms и др.): `Header → main (max-w-3xl) → Footer → BottomNav`. Props: `title`, `children`, `hasContent` (true — контент слева, false — центрированный).
 
 ## Роутинг
 
@@ -228,17 +237,22 @@ docs/
 | Класс | Описание |
 |-------|---------|
 | `.liquid-glass` | Glassmorphism: белый фон 72%, blur 20px |
-| `.liquid-glass-clear` | Прозрачный glassmorphism |
-| `.liquid-glass-dark` | Тёмный glassmorphism |
-| `.liquid-glass-scrolled` | Усиленный при скролле |
-| `.liquid-glass-form` | Для форм поверх изображений |
-| `.card-hover` | Hover: shadow + scale 1.02 |
+| `.liquid-glass-clear` | Прозрачный glassmorphism (25% white, blur 16px) |
+| `.liquid-glass-dark` | Тёмный glassmorphism (75% gray-dark) |
+| `.liquid-glass-scrolled` | Усиленный при скролле (85% white, blur 28px) |
+| `.liquid-glass-form` | Для форм поверх изображений (88% white) |
+| `.liquid-glass-reduced` | Fallback без backdrop-filter (95% light-gray, a11y) |
+| `.card-hover` | Hover: shadow + scale 1.02, transition 300ms |
 | `.nav-link` | Ссылка навигации |
 | `.section-padding` | `px-6 lg:px-60` |
+| `.catalog-padding` | `px-4 lg:px-20` |
 | `.section-margin` | `mx-6 lg:mx-60` |
 | `.text-fluid-2xl/xl/lg` | Fluid typography (clamp) |
 | `.scrollbar-hide` | Скрыть скроллбар |
 | `.input-dark` | Тёмный underline-инпут |
+| `.volume-slider` | Слайдер громкости (80px, 4px) |
+| `.pb-safe` | `padding-bottom: env(safe-area-inset-bottom)` для iPhone |
+| `.filter-collapse` | Collapse-анимация для фильтров (height/opacity 0.2s) |
 
 ### Анимации
 
@@ -249,6 +263,7 @@ docs/
 | `scale-in` | Масштабирование |
 | `ripple` | Ripple-эффект кнопок |
 | `pulse-soft` | Мягкая пульсация |
+| `card-appear` | Появление карточки (opacity + translateY) |
 
 ### Брейкпоинты
 
@@ -289,3 +304,15 @@ Mobile-first подход. Основной брейкпоинт — `lg:` (1024
                                                           ↓
                                                    react-hot-toast
 ```
+
+## Vite конфигурация
+
+**Плагины:**
+
+| Плагин | Описание |
+|--------|----------|
+| `react()` | Vite React 19, JSX transform |
+| `ViteImageOptimizer()` | PNG/JPEG quality 80, WebP lossless false. Кэш: `.cache/image-optimizer` |
+| `heroPreloadPlugin()` | Кастомный: `<link rel="preload">` для hero-desktop.webp (min-width: 1024px) и hero-mobile.webp (max-width: 1023px) |
+
+**Dev Proxy:** `/api` и `/uploads` → `http://localhost:3001`

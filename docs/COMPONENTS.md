@@ -4,21 +4,22 @@
 
 ## Оглавление
 
-- [UI (19)](#ui-19)
-- [Layout (10)](#layout-10)
-- [Homepage (12)](#homepage-12)
+- [UI (20)](#ui-20)
+- [Layout (11)](#layout-11)
+- [Homepage (14)](#homepage-14)
 - [Catalog (3)](#catalog-3)
-- [Product (9)](#product-9)
-- [Filters (5)](#filters-5)
+- [Product (11)](#product-11)
+- [Filters (8)](#filters-8)
 - [Search (2)](#search-2)
 - [Cart (2)](#cart-2)
 - [SEO (4)](#seo-4)
 - [Service (9)](#service-9)
+- [Навигация (3)](#навигация-3)
 - [Админка (11)](#админка-11)
 
 ---
 
-## UI (19)
+## UI (20)
 
 Базовые переиспользуемые UI-компоненты.
 
@@ -336,9 +337,17 @@ import { ColorSwatch } from '../components/ui/ColorSwatch'
 />
 ```
 
+### FloatingCallButton
+
+Плавающая кнопка звонка (fixed bottom-right). Видна только на мобильных (`lg:hidden`).
+
+**Путь:** `src/components/ui/FloatingCallButton.jsx`
+
+Без props. Ссылка из `CONTACTS.phoneLink`. Пульсирующая анимация (ping). Z-index 40.
+
 ---
 
-## Layout (10)
+## Layout (11)
 
 Компоненты структуры страницы.
 
@@ -403,6 +412,20 @@ import { ColorSwatch } from '../components/ui/ColorSwatch'
 
 **Путь:** `src/components/Footer/FooterBottom.jsx`
 
+### InfoLayout
+
+Лейаут для информационных страниц (delivery, warranty, faq, terms и др.).
+
+**Путь:** `src/layouts/InfoLayout.jsx`
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `title` | string | — | Заголовок страницы |
+| `children` | ReactNode | — | Содержимое |
+| `hasContent` | boolean | — | Если `true` — контент слева (max-w-3xl), если `false` — центрированный |
+
+Структура: Header → main → Footer → BottomNav.
+
 ### ScrollToTop
 
 Скролл к верху страницы при навигации.
@@ -413,7 +436,7 @@ import { ColorSwatch } from '../components/ui/ColorSwatch'
 
 ---
 
-## Homepage (12)
+## Homepage (14)
 
 Компоненты главной страницы.
 
@@ -489,15 +512,35 @@ import { ColorSwatch } from '../components/ui/ColorSwatch'
 
 ### AboutUs
 
-Секция "О нас".
+Секция "О нас" с видео-фоном.
 
 **Путь:** `src/components/AboutUs/AboutUs.jsx`
 
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `showDivider` | boolean | `true` | Показывать разделитель сверху |
+
+Включает видео с play/pause/volume контролами. Видео автовоспроизводится (muted). Слайдер громкости (`volume-slider`).
+
 ### ContactSection
 
-Секция контактов.
+Секция контактов с карточками локаций.
 
 **Путь:** `src/components/ContactSection/ContactSection.jsx`
+
+Включает: карточки `LocationCard` для каждого магазина, ссылки на мессенджеры (из `SOCIAL_LINKS`), карта Яндекс.
+
+### LocationCard
+
+Карточка физического местоположения магазина.
+
+**Путь:** `src/components/ContactSection/LocationCard.jsx`
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `location` | object | — | `{ image, name, address, description, mapUrl, workHours }` |
+
+Адаптивная карточка: 200px (sm: 220px, lg: 370px). Ссылка "Показать на карте", режим работы.
 
 ---
 
@@ -553,7 +596,7 @@ import { ProductGrid } from '../components/catalog/ProductGrid'
 
 ---
 
-## Product (9)
+## Product (11)
 
 Компоненты страницы товара.
 
@@ -608,6 +651,29 @@ import { ColorSelector } from '../components/product/ColorSelector'
 | `selected` | string | — | ID выбранного варианта |
 | `onChange` | function | — | Callback изменения |
 
+### DimensionSelector
+
+Универсальный селектор измерений (для dimensions API).
+
+**Путь:** `src/components/product/DimensionSelector.jsx`
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `label` | string | — | Заголовок ("Цвет", "Память") |
+| `options` | array | `[]` | `[{ id, name }]` — варианты |
+| `selected` | string\|null | — | ID выбранного |
+| `onChange` | function | — | `(id) => void` |
+| `className` | string | `''` | Дополнительные классы |
+
+```jsx
+<DimensionSelector
+  label="Память"
+  options={getOptionsForDimension('memory')}
+  selected={selections.memory}
+  onChange={(val) => setSelection('memory', val)}
+/>
+```
+
 ### ProductGallery
 
 Галерея изображений товара.
@@ -621,7 +687,7 @@ import { ColorSelector } from '../components/product/ColorSelector'
 
 ### ProductConfig
 
-Конфигуратор товара (цвет + память + SIM).
+Конфигуратор товара. Поддерживает Dimensions API (DimensionSelector для каждого измерения) и Legacy API (ColorSelector + MemorySelector + SimSelector).
 
 **Путь:** `src/components/product/ProductConfig.jsx`
 
@@ -669,7 +735,7 @@ import { ColorSelector } from '../components/product/ColorSelector'
 
 ### QuickBuyModal
 
-Модалка быстрого заказа.
+Модалка быстрого заказа с inline-валидацией форм.
 
 **Путь:** `src/components/product/QuickBuyModal.jsx`
 
@@ -680,23 +746,26 @@ import { ColorSelector } from '../components/product/ColorSelector'
 | `product` | object | — | Товар |
 | `variant` | object | — | Вариант |
 
+Маска телефона (`formatPhoneInput`), чекбокс согласия на обработку данных, inline-ошибки валидации.
+
 ---
 
-## Filters (5)
+## Filters (8)
 
 Компоненты фильтрации.
 
 ### FilterSidebar
 
-Боковая панель фильтров каталога.
+Боковая панель фильтров каталога. Поддерживает фильтр по серии товаров (extractSeries).
 
 **Путь:** `src/components/filters/FilterSidebar.jsx`
 
 | Prop | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
-| `filters` | object | — | Текущие фильтры |
+| `filters` | object | — | Текущие фильтры (включая `series[]`) |
 | `availableMemory` | array | `[]` | Доступные варианты памяти |
 | `availableBrands` | array | `[]` | Доступные бренды |
+| `availableSeries` | array | `[]` | Доступные серии |
 | `priceRange` | array | `[0, MAX]` | Диапазон цен |
 | `onFilterChange` | function | — | Callback изменения |
 | `onReset` | function | — | Сброс фильтров |
@@ -729,13 +798,13 @@ import { ColorSelector } from '../components/product/ColorSelector'
 
 ### ActiveFilters
 
-Активные фильтры (чипы с крестиком).
+Активные фильтры (чипы с крестиком). Поддерживает сброс фильтров серии.
 
 **Путь:** `src/components/filters/ActiveFilters.jsx`
 
 | Prop | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
-| `filters` | object | — | Активные фильтры |
+| `filters` | object | — | Активные фильтры (включая `series[]`) |
 | `onRemove` | function | — | Удаление фильтра |
 | `onReset` | function | — | Сброс всех |
 
@@ -744,6 +813,45 @@ import { ColorSelector } from '../components/product/ColorSelector'
 Боковая панель фильтров для б/у товаров.
 
 **Путь:** `src/components/filters/UsedFilterSidebar.jsx`
+
+### EmptyFilterResults
+
+Заглушка при отсутствии результатов фильтрации.
+
+**Путь:** `src/components/filters/EmptyFilterResults.jsx`
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `onReset` | function | — | Callback сброса фильтров |
+
+"Товары не найдены" + кнопка "Сбросить фильтры". Анимация `animate-fade-in`.
+
+### FilterDrawer
+
+Боковая панель фильтров для мобильных (обёртка над Drawer).
+
+**Путь:** `src/components/filters/FilterDrawer.jsx`
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `isOpen` | boolean | — | Видимость |
+| `onClose` | function | — | Callback закрытия |
+| `filteredCount` | number | — | Количество найденных товаров |
+| `children` | ReactNode | — | Содержимое фильтров |
+
+Side: left. Внизу кнопка "Показать {количество}" (formatProductCount).
+
+### MobileFilterButton
+
+Кнопка открытия фильтров на мобильных.
+
+**Путь:** `src/components/filters/MobileFilterButton.jsx`
+
+| Prop | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `onClick` | function | — | Callback открытия |
+| `activeCount` | number | — | Количество активных фильтров (бейдж) |
+| `className` | string | `''` | Дополнительные классы |
 
 ---
 
@@ -894,6 +1002,30 @@ Split-screen баннер сервиса.
 Выездной сервис.
 
 **Путь:** `src/components/Service/MobileService.jsx`
+
+---
+
+## Навигация (3)
+
+### BottomNav
+
+Нижняя навигация для мобильных (4 табы: Главная, Каталог, Сервис, Корзина).
+
+**Путь:** `src/components/BottomNav.jsx`
+
+Без props. Видима только на мобильных (`lg:hidden`). Активная таб — `text-gray-dark`. Счётчик товаров в корзине (до 99+). Z-index 40. Класс `pb-safe` для safe-area iPhone.
+
+### ScrollToTop
+
+Скролл наверх при смене маршрута.
+
+**Путь:** `src/components/ScrollToTop.jsx`
+
+### ErrorBoundary
+
+Обработка ошибок React. Используется в CatalogLayout.
+
+**Путь:** `src/components/ErrorBoundary.jsx`
 
 ---
 
