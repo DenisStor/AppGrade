@@ -1,4 +1,20 @@
+import serviceContact from '../assets/service-contact.jpg'
+
 export const SITE_URL = 'https://appgrade.ru'
+
+// Локации магазинов
+export const LOCATIONS = [
+  {
+    id: 1,
+    name: 'APPGRADE',
+    address: 'Калининград, проспект Мира, 57-59',
+    description: 'Магазин техники и сервисный центр',
+    workHours: 'Ежедневно 11:00 — 20:00',
+    image: serviceContact,
+    mapUrl: 'https://yandex.ru/maps/-/CDxZjE~Z',
+    iframeSrc: 'https://yandex.ru/map-widget/v1/?ll=20.479182,54.720305&z=16&l=map&pt=20.479182,54.720305,pm2rdm',
+  },
+]
 
 // Контактные данные магазина
 export const CONTACTS = {

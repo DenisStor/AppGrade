@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import { Link } from 'react-router-dom'
-import { ShoppingBag } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { ShoppingBag, ArrowLeft } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { Modal } from '../../components/ui/Modal'
 import { CartItem } from '../../components/cart/CartItem'
@@ -14,17 +14,32 @@ import { formatPhoneInput } from '../../utils/phone'
 import { PageLayout } from '../../layouts/PageLayout'
 
 export default function CartPage() {
+  const navigate = useNavigate()
   const { items, removeItem, updateQuantity, clearCart, getTotal } = useCartStore()
   const { toast } = useToast()
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
   const [orderForm, setOrderForm] = useState({ name: '', phone: '+7' })
   const [isOrderSuccess, setIsOrderSuccess] = useState(false)
   const [orderAgreed, setOrderAgreed] = useState(false)
+  const [orderErrors, setOrderErrors] = useState({})
 
   usePageTitle('Корзина — APPGRADE')
 
   const handleOrderSubmit = useCallback(async (e) => {
     e.preventDefault()
+    const newErrors = {}
+    if (!orderForm.name.trim()) newErrors.name = 'Введите имя'
+    const phoneDigits = orderForm.phone.replace(/\D/g, '').length
+    if (phoneDigits < 11) {
+      const missing = 11 - phoneDigits
+      newErrors.phone = phoneDigits < 2 ? 'Введите номер телефона' : `Не хватает ${missing} ${missing === 1 ? 'цифры' : 'цифр'}`
+    }
+    if (!orderAgreed) newErrors.agreed = true
+    if (Object.keys(newErrors).length > 0) {
+      setOrderErrors(newErrors)
+      toast('Заполните обязательные поля', 'error')
+      return
+    }
     try {
       await api.submitOrder({
         name: orderForm.name,
@@ -50,6 +65,7 @@ export default function CartPage() {
     setIsOrderSuccess(false)
     setOrderForm({ name: '', phone: '+7' })
     setOrderAgreed(false)
+    setOrderErrors({})
   }
 
   if (items.length === 0 && !isOrderSuccess) {
@@ -74,7 +90,12 @@ export default function CartPage() {
   }
 
   return (
-    <PageLayout className="flex-1 section-padding py-8 lg:py-12">
+    <PageLayout className="flex-1 section-padding py-8 lg:py-12 pb-16 lg:pb-20">
+      <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-gray-medium hover:text-gray-dark transition-colors mb-4">
+        <ArrowLeft className="w-5 h-5" />
+        <span className="text-sm">Назад</span>
+      </button>
+
       <h1 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-8">
         Корзина
       </h1>
@@ -103,7 +124,7 @@ export default function CartPage() {
 
         {/* Итого - на мобильном второй, на десктопе справа на всю высоту */}
         <div className="lg:col-span-1 lg:row-span-2 order-2">
-          <div className="bg-gray-light p-6 rounded-card sticky top-24">
+          <div className="bg-gray-light p-6 rounded-card">
             <h2 className="text-lg font-semibold text-gray-dark mb-4">
               Итого
             </h2>
@@ -204,14 +225,15 @@ export default function CartPage() {
               </label>
               <input
                 type="text"
-                required
                 value={orderForm.name}
-                onChange={(e) =>
+                onChange={(e) => {
                   setOrderForm((prev) => ({ ...prev, name: e.target.value }))
-                }
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400"
+                  setOrderErrors(prev => ({ ...prev, name: false }))
+                }}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-gray-400 ${orderErrors.name ? 'border-red-500' : 'border-gray-200'}`}
                 placeholder="Иван"
               />
+              {orderErrors.name && <p className="text-red-500 text-xs mt-1">{orderErrors.name}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-dark mb-1">
@@ -219,30 +241,31 @@ export default function CartPage() {
               </label>
               <input
                 type="tel"
-                required
                 value={orderForm.phone}
-                onChange={(e) =>
+                onChange={(e) => {
                   setOrderForm((prev) => ({ ...prev, phone: formatPhoneInput(e.target.value, prev.phone) }))
-                }
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400"
+                  setOrderErrors(prev => ({ ...prev, phone: false }))
+                }}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-gray-400 ${orderErrors.phone ? 'border-red-500' : 'border-gray-200'}`}
                 placeholder="+7 (___) ___-__-__"
               />
+              {orderErrors.phone && <p className="text-red-500 text-xs mt-1">{orderErrors.phone}</p>}
             </div>
             <label className="flex items-center gap-2.5 cursor-pointer">
               <input
                 type="checkbox"
                 checked={orderAgreed}
-                onChange={(e) => setOrderAgreed(e.target.checked)}
-                className="w-4 h-4 accent-gray-dark"
+                onChange={(e) => { setOrderAgreed(e.target.checked); setOrderErrors(prev => ({ ...prev, agreed: false })) }}
+                className={`w-4 h-4 accent-gray-dark ${orderErrors.agreed ? 'ring-2 ring-red-500' : ''}`}
               />
-              <span className="text-xs text-gray-medium">
+              <span className={`text-xs ${orderErrors.agreed ? 'text-red-500' : 'text-gray-medium'}`}>
                 Согласен на обработку{' '}
                 <Link to="/privacy" className="underline hover:text-gray-dark">
                   персональных данных
                 </Link>
               </span>
             </label>
-            <Button type="submit" variant="primary" size="lg" className="w-full" disabled={!orderAgreed}>
+            <Button type="submit" variant="primary" size="lg" className="w-full">
               Подтвердить заказ
             </Button>
           </form>

@@ -257,7 +257,7 @@ erDiagram
 | Данные | Количество |
 |--------|-----------|
 | Администратор | 1 (admin@appgrade.ru / admin123) |
-| Категории | 9 (smartphones, laptops, tablets, watches, headphones, hairdryers, stylers, accessories, gaming) |
+| Категории | 8 (smartphones, laptops, tablets, watches, headphones, dyson, accessories, gaming) |
 | Бренды | 3 (Apple, Samsung, Dyson) |
 | Связи бренд-категория | 10 (iPhone, Mac, iPad, Apple Watch, AirPods, Samsung Galaxy...) |
 | Товары | Из src/data/products/ (iphone, mac, samsung, dyson, used) |

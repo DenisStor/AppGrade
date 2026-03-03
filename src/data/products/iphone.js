@@ -1,6 +1,8 @@
-import iphone17ProOrange from '../../assets/products/iphone/iphone-compare-iphone-17-pro-202509.jpeg'
+const img = (model, color, views) =>
+  views.map((v) => `/images/iphone/${model}-${color}-${v}.jpg`)
 
 export const iphoneProducts = [
+  // ── iPhone 17 Pro Max ─────────────────────────────
   {
     id: 'iphone-17-pro-max',
     slug: 'iphone-17-pro-max',
@@ -14,131 +16,80 @@ export const iphoneProducts = [
       { id: 'esim', name: 'eSIM' },
     ],
     variants: [
+      // Cosmic Orange
       {
-        id: 'iphone-17-pro-max-orange-256',
-        color: { id: 'orange', name: 'Оранжевый титан', hex: '#e07840' },
+        id: 'iphone-17-pro-max-cosmic-orange-256',
+        color: { id: 'cosmic-orange', name: 'Космический оранжевый', hex: '#e07840' },
         memory: 256,
         price: 179990,
         oldPrice: null,
         inStock: true,
-        images: [
-          iphone17ProOrange,
-          'https://placehold.co/800x800/f5f5f7/86868b?text=Вид+сбоку',
-          'https://placehold.co/800x800/f5f5f7/86868b?text=Вид+сзади',
-          'https://placehold.co/800x800/f5f5f7/86868b?text=Экран',
-        ],
+        images: img('17-pro-max', 'cosmic-orange', ['front', 'side', 'camera']),
       },
       {
-        id: 'iphone-17-pro-max-orange-512',
-        color: { id: 'orange', name: 'Оранжевый титан', hex: '#e07840' },
+        id: 'iphone-17-pro-max-cosmic-orange-512',
+        color: { id: 'cosmic-orange', name: 'Космический оранжевый', hex: '#e07840' },
         memory: 512,
         price: 199990,
         oldPrice: null,
         inStock: true,
-        images: [
-          iphone17ProOrange,
-          'https://placehold.co/800x800/f5f5f7/86868b?text=Вид+сбоку',
-          'https://placehold.co/800x800/f5f5f7/86868b?text=Вид+сзади',
-          'https://placehold.co/800x800/f5f5f7/86868b?text=Экран',
-        ],
+        images: img('17-pro-max', 'cosmic-orange', ['front', 'side', 'camera']),
       },
       {
-        id: 'iphone-17-pro-max-black-256',
-        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
-        memory: 256,
-        price: 169990,
-        oldPrice: null,
-        inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
-      },
-      {
-        id: 'iphone-17-pro-max-black-512',
-        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
-        memory: 512,
-        price: 189990,
-        oldPrice: null,
-        inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
-      },
-      {
-        id: 'iphone-17-pro-max-black-1tb',
-        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        id: 'iphone-17-pro-max-cosmic-orange-1tb',
+        color: { id: 'cosmic-orange', name: 'Космический оранжевый', hex: '#e07840' },
         memory: 1024,
-        price: 219990,
+        price: 229990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17-pro-max', 'cosmic-orange', ['front', 'side', 'camera']),
+      },
+      // Deep Blue
+      {
+        id: 'iphone-17-pro-max-deep-blue-256',
+        color: { id: 'deep-blue', name: 'Глубокий синий', hex: '#3a4f6f' },
+        memory: 256,
+        price: 179990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17-pro-max', 'deep-blue', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-17-pro-max-deep-blue-512',
+        color: { id: 'deep-blue', name: 'Глубокий синий', hex: '#3a4f6f' },
+        memory: 512,
+        price: 199990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17-pro-max', 'deep-blue', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-17-pro-max-deep-blue-1tb',
+        color: { id: 'deep-blue', name: 'Глубокий синий', hex: '#3a4f6f' },
+        memory: 1024,
+        price: 229990,
         oldPrice: null,
         inStock: false,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17-pro-max', 'deep-blue', ['front', 'side', 'camera']),
       },
+      // Silver
       {
-        id: 'iphone-17-pro-max-white-256',
-        color: { id: 'white', name: 'Белый титан', hex: '#f5f5f0' },
+        id: 'iphone-17-pro-max-silver-256',
+        color: { id: 'silver', name: 'Серебристый', hex: '#c0c0c0' },
         memory: 256,
-        price: 169990,
+        price: 179990,
         oldPrice: null,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409_GEO_EMEA?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409_GEO_EMEA?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17-pro-max', 'silver', ['front', 'side', 'camera']),
       },
       {
-        id: 'iphone-17-pro-max-white-512',
-        color: { id: 'white', name: 'Белый титан', hex: '#f5f5f0' },
+        id: 'iphone-17-pro-max-silver-512',
+        color: { id: 'silver', name: 'Серебристый', hex: '#c0c0c0' },
         memory: 512,
-        price: 189990,
+        price: 199990,
         oldPrice: null,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409_GEO_EMEA?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409_GEO_EMEA?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
-      },
-      {
-        id: 'iphone-17-pro-max-natural-256',
-        color: { id: 'natural', name: 'Натуральный титан', hex: '#c4b8a5' },
-        memory: 256,
-        price: 169990,
-        oldPrice: null,
-        inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-naturaltitanium?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-naturaltitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
-      },
-      {
-        id: 'iphone-17-pro-max-desert-256',
-        color: { id: 'desert', name: 'Титан пустыни', hex: '#c2a87d' },
-        memory: 256,
-        price: 169990,
-        oldPrice: null,
-        inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-deserttitanium?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-1-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=800&hei=800&fmt=png-alpha',
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-storage-select-202409-6-9inch-deserttitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17-pro-max', 'silver', ['front', 'side', 'camera']),
       },
     ],
     specs: {
@@ -152,6 +103,8 @@ export const iphoneProducts = [
       'iPhone 17 Pro Max — самый мощный iPhone с титановым корпусом, чипом A19 Pro и улучшенной камерой ProMotion.',
     relatedIds: ['iphone-17-pro', 'iphone-17'],
   },
+
+  // ── iPhone 17 Pro ─────────────────────────────────
   {
     id: 'iphone-17-pro',
     slug: 'iphone-17-pro',
@@ -165,38 +118,62 @@ export const iphoneProducts = [
       { id: 'esim', name: 'eSIM' },
     ],
     variants: [
+      // Cosmic Orange
       {
-        id: 'iphone-17-pro-black-128',
-        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        id: 'iphone-17-pro-cosmic-orange-128',
+        color: { id: 'cosmic-orange', name: 'Космический оранжевый', hex: '#e07840' },
         memory: 128,
-        price: 139990,
+        price: 149990,
         oldPrice: null,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-3inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17-pro', 'cosmic-orange', ['front', 'side', 'camera']),
       },
       {
-        id: 'iphone-17-pro-black-256',
-        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        id: 'iphone-17-pro-cosmic-orange-256',
+        color: { id: 'cosmic-orange', name: 'Космический оранжевый', hex: '#e07840' },
         memory: 256,
-        price: 154990,
+        price: 164990,
         oldPrice: null,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-3inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17-pro', 'cosmic-orange', ['front', 'side', 'camera']),
+      },
+      // Deep Blue
+      {
+        id: 'iphone-17-pro-deep-blue-128',
+        color: { id: 'deep-blue', name: 'Глубокий синий', hex: '#3a4f6f' },
+        memory: 128,
+        price: 149990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17-pro', 'deep-blue', ['front', 'side', 'camera']),
       },
       {
-        id: 'iphone-17-pro-white-256',
-        color: { id: 'white', name: 'Белый титан', hex: '#f5f5f0' },
+        id: 'iphone-17-pro-deep-blue-256',
+        color: { id: 'deep-blue', name: 'Глубокий синий', hex: '#3a4f6f' },
         memory: 256,
-        price: 154990,
+        price: 164990,
         oldPrice: null,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-3inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17-pro', 'deep-blue', ['front', 'side', 'camera']),
+      },
+      // Silver
+      {
+        id: 'iphone-17-pro-silver-128',
+        color: { id: 'silver', name: 'Серебристый', hex: '#c0c0c0' },
+        memory: 128,
+        price: 149990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17-pro', 'silver', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-17-pro-silver-256',
+        color: { id: 'silver', name: 'Серебристый', hex: '#c0c0c0' },
+        memory: 256,
+        price: 164990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17-pro', 'silver', ['front', 'side', 'camera']),
       },
     ],
     specs: {
@@ -210,6 +187,8 @@ export const iphoneProducts = [
       'iPhone 17 Pro — компактный флагман с титановым корпусом, чипом A19 Pro и профессиональной камерой.',
     relatedIds: ['iphone-17-pro-max', 'iphone-17'],
   },
+
+  // ── iPhone 17 ─────────────────────────────────────
   {
     id: 'iphone-17',
     slug: 'iphone-17',
@@ -223,6 +202,7 @@ export const iphoneProducts = [
       { id: 'esim', name: 'eSIM' },
     ],
     variants: [
+      // Black
       {
         id: 'iphone-17-black-128',
         color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
@@ -230,9 +210,7 @@ export const iphoneProducts = [
         price: 109990,
         oldPrice: null,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17', 'black', ['front', 'side', 'camera']),
       },
       {
         id: 'iphone-17-black-256',
@@ -241,31 +219,65 @@ export const iphoneProducts = [
         price: 124990,
         oldPrice: null,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17', 'black', ['front', 'side', 'camera']),
       },
+      // Lavender
       {
-        id: 'iphone-17-pink-128',
-        color: { id: 'pink', name: 'Розовый', hex: '#f9d1cf' },
+        id: 'iphone-17-lavender-128',
+        color: { id: 'lavender', name: 'Лавандовый', hex: '#c8b4d4' },
         memory: 128,
         price: 109990,
         oldPrice: null,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17', 'lavender', ['front', 'side', 'camera']),
       },
       {
-        id: 'iphone-17-blue-128',
-        color: { id: 'blue', name: 'Голубой', hex: '#a8c9e2' },
+        id: 'iphone-17-lavender-256',
+        color: { id: 'lavender', name: 'Лавандовый', hex: '#c8b4d4' },
+        memory: 256,
+        price: 124990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17', 'lavender', ['front', 'side', 'camera']),
+      },
+      // Mist Blue
+      {
+        id: 'iphone-17-mist-blue-128',
+        color: { id: 'mist-blue', name: 'Туманный голубой', hex: '#a8c9e2' },
         memory: 128,
         price: 109990,
         oldPrice: null,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('17', 'mist-blue', ['front', 'side', 'camera']),
+      },
+      // Sage
+      {
+        id: 'iphone-17-sage-128',
+        color: { id: 'sage', name: 'Шалфейный', hex: '#b2c5a8' },
+        memory: 128,
+        price: 109990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17', 'sage', ['front', 'side', 'camera']),
+      },
+      // White
+      {
+        id: 'iphone-17-white-128',
+        color: { id: 'white', name: 'Белый', hex: '#f5f5f0' },
+        memory: 128,
+        price: 109990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17', 'white', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-17-white-256',
+        color: { id: 'white', name: 'Белый', hex: '#f5f5f0' },
+        memory: 256,
+        price: 124990,
+        oldPrice: null,
+        inStock: true,
+        images: img('17', 'white', ['front', 'side', 'camera']),
       },
     ],
     specs: {
@@ -279,6 +291,8 @@ export const iphoneProducts = [
       'iPhone 17 — стильный и производительный смартфон с чипом A19, Dynamic Island и улучшенной камерой.',
     relatedIds: ['iphone-17-pro', 'iphone-17-pro-max'],
   },
+
+  // ── iPhone 16 Pro Max ─────────────────────────────
   {
     id: 'iphone-16-pro-max',
     slug: 'iphone-16-pro-max',
@@ -292,38 +306,72 @@ export const iphoneProducts = [
       { id: 'esim', name: 'eSIM' },
     ],
     variants: [
+      // Black Titanium
       {
-        id: 'iphone-16-pro-max-black-256',
-        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        id: 'iphone-16-pro-max-black-titanium-256',
+        color: { id: 'black-titanium', name: 'Чёрный титан', hex: '#1d1d1f' },
         memory: 256,
         price: 149990,
         oldPrice: 169990,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('16-pro-max', 'black-titanium', ['front', 'side', 'camera']),
       },
       {
-        id: 'iphone-16-pro-max-black-512',
-        color: { id: 'black', name: 'Чёрный титан', hex: '#1d1d1f' },
+        id: 'iphone-16-pro-max-black-titanium-512',
+        color: { id: 'black-titanium', name: 'Чёрный титан', hex: '#1d1d1f' },
         memory: 512,
         price: 169990,
         oldPrice: 189990,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('16-pro-max', 'black-titanium', ['front', 'side', 'camera']),
       },
+      // Desert Titanium
       {
-        id: 'iphone-16-pro-max-white-256',
-        color: { id: 'white', name: 'Белый титан', hex: '#f5f5f0' },
+        id: 'iphone-16-pro-max-desert-titanium-256',
+        color: { id: 'desert-titanium', name: 'Титан пустыни', hex: '#c2a87d' },
         memory: 256,
         price: 149990,
         oldPrice: 169990,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-whitetitanium?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('16-pro-max', 'desert-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-16-pro-max-desert-titanium-512',
+        color: { id: 'desert-titanium', name: 'Титан пустыни', hex: '#c2a87d' },
+        memory: 512,
+        price: 169990,
+        oldPrice: 189990,
+        inStock: true,
+        images: img('16-pro-max', 'desert-titanium', ['front', 'side', 'camera']),
+      },
+      // Natural Titanium
+      {
+        id: 'iphone-16-pro-max-natural-titanium-256',
+        color: { id: 'natural-titanium', name: 'Натуральный титан', hex: '#c4b8a5' },
+        memory: 256,
+        price: 149990,
+        oldPrice: 169990,
+        inStock: true,
+        images: img('16-pro-max', 'natural-titanium', ['front', 'side', 'camera']),
+      },
+      // White Titanium
+      {
+        id: 'iphone-16-pro-max-white-titanium-256',
+        color: { id: 'white-titanium', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 256,
+        price: 149990,
+        oldPrice: 169990,
+        inStock: true,
+        images: img('16-pro-max', 'white-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-16-pro-max-white-titanium-512',
+        color: { id: 'white-titanium', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 512,
+        price: 169990,
+        oldPrice: 189990,
+        inStock: true,
+        images: img('16-pro-max', 'white-titanium', ['front', 'side', 'camera']),
       },
     ],
     specs: {
@@ -335,8 +383,453 @@ export const iphoneProducts = [
     },
     description:
       'iPhone 16 Pro Max — флагман прошлого поколения с отличным соотношением цена/качество.',
-    relatedIds: ['iphone-17-pro-max', 'iphone-15'],
+    relatedIds: ['iphone-17-pro-max', 'iphone-16-pro'],
   },
+
+  // ── iPhone 16 Pro ─────────────────────────────────
+  {
+    id: 'iphone-16-pro',
+    slug: 'iphone-16-pro',
+    category: 'smartphones',
+    brand: 'Apple',
+    name: 'iPhone 16 Pro',
+    shortDescription: 'Титановый корпус. Чип A18 Pro. Камера 48 Мп.',
+    badges: ['hit'],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
+    variants: [
+      // Black Titanium
+      {
+        id: 'iphone-16-pro-black-titanium-128',
+        color: { id: 'black-titanium', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 128,
+        price: 129990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-pro', 'black-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-16-pro-black-titanium-256',
+        color: { id: 'black-titanium', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 256,
+        price: 139990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-pro', 'black-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-16-pro-black-titanium-512',
+        color: { id: 'black-titanium', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 512,
+        price: 159990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-pro', 'black-titanium', ['front', 'side', 'camera']),
+      },
+      // Desert Titanium
+      {
+        id: 'iphone-16-pro-desert-titanium-128',
+        color: { id: 'desert-titanium', name: 'Титан пустыни', hex: '#c2a87d' },
+        memory: 128,
+        price: 129990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-pro', 'desert-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-16-pro-desert-titanium-256',
+        color: { id: 'desert-titanium', name: 'Титан пустыни', hex: '#c2a87d' },
+        memory: 256,
+        price: 139990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-pro', 'desert-titanium', ['front', 'side', 'camera']),
+      },
+      // Natural Titanium
+      {
+        id: 'iphone-16-pro-natural-titanium-128',
+        color: { id: 'natural-titanium', name: 'Натуральный титан', hex: '#c4b8a5' },
+        memory: 128,
+        price: 129990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-pro', 'natural-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-16-pro-natural-titanium-256',
+        color: { id: 'natural-titanium', name: 'Натуральный титан', hex: '#c4b8a5' },
+        memory: 256,
+        price: 139990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-pro', 'natural-titanium', ['front', 'side', 'camera']),
+      },
+      // White Titanium
+      {
+        id: 'iphone-16-pro-white-titanium-128',
+        color: { id: 'white-titanium', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 128,
+        price: 129990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-pro', 'white-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-16-pro-white-titanium-256',
+        color: { id: 'white-titanium', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 256,
+        price: 139990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-pro', 'white-titanium', ['front', 'side', 'camera']),
+      },
+    ],
+    specs: {
+      display: '6.3" Super Retina XDR OLED',
+      chip: 'A18 Pro',
+      camera: '48 Мп + 12 Мп + 12 Мп',
+      battery: 'До 27 часов видео',
+      weight: '199 г',
+    },
+    description:
+      'iPhone 16 Pro — компактный флагман с титановым корпусом, чипом A18 Pro и камерой профессионального уровня.',
+    relatedIds: ['iphone-16-pro-max', 'iphone-17-pro'],
+  },
+
+  // ── iPhone 16 Plus ────────────────────────────────
+  {
+    id: 'iphone-16-plus',
+    slug: 'iphone-16-plus',
+    category: 'smartphones',
+    brand: 'Apple',
+    name: 'iPhone 16 Plus',
+    shortDescription: 'Большой экран 6.7". Чип A18. Камера 48 Мп.',
+    badges: [],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
+    variants: [
+      // Black
+      {
+        id: 'iphone-16-plus-black-128',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 128,
+        price: 99990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-plus', 'black', ['front', 'side']),
+      },
+      {
+        id: 'iphone-16-plus-black-256',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 256,
+        price: 109990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-plus', 'black', ['front', 'side']),
+      },
+      // Pink
+      {
+        id: 'iphone-16-plus-pink-128',
+        color: { id: 'pink', name: 'Розовый', hex: '#f4d4d4' },
+        memory: 128,
+        price: 99990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-plus', 'pink', ['front', 'side']),
+      },
+      // Teal
+      {
+        id: 'iphone-16-plus-teal-128',
+        color: { id: 'teal', name: 'Бирюзовый', hex: '#5fb5b0' },
+        memory: 128,
+        price: 99990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-plus', 'teal', ['front', 'side']),
+      },
+      // Ultramarine
+      {
+        id: 'iphone-16-plus-ultramarine-128',
+        color: { id: 'ultramarine', name: 'Ультрамарин', hex: '#4a5ec4' },
+        memory: 128,
+        price: 99990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-plus', 'ultramarine', ['front', 'side']),
+      },
+      // White
+      {
+        id: 'iphone-16-plus-white-128',
+        color: { id: 'white', name: 'Белый', hex: '#f5f5f0' },
+        memory: 128,
+        price: 99990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16-plus', 'white', ['front', 'side']),
+      },
+    ],
+    specs: {
+      display: '6.7" Super Retina XDR OLED',
+      chip: 'A18',
+      camera: '48 Мп + 12 Мп',
+      battery: 'До 27 часов видео',
+      weight: '199 г',
+    },
+    description:
+      'iPhone 16 Plus — большой экран, мощный чип A18 и отличная автономность на целый день.',
+    relatedIds: ['iphone-16', 'iphone-16-pro'],
+  },
+
+  // ── iPhone 16 ─────────────────────────────────────
+  {
+    id: 'iphone-16',
+    slug: 'iphone-16',
+    category: 'smartphones',
+    brand: 'Apple',
+    name: 'iPhone 16',
+    shortDescription: 'Чип A18. Dynamic Island. Камера 48 Мп.',
+    badges: [],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
+    variants: [
+      // Black
+      {
+        id: 'iphone-16-black-128',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 128,
+        price: 89990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16', 'black', ['front', 'side']),
+      },
+      {
+        id: 'iphone-16-black-256',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 256,
+        price: 99990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16', 'black', ['front', 'side']),
+      },
+      // Pink
+      {
+        id: 'iphone-16-pink-128',
+        color: { id: 'pink', name: 'Розовый', hex: '#f4d4d4' },
+        memory: 128,
+        price: 89990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16', 'pink', ['front', 'side']),
+      },
+      // Teal
+      {
+        id: 'iphone-16-teal-128',
+        color: { id: 'teal', name: 'Бирюзовый', hex: '#5fb5b0' },
+        memory: 128,
+        price: 89990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16', 'teal', ['front', 'side']),
+      },
+      // Ultramarine
+      {
+        id: 'iphone-16-ultramarine-128',
+        color: { id: 'ultramarine', name: 'Ультрамарин', hex: '#4a5ec4' },
+        memory: 128,
+        price: 89990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16', 'ultramarine', ['front', 'side']),
+      },
+      // White
+      {
+        id: 'iphone-16-white-128',
+        color: { id: 'white', name: 'Белый', hex: '#f5f5f0' },
+        memory: 128,
+        price: 89990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16', 'white', ['front', 'side']),
+      },
+    ],
+    specs: {
+      display: '6.1" Super Retina XDR OLED',
+      chip: 'A18',
+      camera: '48 Мп + 12 Мп',
+      battery: 'До 22 часов видео',
+      weight: '170 г',
+    },
+    description:
+      'iPhone 16 — стильный смартфон с чипом A18, Dynamic Island и камерой 48 Мп.',
+    relatedIds: ['iphone-16-plus', 'iphone-16-pro'],
+  },
+
+  // ── iPhone 16e ────────────────────────────────────
+  {
+    id: 'iphone-16e',
+    slug: 'iphone-16e',
+    category: 'smartphones',
+    brand: 'Apple',
+    name: 'iPhone 16e',
+    shortDescription: 'Чип A18. Доступная цена. Touch ID.',
+    badges: [],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
+    variants: [
+      // Black
+      {
+        id: 'iphone-16e-black-128',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 128,
+        price: 69990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16e', 'black', ['front', 'side']),
+      },
+      {
+        id: 'iphone-16e-black-256',
+        color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
+        memory: 256,
+        price: 79990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16e', 'black', ['front', 'side']),
+      },
+      // White
+      {
+        id: 'iphone-16e-white-128',
+        color: { id: 'white', name: 'Белый', hex: '#f5f5f0' },
+        memory: 128,
+        price: 69990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16e', 'white', ['front', 'side']),
+      },
+      {
+        id: 'iphone-16e-white-256',
+        color: { id: 'white', name: 'Белый', hex: '#f5f5f0' },
+        memory: 256,
+        price: 79990,
+        oldPrice: null,
+        inStock: true,
+        images: img('16e', 'white', ['front', 'side']),
+      },
+    ],
+    specs: {
+      display: '6.1" Liquid Retina HD',
+      chip: 'A18',
+      camera: '48 Мп',
+      battery: 'До 26 часов видео',
+      weight: '163 г',
+    },
+    description:
+      'iPhone 16e — доступный iPhone с чипом A18, отличной камерой и Touch ID.',
+    relatedIds: ['iphone-16', 'iphone-15'],
+  },
+
+  // ── iPhone 15 Pro Max ─────────────────────────────
+  {
+    id: 'iphone-15-pro-max',
+    slug: 'iphone-15-pro-max',
+    category: 'smartphones',
+    brand: 'Apple',
+    name: 'iPhone 15 Pro Max',
+    shortDescription: 'Титановый корпус. Чип A17 Pro. Камера 48 Мп.',
+    badges: ['sale'],
+    simOptions: [
+      { id: 'dual', name: 'nanoSIM + eSIM' },
+      { id: 'esim', name: 'eSIM' },
+    ],
+    variants: [
+      // Black Titanium
+      {
+        id: 'iphone-15-pro-max-black-titanium-256',
+        color: { id: 'black-titanium', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 256,
+        price: 119990,
+        oldPrice: 149990,
+        inStock: true,
+        images: img('15-pro-max', 'black-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-15-pro-max-black-titanium-512',
+        color: { id: 'black-titanium', name: 'Чёрный титан', hex: '#1d1d1f' },
+        memory: 512,
+        price: 139990,
+        oldPrice: 169990,
+        inStock: true,
+        images: img('15-pro-max', 'black-titanium', ['front', 'side', 'camera']),
+      },
+      // Blue Titanium
+      {
+        id: 'iphone-15-pro-max-blue-titanium-256',
+        color: { id: 'blue-titanium', name: 'Синий титан', hex: '#4a5e78' },
+        memory: 256,
+        price: 119990,
+        oldPrice: 149990,
+        inStock: true,
+        images: img('15-pro-max', 'blue-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-15-pro-max-blue-titanium-512',
+        color: { id: 'blue-titanium', name: 'Синий титан', hex: '#4a5e78' },
+        memory: 512,
+        price: 139990,
+        oldPrice: 169990,
+        inStock: true,
+        images: img('15-pro-max', 'blue-titanium', ['front', 'side', 'camera']),
+      },
+      // Natural Titanium
+      {
+        id: 'iphone-15-pro-max-natural-titanium-256',
+        color: { id: 'natural-titanium', name: 'Натуральный титан', hex: '#c4b8a5' },
+        memory: 256,
+        price: 119990,
+        oldPrice: 149990,
+        inStock: true,
+        images: img('15-pro-max', 'natural-titanium', ['front', 'side', 'camera']),
+      },
+      // White Titanium
+      {
+        id: 'iphone-15-pro-max-white-titanium-256',
+        color: { id: 'white-titanium', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 256,
+        price: 119990,
+        oldPrice: 149990,
+        inStock: true,
+        images: img('15-pro-max', 'white-titanium', ['front', 'side', 'camera']),
+      },
+      {
+        id: 'iphone-15-pro-max-white-titanium-512',
+        color: { id: 'white-titanium', name: 'Белый титан', hex: '#f5f5f0' },
+        memory: 512,
+        price: 139990,
+        oldPrice: 169990,
+        inStock: false,
+        images: img('15-pro-max', 'white-titanium', ['front', 'side', 'camera']),
+      },
+    ],
+    specs: {
+      display: '6.7" Super Retina XDR OLED',
+      chip: 'A17 Pro',
+      camera: '48 Мп + 12 Мп + 12 Мп',
+      battery: 'До 29 часов видео',
+      weight: '221 г',
+    },
+    description:
+      'iPhone 15 Pro Max — мощный флагман предыдущего поколения с титановым корпусом и профессиональной камерой по отличной цене.',
+    relatedIds: ['iphone-16-pro-max', 'iphone-15'],
+  },
+
+  // ── iPhone 15 ─────────────────────────────────────
   {
     id: 'iphone-15',
     slug: 'iphone-15',
@@ -350,6 +843,7 @@ export const iphoneProducts = [
       { id: 'esim', name: 'eSIM' },
     ],
     variants: [
+      // Black
       {
         id: 'iphone-15-black-128',
         color: { id: 'black', name: 'Чёрный', hex: '#1d1d1f' },
@@ -357,9 +851,7 @@ export const iphoneProducts = [
         price: 79990,
         oldPrice: 99990,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-black?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('15', 'black', ['front', 'side']),
       },
       {
         id: 'iphone-15-black-256',
@@ -368,21 +860,29 @@ export const iphoneProducts = [
         price: 89990,
         oldPrice: 109990,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-black?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('15', 'black', ['front', 'side']),
       },
+      // Blue
       {
         id: 'iphone-15-blue-128',
         color: { id: 'blue', name: 'Голубой', hex: '#7eb4d3' },
         memory: 128,
         price: 79990,
         oldPrice: 99990,
-        inStock: false,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-blue?wid=800&hei=800&fmt=png-alpha',
-        ],
+        inStock: true,
+        images: img('15', 'blue', ['front', 'side']),
       },
+      // Green
+      {
+        id: 'iphone-15-green-128',
+        color: { id: 'green', name: 'Зелёный', hex: '#a8c9a0' },
+        memory: 128,
+        price: 79990,
+        oldPrice: 99990,
+        inStock: true,
+        images: img('15', 'green', ['front', 'side']),
+      },
+      // Pink
       {
         id: 'iphone-15-pink-128',
         color: { id: 'pink', name: 'Розовый', hex: '#f4d4d4' },
@@ -390,9 +890,17 @@ export const iphoneProducts = [
         price: 79990,
         oldPrice: 99990,
         inStock: true,
-        images: [
-          'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-pink?wid=800&hei=800&fmt=png-alpha',
-        ],
+        images: img('15', 'pink', ['front', 'side']),
+      },
+      // Yellow
+      {
+        id: 'iphone-15-yellow-128',
+        color: { id: 'yellow', name: 'Жёлтый', hex: '#f9e47a' },
+        memory: 128,
+        price: 79990,
+        oldPrice: 99990,
+        inStock: true,
+        images: img('15', 'yellow', ['front', 'side']),
       },
     ],
     specs: {
@@ -404,7 +912,6 @@ export const iphoneProducts = [
     },
     description:
       'iPhone 15 — надёжный выбор с современными возможностями по выгодной цене.',
-    relatedIds: ['iphone-16-pro-max', 'iphone-17'],
+    relatedIds: ['iphone-16', 'iphone-15-pro-max'],
   },
 ]
-

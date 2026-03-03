@@ -54,6 +54,7 @@ export const parseNumber = (value, fallback = 0) => Number(value) || fallback
 export function parseBrandPageUrl(searchParams) {
   return {
     filters: {
+      series: parseArray(searchParams.get('series')),
       colors: parseArray(searchParams.get('colors')),
       memory: parseNumberArray(searchParams.get('memory')),
       brands: [], // Бренд определяется URL-путём, фильтр всегда пустой
@@ -73,6 +74,7 @@ export function parseBrandPageUrl(searchParams) {
 export function buildBrandPageUrl(filters, sortBy) {
   const params = new URLSearchParams()
 
+  if (filters.series.length) params.set('series', filters.series.join(','))
   if (filters.colors.length) params.set('colors', filters.colors.join(','))
   if (filters.memory.length) params.set('memory', filters.memory.join(','))
   if (filters.priceRange[0] > 0) params.set('priceMin', filters.priceRange[0])
@@ -120,6 +122,7 @@ export function buildUsedPageUrl(filters, sortBy) {
 // Начальные состояния фильтров
 
 export const BRAND_PAGE_INITIAL_FILTERS = {
+  series: [],
   colors: [],
   memory: [],
   brands: [],

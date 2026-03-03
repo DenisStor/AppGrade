@@ -1,20 +1,35 @@
 import { useState, useCallback } from 'react'
 import { Phone, MapPin, Clock, ArrowRight } from 'lucide-react'
-import { CONTACTS } from '../../data/config'
+import { CONTACTS, LOCATIONS } from '../../data/config'
 import { api } from '../../services/api'
 import { useToast } from '../../hooks/useToast'
 import { formatPhoneInput } from '../../utils/phone'
+import { LocationCard } from './LocationCard'
 
 export function ContactSection() {
   const [agreed, setAgreed] = useState(false)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('+7')
   const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState({})
+  const [activeLocation, setActiveLocation] = useState(0)
   const { toast } = useToast()
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault()
-    if (!agreed) return
+    const newErrors = {}
+    if (!name.trim()) newErrors.name = 'Введите имя'
+    const phoneDigits = phone.replace(/\D/g, '').length
+    if (phoneDigits < 11) {
+      const missing = 11 - phoneDigits
+      newErrors.phone = phoneDigits < 2 ? 'Введите номер телефона' : `Не хватает ${missing} ${missing === 1 ? 'цифры' : 'цифр'}`
+    }
+    if (!agreed) newErrors.agreed = true
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      toast('Заполните обязательные поля', 'error')
+      return
+    }
     setIsLoading(true)
     try {
       await api.submitContactForm({ name, phone })
@@ -22,6 +37,7 @@ export function ContactSection() {
       setName('')
       setPhone('+7')
       setAgreed(false)
+      setErrors({})
     } catch {
       toast('Ошибка отправки. Попробуйте позже', 'error')
     } finally {
@@ -29,13 +45,15 @@ export function ContactSection() {
     }
   }, [name, phone, agreed, toast])
 
+  const location = LOCATIONS[activeLocation]
+
   return (
-    <section className="lg:min-h-[400px]">
-      <div className="grid lg:grid-cols-[55%_45%]">
-        {/* Левая часть — Карта */}
-        <div className="h-[250px] lg:h-auto lg:min-h-[400px] order-2 lg:order-1">
+    <section className="-mb-20 lg:mb-0">
+      <div className="grid lg:grid-cols-[65%_35%]">
+        {/* Левая часть — Карта с оверлеем */}
+        <div className="relative h-[450px] lg:h-auto lg:min-h-[520px] order-2 lg:order-1 overflow-hidden">
           <iframe
-            src={`https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=${CONTACTS.mapId}`}
+            src={location.iframeSrc}
             width="100%"
             height="100%"
             frameBorder="0"
@@ -43,6 +61,11 @@ export function ContactSection() {
             className="w-full h-full"
             style={{ filter: 'grayscale(100%) contrast(1.1) brightness(0.85)' }}
           />
+          <div className="absolute inset-0 flex items-center justify-start pl-4 lg:pl-36 pointer-events-none">
+            <div className="pointer-events-auto">
+              <LocationCard location={location} />
+            </div>
+          </div>
         </div>
 
         {/* Правая часть — Тёмный фон */}
@@ -115,36 +138,42 @@ export function ContactSection() {
             </a>
           </div>
 
-          {/* Форма — горизонтально на desktop */}
+          {/* Форма */}
           <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="flex flex-col lg:flex-row gap-3">
+            <div>
               <input
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => { setName(e.target.value); setErrors(prev => ({ ...prev, name: false })) }}
                 placeholder="Имя"
-                className="input-dark flex-1 py-3"
+                className={`input-dark w-full py-3 ${errors.name ? 'border-b-red-500' : ''}`}
               />
+              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+            </div>
 
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(formatPhoneInput(e.target.value, phone))}
-                placeholder="Телефон"
-                className="input-dark flex-1 py-3"
-              />
+            <div>
+              <div className="flex gap-3">
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => { setPhone(formatPhoneInput(e.target.value, phone)); setErrors(prev => ({ ...prev, phone: false })) }}
+                  placeholder="Телефон"
+                  className={`input-dark flex-1 py-3 ${errors.phone ? 'border-b-red-500' : ''}`}
+                />
 
-              <button
-                type="submit"
-                disabled={!agreed || isLoading}
-                className="w-full lg:w-auto px-6 py-3 bg-white text-black font-semibold text-sm uppercase tracking-wider rounded-btn hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-              >
-                {isLoading ? (
-                  <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                ) : (
-                  <ArrowRight className="w-4 h-4" />
-                )}
-              </button>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-auto px-6 py-3 bg-white text-black font-semibold text-sm uppercase tracking-wider rounded-btn hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                >
+                  {isLoading ? (
+                    <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <ArrowRight className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+              {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
             </div>
 
             {/* Чекбокс под формой */}
@@ -153,10 +182,10 @@ export function ContactSection() {
                 <input
                   type="checkbox"
                   checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
+                  onChange={(e) => { setAgreed(e.target.checked); setErrors(prev => ({ ...prev, agreed: false })) }}
                   className="sr-only peer"
                 />
-                <div className="w-3.5 h-3.5 border border-white/30 rounded peer-checked:border-white peer-checked:bg-white transition-all flex items-center justify-center">
+                <div className={`w-3.5 h-3.5 border rounded peer-checked:border-white peer-checked:bg-white transition-all flex items-center justify-center ${errors.agreed ? 'border-red-500' : 'border-white/30'}`}>
                   {agreed && (
                     <svg className="w-2 h-2 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                       <polyline points="20 6 9 17 4 12" />

@@ -140,7 +140,7 @@ API возвращает **snake_case**, фронт — **camelCase**. Мапп�
 
 ### Категории и бренды
 
-**Категории (9):** smartphones, laptops, tablets, watches, headphones, hairdryers, stylers, accessories, gaming
+**Категории (8):** smartphones, laptops, tablets, watches, headphones, dyson, accessories, gaming
 **Бренды (3):** apple, samsung, dyson
 **Display names:** `BRAND_DISPLAY_NAMES` в `src/data/products/index.js` — маппинг `'apple-smartphones'` → `'iPhone'`
 

@@ -22,7 +22,7 @@ const BANNERS = [
     imageMobile: heroMobile,
     imageDesktopWebp: webp('hero-desktop'),
     imageMobileWebp: webp('hero-mobile'),
-    alt: 'iPhone 17 PRO MAX',
+    alt: 'iPhone 17 Pro Max',
   },
   {
     id: 2,

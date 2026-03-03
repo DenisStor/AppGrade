@@ -8,7 +8,7 @@ export const REDIRECTS = [
   { from: '/accessories', to: '/catalog/accessories' },
   { from: '/vision', to: '/catalog/accessories' },
   { from: '/samsung', to: '/catalog/smartphones' },
-  { from: '/dyson', to: '/catalog/hairdryers' },
+  { from: '/dyson', to: '/catalog/dyson' },
   // Старые URL каталога
   { from: '/catalog/iphone', to: '/catalog/smartphones' },
   { from: '/catalog/mac', to: '/catalog/laptops' },
@@ -16,6 +16,8 @@ export const REDIRECTS = [
   { from: '/catalog/watch', to: '/catalog/watches' },
   { from: '/catalog/airpods', to: '/catalog/headphones' },
   { from: '/catalog/samsung', to: '/catalog/smartphones' },
-  { from: '/catalog/dyson', to: '/catalog/hairdryers' },
   { from: '/catalog/vision', to: '/catalog/accessories' },
+  // Объединённые категории Dyson
+  { from: '/catalog/hairdryers', to: '/catalog/dyson' },
+  { from: '/catalog/stylers', to: '/catalog/dyson' },
 ]

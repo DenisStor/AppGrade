@@ -2,7 +2,7 @@ export const dysonProducts = [
   {
     id: 'dyson-supersonic-hd08',
     slug: 'dyson-supersonic-hd08',
-    category: 'hairdryers',
+    category: 'dyson',
     brand: 'Dyson',
     name: 'Dyson Supersonic HD08',
     shortDescription: 'Фен с технологией Air Multiplier. 5 насадок в комплекте.',
@@ -56,7 +56,7 @@ export const dysonProducts = [
   {
     id: 'dyson-airwrap-complete',
     slug: 'dyson-airwrap-complete',
-    category: 'stylers',
+    category: 'dyson',
     brand: 'Dyson',
     name: 'Dyson Airwrap Complete',
     shortDescription: 'Стайлер для разных типов волос. 6 насадок.',
@@ -99,7 +99,7 @@ export const dysonProducts = [
   {
     id: 'dyson-airwrap-complete-long',
     slug: 'dyson-airwrap-complete-long',
-    category: 'stylers',
+    category: 'dyson',
     brand: 'Dyson',
     name: 'Dyson Airwrap Complete Long',
     shortDescription: 'Стайлер для длинных волос. Удлинённые насадки.',
@@ -142,7 +142,7 @@ export const dysonProducts = [
   {
     id: 'dyson-corrale',
     slug: 'dyson-corrale',
-    category: 'stylers',
+    category: 'dyson',
     brand: 'Dyson',
     name: 'Dyson Corrale',
     shortDescription: 'Беспроводной выпрямитель. Гибкие пластины.',

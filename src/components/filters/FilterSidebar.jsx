@@ -33,6 +33,7 @@ export function FilterSidebar({
   filters,
   availableMemory = [],
   availableBrands = [],
+  availableSeries = [],
   priceRange = [0, PRICE.MAX],
   onFilterChange,
   onReset,
@@ -40,6 +41,7 @@ export function FilterSidebar({
   className = '',
 }) {
   const hasActiveFilters = useMemo(() =>
+    (filters.series?.length > 0) ||
     filters.memory.length > 0 ||
     filters.brands.length > 0 ||
     filters.inStock ||
@@ -63,6 +65,20 @@ export function FilterSidebar({
             }))}
             selected={filters.brands}
             onChange={(brands) => onFilterChange('brands', brands)}
+          />
+        </FilterSection>
+      )}
+
+      {/* Серия */}
+      {availableSeries.length > 1 && (
+        <FilterSection title="Серия">
+          <CheckboxFilter
+            options={availableSeries.map((s) => ({
+              value: s,
+              label: s,
+            }))}
+            selected={filters.series || []}
+            onChange={(series) => onFilterChange('series', series)}
           />
         </FilterSection>
       )}

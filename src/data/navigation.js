@@ -42,7 +42,6 @@ export const FOOTER_SECTIONS = {
     links: [
       { label: 'О компании', href: '/about' },
       ...INFO_LINKS.slice(0, 2),
-      { label: 'Возврат товара', href: '/returns' },
       { label: 'Сервисный центр', href: '/service' },
     ],
   },

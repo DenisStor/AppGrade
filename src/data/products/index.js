@@ -5,7 +5,7 @@ import { dysonProducts } from './dyson'
 import { usedProducts, CONDITIONS } from './used'
 import headphonesImg from '../../assets/categories/headphones.jpg'
 import watchesImg from '../../assets/categories/watches.jpg'
-import hairdryers from '../../assets/categories/hairdryers.jpg'
+import dysonImg from '../../assets/categories/hairdryers.jpg'
 import smartphonesImg from '../../assets/categories/smartphones.jpg'
 import laptopsImg from '../../assets/categories/laptops.jpg'
 import tabletsImg from '../../assets/categories/tablets.jpg'
@@ -137,25 +137,15 @@ export const categories = {
     seoTitle: 'Купить наушники в Калининграде — APPGRADE',
     seoDescription: 'AirPods с гарантией. Доставка по Калининграду.',
   },
-  hairdryers: {
-    id: 'hairdryers',
-    name: 'Фены',
-    slug: 'hairdryers',
-    description: 'Dyson Supersonic',
-    image: hairdryers,
-    href: '/catalog/hairdryers',
-    seoTitle: 'Купить фен Dyson в Калининграде — APPGRADE',
-    seoDescription: 'Фены Dyson Supersonic с гарантией. Доставка по Калининграду.',
-  },
-  stylers: {
-    id: 'stylers',
-    name: 'Стайлеры',
-    slug: 'stylers',
-    description: 'Dyson Airwrap, Corrale',
-    image: 'https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/400714-01.png?$responsive$&cropPathE=desktop&fit=stretch,1&wid=480',
-    href: '/catalog/stylers',
-    seoTitle: 'Купить стайлер Dyson в Калининграде — APPGRADE',
-    seoDescription: 'Стайлеры Dyson Airwrap, Corrale с гарантией. Доставка по Калининграду.',
+  dyson: {
+    id: 'dyson',
+    name: 'Dyson',
+    slug: 'dyson',
+    description: 'Supersonic, Airwrap, Corrale',
+    image: dysonImg,
+    href: '/catalog/dyson',
+    seoTitle: 'Купить Dyson в Калининграде — APPGRADE',
+    seoDescription: 'Dyson Supersonic, Airwrap, Corrale с гарантией. Доставка по Калининграду.',
   },
   accessories: {
     id: 'accessories',
@@ -272,8 +262,7 @@ export const BRAND_DISPLAY_NAMES = {
   'samsung-smartphones': 'Samsung Galaxy',
   'samsung-watches': 'Samsung Galaxy Watch',
   'samsung-headphones': 'Samsung Galaxy Buds',
-  'dyson-hairdryers': 'Dyson',
-  'dyson-stylers': 'Dyson',
+  'dyson-dyson': 'Dyson',
 }
 
 export { iphoneProducts, macProducts, samsungProducts, dysonProducts }

@@ -73,8 +73,7 @@ const categoriesData = [
   { slug: 'tablets', name: 'Планшеты', description: 'iPad Pro, iPad Air, iPad', image_url: '/uploads/categories/tablets.png' },
   { slug: 'watches', name: 'Умные часы', description: 'Apple Watch, Samsung Watch', image_url: '/uploads/categories/watches.png' },
   { slug: 'headphones', name: 'Наушники', description: 'AirPods, Galaxy Buds', image_url: '/uploads/categories/headphones.png' },
-  { slug: 'hairdryers', name: 'Фены', description: 'Dyson Supersonic', image_url: '/uploads/categories/hairdryers.png' },
-  { slug: 'stylers', name: 'Стайлеры', description: 'Dyson Airwrap, Corrale', image_url: '/uploads/categories/stylers.png' },
+  { slug: 'dyson', name: 'Dyson', description: 'Supersonic, Airwrap, Corrale', image_url: '/uploads/categories/dyson.png' },
   { slug: 'accessories', name: 'Аксессуары', description: 'Чехлы, зарядки, кабели', image_url: '/uploads/categories/accessories.png' },
   { slug: 'gaming', name: 'Игровые консоли', description: 'PlayStation 5, DualSense', image_url: '/uploads/categories/gaming.png' },
 ]
@@ -94,8 +93,7 @@ const brandDisplayNames = {
   'samsung-smartphones': 'Samsung Galaxy',
   'samsung-watches': 'Samsung Galaxy Watch',
   'samsung-headphones': 'Samsung Galaxy Buds',
-  'dyson-hairdryers': 'Dyson',
-  'dyson-stylers': 'Dyson',
+  'dyson-dyson': 'Dyson',
 }
 
 // Новости → блог

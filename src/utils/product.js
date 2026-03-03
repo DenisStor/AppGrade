@@ -90,3 +90,23 @@ export const getBrandSlug = (brandName) => {
   const map = { 'Apple': 'apple', 'Samsung': 'samsung', 'Dyson': 'dyson' }
   return map[brandName] || brandName?.toLowerCase()
 }
+
+export const extractSeries = (productName) => {
+  if (!productName) return null
+  // iPhone 17, iPhone 16e, iPhone SE
+  const iphoneMatch = productName.match(/iPhone\s+(SE|\d+e?)/i)
+  if (iphoneMatch) return `iPhone ${iphoneMatch[1]}`
+  // Galaxy S24, Galaxy Z Flip 6, Galaxy A55
+  const galaxyMatch = productName.match(/Galaxy\s+([A-Z]\s*(?:Flip|Fold)?\s*\d+)/i)
+  if (galaxyMatch) return `Galaxy ${galaxyMatch[1]}`
+  return null
+}
+
+export const getAvailableSeriesFromProducts = (products) => {
+  const seriesSet = new Set()
+  products.forEach((p) => {
+    const series = extractSeries(p.name)
+    if (series) seriesSet.add(series)
+  })
+  return Array.from(seriesSet).sort()
+}

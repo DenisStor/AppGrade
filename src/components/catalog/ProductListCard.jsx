@@ -1,16 +1,10 @@
 import { useState, useMemo, memo } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart, Check } from 'lucide-react'
 import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
-import { BadgeGroup } from '../ui/Badge'
 import { ColorSwatch } from '../ui/ColorSwatch'
 import { getMinPrice, formatPrice, getAvailableColors } from '../../utils/product'
-import { useCartStore } from '../../stores/useCartStore'
-import { useToast } from '../../hooks/useToast'
 
 export const ProductListCard = memo(function ProductListCard({ product, category, brand }) {
-  const { addItem: addToCart, isInCart } = useCartStore()
-  const { toast } = useToast()
   const [selectedColorId, setSelectedColorId] = useState(null)
 
   const colors = getAvailableColors(product)
@@ -23,21 +17,6 @@ export const ProductListCard = memo(function ProductListCard({ product, category
   }, [product.variants, selectedColorId])
 
   const minPrice = getMinPrice(product)
-  const hasDiscount = selectedVariant?.oldPrice && selectedVariant.oldPrice > selectedVariant.price
-  const discount = hasDiscount
-    ? Math.round((1 - selectedVariant.price / selectedVariant.oldPrice) * 100)
-    : 0
-
-  const handleAddToCart = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (selectedVariant) {
-      addToCart(product, selectedVariant)
-      toast('Товар добавлен в корзину')
-    }
-  }
-
-  const inCart = selectedVariant && isInCart(product.id, selectedVariant.id)
 
   const handleColorClick = (e, colorId) => {
     e.preventDefault()
@@ -50,102 +29,28 @@ export const ProductListCard = memo(function ProductListCard({ product, category
   return (
     <>
       {/* Мобильная версия */}
-      <article className="lg:hidden flex flex-col h-full rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <Link to={productUrl} className="block relative">
-          <div className="aspect-[4/5] flex items-center justify-center bg-gray-light/30 p-2">
-            <ImageWithSkeleton
-              src={selectedVariant?.images?.[0]}
-              alt={product.name}
-              className="w-full h-full object-contain"
-              sizes="50vw"
-              widths={[400, 800]}
-            />
+      <Link to={productUrl} className="lg:hidden flex flex-col h-full">
+        <div className="bg-[#F5F5F7] rounded-2xl overflow-hidden">
+          <div className="aspect-square flex items-center justify-center">
+            <div className="w-[78%] h-[78%]">
+              <ImageWithSkeleton
+                src={selectedVariant?.images?.[0]}
+                alt={product.name}
+                className="w-full h-full object-contain"
+                sizes="50vw"
+                widths={[400, 800]}
+              />
+            </div>
           </div>
 
-          {product.badges?.length > 0 && (
-            <BadgeGroup
-              badges={product.badges}
-              className="absolute top-2 left-2"
-            />
-          )}
-
-        </Link>
-
-        <div className="p-3 flex flex-col flex-1">
-          <Link to={productUrl}>
-            <h3 className="text-sm font-semibold text-gray-dark line-clamp-2 mb-2">
-              {product.name}
-            </h3>
-          </Link>
-
-          <div className="flex items-baseline gap-1.5 mb-3">
-            <span className="text-base font-bold text-gray-dark">
-              {formatPrice(minPrice)}
-            </span>
-            {hasDiscount && (
-              <span className="text-xs text-gray-medium line-through">
-                {formatPrice(selectedVariant.oldPrice)}
-              </span>
-            )}
-          </div>
-
-          <div className="mt-auto">
-            {inCart ? (
-              <Link
-                to="/cart"
-                onClick={(e) => e.stopPropagation()}
-                className="animate-scale-in w-full py-2.5 rounded-btn bg-white border border-gray-dark text-gray-dark text-xs font-medium active:scale-[0.98] transition-all flex items-center justify-center gap-1.5"
-              >
-                <Check className="w-3.5 h-3.5" />
-                В корзине
-              </Link>
-            ) : (
-              <button
-                onClick={handleAddToCart}
-                className="w-full py-2.5 rounded-btn bg-gray-dark text-white text-xs font-medium active:scale-[0.98] transition-all flex items-center justify-center gap-1.5"
-              >
-                <ShoppingCart className="w-3.5 h-3.5" />
-                В корзину
-              </button>
-            )}
-          </div>
-        </div>
-      </article>
-
-      {/* Десктопная версия — flexbox с фиксированными высотами */}
-      <article className="hidden lg:flex group flex-col h-full bg-white p-6 rounded-card border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-        {/* Изображение */}
-        <Link
-          to={productUrl}
-          className="block relative aspect-[4/5] rounded-card overflow-hidden mb-3"
-        >
-          <ImageWithSkeleton
-            src={selectedVariant?.images?.[0]}
-            alt={product.name}
-            className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-            widths={[400, 800, 1200]}
-          />
-
-          {product.badges?.length > 0 && (
-            <BadgeGroup
-              badges={product.badges}
-              className="absolute top-3 left-3"
-            />
-          )}
-
-        </Link>
-
-        {/* Цвета — фиксированная высота */}
-        <div className="h-7 mb-3">
           {colors.length > 1 && (
-            <div className="flex gap-1.5">
+            <div className="flex justify-center gap-1.5 pb-3">
               {colors.slice(0, 5).map((color) => (
                 <ColorSwatch
                   key={color.id}
                   color={color}
                   selected={selectedColorId === color.id}
-                  size="md"
+                  size="sm"
                   showCheck={false}
                   onClick={(e) => handleColorClick(e, color.id)}
                 />
@@ -157,59 +62,61 @@ export const ProductListCard = memo(function ProductListCard({ product, category
           )}
         </div>
 
-        {/* Название — минимальная высота для 2 строк */}
-        <Link to={productUrl} className="block min-h-[3.5rem] mb-1">
-          <h3 className="text-lg font-semibold text-gray-dark line-clamp-2 group-hover:text-gray-medium transition-colors">
+        <div className="pt-2 px-1 flex flex-col flex-1">
+          <h3 className="text-sm font-semibold text-gray-dark line-clamp-2 mb-1">
             {product.name}
           </h3>
-        </Link>
 
-        {/* Описание — фиксированная высота для 2 строк */}
-        <p className="text-sm text-gray-medium line-clamp-2 h-10 mb-4">
-          {product.shortDescription}
-        </p>
+          <span className="text-sm text-gray-medium">
+            От {formatPrice(minPrice)}
+          </span>
+        </div>
+      </Link>
 
-        {/* Цена + скидка — фиксированная высота */}
-        <div className="min-h-14 mb-3">
-          <div className="flex items-baseline gap-x-2 flex-wrap">
-            <span className="text-2xl font-bold text-gray-dark whitespace-nowrap">
-              {formatPrice(minPrice)}
-            </span>
-            {hasDiscount && (
-              <span className="text-sm text-gray-medium line-through whitespace-nowrap">
-                {formatPrice(selectedVariant.oldPrice)}
-              </span>
-            )}
+      {/* Десктопная версия */}
+      <Link to={productUrl} className="hidden lg:flex group flex-col h-full">
+        <div className="bg-[#F5F5F7] rounded-2xl overflow-hidden">
+          <div className="aspect-square flex items-center justify-center overflow-hidden">
+            <div className="w-[78%] h-[78%]">
+              <ImageWithSkeleton
+                src={selectedVariant?.images?.[0]}
+                alt={product.name}
+                className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                widths={[400, 800, 1200]}
+              />
+            </div>
           </div>
-          {hasDiscount && (
-            <span className="inline-block mt-1 px-2 py-0.5 bg-red-100 text-red-600 text-xs font-medium rounded-md">
-              -{discount}%
-            </span>
+
+          {colors.length > 1 && (
+            <div className="flex justify-center gap-1.5 pb-3">
+              {colors.slice(0, 5).map((color) => (
+                <ColorSwatch
+                  key={color.id}
+                  color={color}
+                  selected={selectedColorId === color.id}
+                  size="sm"
+                  showCheck={false}
+                  onClick={(e) => handleColorClick(e, color.id)}
+                />
+              ))}
+              {colors.length > 5 && (
+                <span className="text-xs text-gray-medium self-center">+{colors.length - 5}</span>
+              )}
+            </div>
           )}
         </div>
 
-        {/* Кнопка — прибита к низу через mt-auto */}
-        <div className="mt-auto">
-          {inCart ? (
-            <Link
-              to="/cart"
-              onClick={(e) => e.stopPropagation()}
-              className="animate-scale-in group/btn w-full py-3.5 px-5 rounded-btn bg-white border border-gray-dark text-gray-dark text-sm font-medium hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-            >
-              <Check className="w-4 h-4" />
-              В корзине
-            </Link>
-          ) : (
-            <button
-              onClick={handleAddToCart}
-              className="group/btn w-full py-3.5 px-5 rounded-btn bg-gray-dark text-white text-sm font-medium hover:bg-black active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-            >
-              <ShoppingCart className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
-              В корзину
-            </button>
-          )}
+        <div className="pt-3 px-1 flex flex-col flex-1">
+          <h3 className="text-base font-semibold text-gray-dark line-clamp-2 mb-1 group-hover:text-gray-medium transition-colors">
+            {product.name}
+          </h3>
+
+          <span className="text-base text-gray-medium">
+            От {formatPrice(minPrice)}
+          </span>
         </div>
-      </article>
+      </Link>
     </>
   )
 })

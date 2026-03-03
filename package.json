@@ -10,7 +10,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "seed": "node server/seed.js",
-    "optimize-assets": "node scripts/optimize-assets.mjs"
+    "optimize-assets": "node scripts/optimize-assets.mjs",
+    "optimize-iphone-photos": "node scripts/optimize-iphone-photos.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

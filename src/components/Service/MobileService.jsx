@@ -14,16 +14,13 @@ export function MobileService() {
       <Container>
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <div className="lg:self-stretch lg:flex lg:flex-col">
-            <span className="inline-block px-4 py-1.5 bg-gray-dark text-white text-sm font-medium rounded-full mb-6 lg:self-start">
-              Выездной сервис
-            </span>
-            <h2 className="text-2xl lg:text-3xl font-bold text-gray-dark mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-dark mb-6">
               Сервис на выезд
             </h2>
-            <p className="text-lg text-gray-medium mb-4">
+            <p className="text-lg lg:text-xl text-gray-medium mb-4">
               Поход в сервис отнимает немало времени. Не отвлекайтесь от важных дел.
             </p>
-            <p className="text-lg text-gray-medium lg:mb-8">
+            <p className="text-lg lg:text-xl text-gray-medium lg:mb-8">
               Наш мастер приедет к вам домой или в офис в удобное время.
               Диагностика и большинство ремонтов выполняются на месте —
               вам не придётся никуда ехать и ждать в очереди.

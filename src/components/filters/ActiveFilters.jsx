@@ -8,12 +8,14 @@ export function ActiveFilters({
   availableMemory = [],
   onRemoveMemory,
   onRemoveBrand,
+  onRemoveSeries,
   onResetPrice,
   onResetStock,
   onResetAll,
   className = '',
 }) {
   const hasFilters = useMemo(() =>
+    (filters.series?.length > 0) ||
     filters.memory.length > 0 ||
     filters.brands?.length > 0 ||
     filters.inStock ||
@@ -26,6 +28,15 @@ export function ActiveFilters({
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
       <span className="text-sm text-gray-medium">Фильтры:</span>
+
+      {/* Серия */}
+      {filters.series?.map((series) => (
+        <Tag
+          key={series}
+          label={series}
+          onRemove={() => onRemoveSeries(series)}
+        />
+      ))}
 
       {/* Бренды */}
       {filters.brands?.map((brand) => (

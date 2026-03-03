@@ -12,7 +12,7 @@ import { EmptyFilterResults } from '../../components/filters/EmptyFilterResults'
 import { catalogApi } from '../../services/catalogApi'
 import { useCatalogQuery } from '../../hooks/useCatalogQuery'
 import { mapProducts } from '../../services/productMapper'
-import { getMinPrice, getAvailableMemoryFromProducts } from '../../utils/product'
+import { getMinPrice, getAvailableMemoryFromProducts, getAvailableSeriesFromProducts, extractSeries } from '../../utils/product'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import {
   useFilterSync,
@@ -26,6 +26,12 @@ import { usePageTitle } from '../../hooks/usePageTitle'
 import { useProductFiltering } from '../../hooks/useProductFiltering'
 
 const brandExtraFilters = (result, filters) => {
+  if (filters.series.length) {
+    result = result.filter((p) => {
+      const series = extractSeries(p.name)
+      return series && filters.series.includes(series)
+    })
+  }
   if (filters.memory.length) {
     result = result.filter((p) =>
       p.variants.some((v) => filters.memory.includes(v.memory))
@@ -86,6 +92,7 @@ export default function BrandPage() {
   }, [filteredProducts, searchQuery])
 
   const availableMemory = useMemo(() => getAvailableMemoryFromProducts(allProducts), [allProducts])
+  const availableSeries = useMemo(() => getAvailableSeriesFromProducts(allProducts), [allProducts])
 
   const priceRange = useMemo(() => {
     if (!allProducts.length) return [0, PRICE.MAX]
@@ -94,6 +101,7 @@ export default function BrandPage() {
   }, [allProducts])
 
   const activeFiltersCount =
+    filters.series.length +
     filters.memory.length +
     (filters.inStock ? 1 : 0) +
     (filters.priceRange[0] > priceRange[0] || filters.priceRange[1] < priceRange[1] ? 1 : 0)
@@ -192,6 +200,9 @@ export default function BrandPage() {
       <ActiveFilters
         filters={filters}
         availableMemory={availableMemory}
+        onRemoveSeries={(series) =>
+          setFilter('series', filters.series.filter((s) => s !== series))
+        }
         onRemoveMemory={(memory) =>
           setFilter('memory', filters.memory.filter((m) => m !== memory))
         }
@@ -208,7 +219,7 @@ export default function BrandPage() {
             <FilterSidebar
               filters={filters}
               availableBrands={[]}
-
+              availableSeries={availableSeries}
               availableMemory={availableMemory}
               priceRange={priceRange}
               onFilterChange={setFilter}
@@ -238,6 +249,7 @@ export default function BrandPage() {
           <FilterSidebar
             filters={filters}
             availableBrands={[]}
+            availableSeries={availableSeries}
             availableMemory={availableMemory}
             priceRange={priceRange}
             onFilterChange={setFilter}

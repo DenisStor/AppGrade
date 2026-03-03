@@ -16,24 +16,35 @@ export function RepairForm() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [agreed, setAgreed] = useState(false)
+  const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
     const { name, value } = e.target
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: false }))
     setFormData((prev) => ({
       ...prev,
       [name]: name === 'phone' ? formatPhoneInput(value, prev.phone) : value,
     }))
   }
 
+  const isPhoneValid = (phone) => phone.replace(/\D/g, '').length >= 11
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!agreed) return
+    const newErrors = {}
+    if (!formData.name.trim()) newErrors.name = true
+    if (!isPhoneValid(formData.phone)) newErrors.phone = true
+    if (!formData.device.trim()) newErrors.device = true
+    if (!agreed) newErrors.agreed = true
 
-    if (!formData.name || !formData.phone) {
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
       toast('Заполните обязательные поля', 'error')
       return
     }
+
+    setErrors({})
 
     setIsSubmitting(true)
 
@@ -61,7 +72,7 @@ export function RepairForm() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="bg-white p-6 lg:p-10 rounded-card">
+          <form onSubmit={handleSubmit} noValidate className="bg-white p-6 lg:p-10 rounded-card">
             <div className="grid sm:grid-cols-2 gap-4 mb-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-dark mb-2">
@@ -74,8 +85,7 @@ export function RepairForm() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Иван"
-                  className="w-full px-4 py-3 rounded-input border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors"
-                  required
+                  className={`w-full px-4 py-3 rounded-input border outline-none transition-colors ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark'}`}
                 />
               </div>
               <div>
@@ -89,15 +99,14 @@ export function RepairForm() {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+7 (999) 123-45-67"
-                  className="w-full px-4 py-3 rounded-input border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors"
-                  required
+                  className={`w-full px-4 py-3 rounded-input border outline-none transition-colors ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark'}`}
                 />
               </div>
             </div>
 
             <div className="mb-4">
               <label htmlFor="device" className="block text-sm font-medium text-gray-dark mb-2">
-                Модель устройства
+                Модель устройства *
               </label>
               <input
                 type="text"
@@ -106,7 +115,8 @@ export function RepairForm() {
                 value={formData.device}
                 onChange={handleChange}
                 placeholder="iPhone 15 Pro Max"
-                className="w-full px-4 py-3 rounded-input border border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark outline-none transition-colors"
+                className={`w-full px-4 py-3 rounded-input border outline-none transition-colors ${errors.device ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-gray-200 focus:border-gray-dark focus:ring-1 focus:ring-gray-dark'}`}
+                required
               />
             </div>
 
@@ -129,10 +139,10 @@ export function RepairForm() {
               <input
                 type="checkbox"
                 checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-                className="w-4 h-4 accent-gray-dark"
+                onChange={(e) => { setAgreed(e.target.checked); if (errors.agreed) setErrors((prev) => ({ ...prev, agreed: false })) }}
+                className={`w-4 h-4 ${errors.agreed ? 'accent-red-500 ring-2 ring-red-500 rounded' : 'accent-gray-dark'}`}
               />
-              <span className="text-xs text-gray-medium">
+              <span className={`text-xs ${errors.agreed ? 'text-red-500' : 'text-gray-medium'}`}>
                 Согласен на обработку{' '}
                 <Link to="/privacy" className="underline hover:text-gray-dark">
                   персональных данных
@@ -144,7 +154,7 @@ export function RepairForm() {
               type="submit"
               className="w-full"
               size="lg"
-              disabled={isSubmitting || !agreed}
+              disabled={isSubmitting}
             >
               {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
             </Button>

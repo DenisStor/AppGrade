@@ -1,7 +1,6 @@
-import { User, Users, TrendingUp, ShieldCheck } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { User, Users, TrendingUp, ShieldCheck, Play, Pause, Volume1, Volume2, VolumeX } from 'lucide-react'
 import { SectionDivider } from '../ui/SectionDivider'
-import { ImageWithSkeleton } from '../ui/ImageWithSkeleton'
-import aboutImage from '../../assets/about/applego.jpg'
 
 const features = [
   {
@@ -27,6 +26,56 @@ const features = [
 ]
 
 export function AboutUs({ showDivider = true }) {
+  const videoRef = useRef(null)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [isMuted, setIsMuted] = useState(true)
+  const [volume, setVolume] = useState(1)
+
+  const togglePlay = () => {
+    const video = videoRef.current
+    if (!video) return
+    if (video.paused) {
+      video.play().catch(() => setIsPlaying(false))
+      setIsPlaying(true)
+    } else {
+      video.pause()
+      setIsPlaying(false)
+    }
+  }
+
+  const handleVolumeChange = (e) => {
+    const newVolume = parseFloat(e.target.value)
+    const video = videoRef.current
+    if (!video) return
+    video.volume = newVolume
+    setVolume(newVolume)
+    if (newVolume === 0) {
+      video.muted = true
+      setIsMuted(true)
+    } else if (isMuted) {
+      video.muted = false
+      setIsMuted(false)
+    }
+  }
+
+  const toggleMute = () => {
+    const video = videoRef.current
+    if (!video) return
+    if (isMuted) {
+      video.muted = false
+      setIsMuted(false)
+      if (volume === 0) {
+        video.volume = 0.5
+        setVolume(0.5)
+      }
+    } else {
+      video.muted = true
+      setIsMuted(true)
+    }
+  }
+
+  const VolumeIcon = isMuted || volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2
+
   return (
     <section className="pb-14 md:pb-20">
       {showDivider && <SectionDivider className="mb-14 md:mb-20" />}
@@ -50,13 +99,54 @@ export function AboutUs({ showDivider = true }) {
             </p>
           </div>
 
-          {/* Правая колонка - изображение */}
-          <div className="lg:order-last">
-            <ImageWithSkeleton
-              src={aboutImage}
-              alt="Магазин AppleGO"
+          {/* Правая колонка - видео */}
+          <div className="lg:order-last relative">
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster="/videos/about-poster.jpg"
               className="w-full h-64 lg:h-full object-cover rounded-card"
-            />
+            >
+              <source src="/videos/about.mp4" type="video/mp4" />
+            </video>
+
+            {/* Управление видео */}
+            <div className="absolute bottom-3 right-3 flex gap-2">
+              <button
+                onClick={togglePlay}
+                aria-label={isPlaying ? 'Поставить на паузу' : 'Воспроизвести'}
+                className="liquid-glass-clear w-9 h-9 flex items-center justify-center rounded-full text-white transition-all duration-200 hover:bg-white/40 active:scale-95"
+              >
+                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              </button>
+
+              {/* Volume group — slider appears on hover */}
+              <div className="group/vol flex items-center">
+                <div className="overflow-hidden w-0 group-hover/vol:w-[88px] transition-all duration-200">
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={isMuted ? 0 : volume}
+                    onChange={handleVolumeChange}
+                    className="volume-slider w-20 mr-2 opacity-0 group-hover/vol:opacity-100 transition-opacity duration-200"
+                    aria-label="Громкость"
+                  />
+                </div>
+                <button
+                  onClick={toggleMute}
+                  aria-label={isMuted ? 'Включить звук' : 'Выключить звук'}
+                  className="liquid-glass-clear w-9 h-9 flex items-center justify-center rounded-full text-white transition-all duration-200 hover:bg-white/40 active:scale-95"
+                >
+                  <VolumeIcon className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

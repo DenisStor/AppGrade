@@ -32,7 +32,7 @@ export function Categories() {
     <section className="pt-14 md:pt-20">
       <div className="section-padding mb-10">
         <SectionHeader
-          title="Лучшие устройства в одном магазине"
+          title="Лучшие устройства в одном салоне"
           subtitle="Выберите нужную категорию"
           subtitleClassName="hidden sm:block"
           linkText="Смотреть все категории"
