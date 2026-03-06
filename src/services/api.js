@@ -38,6 +38,17 @@ export const api = {
     return postRequest({ type: 'contact', name, phone })
   },
 
+  async submitNotify({ name, phone, productName, variantInfo, productId }) {
+    return postRequest({
+      type: 'stock_notify',
+      name,
+      phone,
+      product_name: productName,
+      variant_info: variantInfo,
+      product_id: productId,
+    })
+  },
+
   async submitRepairRequest({ name, phone, device, problem }) {
     return postRequest({
       type: 'repair',

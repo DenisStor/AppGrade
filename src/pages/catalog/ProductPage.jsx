@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Share2, Check } from 'lucide-react'
+import { Share2, Check, Clock } from 'lucide-react'
 import { Breadcrumbs } from '../../components/ui/Breadcrumbs'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { Badge, BadgeGroup } from '../../components/ui/Badge'
@@ -10,6 +10,7 @@ import { ProductConfig } from '../../components/product/ProductConfig'
 import { ProductActions } from '../../components/product/ProductActions'
 import { ProductBenefits } from '../../components/product/ProductBenefits'
 import { QuickBuyModal } from '../../components/product/QuickBuyModal'
+import { NotifyModal } from '../../components/product/NotifyModal'
 import { RelatedProducts } from '../../components/product/RelatedProducts'
 import { RecentlyViewed } from '../../components/product/RecentlyViewed'
 import { ProductJsonLd, BreadcrumbJsonLd } from '../../components/seo/JsonLd'
@@ -37,6 +38,7 @@ export default function ProductPage() {
   const { addItem: addToCart, isInCart } = useCartStore()
 
   const [isQuickBuyOpen, setIsQuickBuyOpen] = useState(false)
+  const [isNotifyOpen, setIsNotifyOpen] = useState(false)
 
   const {
     selections,
@@ -53,6 +55,8 @@ export default function ProductPage() {
     colors,
     memoryOptions,
     availableMemoryForColor,
+    availableSimsForSelection,
+    getOptionAvailability,
   } = useProductVariant(product)
 
   useEffect(() => {
@@ -70,6 +74,17 @@ export default function ProductPage() {
     return `${product.name}${suffix} — купить в APPGRADE`
   }, [product, currentVariant])
   usePageTitle(pageTitle)
+
+  const galleryImages = useMemo(() => {
+    if (!currentVariant || !product) return []
+    if (currentVariant.images?.length) return currentVariant.images
+    const colorId = currentVariant.color?.id || currentVariant.attributes?.color?.id
+    if (!colorId) return []
+    const sameColorVariant = product.variants.find(v =>
+      (v.color?.id === colorId || v.attributes?.color?.id === colorId) && v.images?.length
+    )
+    return sameColorVariant?.images || []
+  }, [product, currentVariant])
 
   if (loading) {
     return (
@@ -143,7 +158,7 @@ export default function ProductPage() {
       <Breadcrumbs items={breadcrumbs} className="mb-6" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        <ProductGallery images={currentVariant?.images || []} productName={product.name} />
+        <ProductGallery images={galleryImages} productName={product.name} category={category} />
 
         <div>
           <div className="flex items-start justify-between gap-4 mb-4">
@@ -190,7 +205,10 @@ export default function ProductPage() {
                 В наличии
               </p>
             ) : (
-              <p className="text-gray-medium text-sm mt-1">Под заказ</p>
+              <p className="text-amber-600 text-sm mt-1 flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                Под заказ
+              </p>
             )}
           </div>
 
@@ -200,6 +218,7 @@ export default function ProductPage() {
             selections={selections}
             onSelectionChange={setSelection}
             getOptionsForDimension={getOptionsForDimension}
+            getOptionAvailability={getOptionAvailability}
             colors={colors}
             memoryOptions={memoryOptions}
             selectedColor={selectedColor}
@@ -209,6 +228,7 @@ export default function ProductPage() {
             onMemoryChange={setSelectedMemory}
             onSimChange={setSelectedSim}
             availableMemoryForColor={availableMemoryForColor}
+            availableSimsForSelection={availableSimsForSelection}
           />
 
           <ProductActions
@@ -217,6 +237,7 @@ export default function ProductPage() {
             isInCart={isInCart}
             onAddToCart={addToCart}
             onQuickBuy={() => setIsQuickBuyOpen(true)}
+            onNotify={() => setIsNotifyOpen(true)}
           />
 
           <ProductBenefits />
@@ -234,6 +255,7 @@ export default function ProductPage() {
       <RecentlyViewed currentProductId={product.id} className="mt-12 lg:mt-16" />
 
       <QuickBuyModal isOpen={isQuickBuyOpen} onClose={() => setIsQuickBuyOpen(false)} product={product} variant={currentVariant} />
+      <NotifyModal isOpen={isNotifyOpen} onClose={() => setIsNotifyOpen(false)} product={product} variant={currentVariant} />
     </div>
   )
 }

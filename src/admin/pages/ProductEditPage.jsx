@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Plus, X, Search } from 'lucide-react'
+import { ArrowLeft, Plus, X, Search, GripVertical } from 'lucide-react'
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, horizontalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { productService } from '../services/productService'
 import { useQuery } from '../hooks/useQuery'
 import VariantMatrix from '../components/VariantMatrix'
@@ -9,6 +12,20 @@ import { generateSlug } from '../utils/generateSlug'
 import toast from 'react-hot-toast'
 
 const BADGE_OPTIONS = ['new', 'hit', 'sale', 'used']
+
+function SortableDimChip({ id, children }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {children}
+    </div>
+  )
+}
 
 export default function ProductEditPage() {
   const { id } = useParams()
@@ -29,11 +46,19 @@ export default function ProductEditPage() {
   const [relatedSearchDebounced, setRelatedSearchDebounced] = useState('')
   const [relatedNames, setRelatedNames] = useState({})
 
+  const dimSensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
+
+  const handleDimDragEnd = (event) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const oldIndex = dimensions.findIndex(d => d.key === active.id)
+    const newIndex = dimensions.findIndex(d => d.key === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+    setDimensions(arrayMove(dimensions, oldIndex, newIndex))
+  }
+
   const { data: categories } = useQuery('/categories')
   const { data: brands } = useQuery('/brands')
-  const { data: seriesSuggestions } = useQuery(
-    form.category_id ? `/products/series-suggestions?category_id=${form.category_id}` : '/products/series-suggestions'
-  )
 
   // Debounced поиск связанных товаров
   useEffect(() => {
@@ -53,6 +78,10 @@ export default function ProductEditPage() {
     condition: '', condition_label: '', warranty: '',
     active: 1, variants: [], simOptions: [], relatedIds: [],
   })
+
+  const { data: seriesSuggestions } = useQuery(
+    form.category_id ? `/products/series-suggestions?category_id=${form.category_id}` : '/products/series-suggestions'
+  )
 
   useEffect(() => {
     if (!isNew) {
@@ -291,17 +320,24 @@ export default function ProductEditPage() {
 
           {/* Chips измерений */}
           {dimensions.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {dimensions.map(d => (
-                <div key={d.key} className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1">
-                  <span className="text-sm">{d.label}</span>
-                  <span className="text-xs text-gray-400">({d.type === 'color' ? 'цвет' : 'текст'})</span>
-                  <button type="button" onClick={() => removeDimension(d.key)} className="text-gray-400 hover:text-red-500">
-                    <X size={12} />
-                  </button>
+            <DndContext sensors={dimSensors} collisionDetection={closestCenter} onDragEnd={handleDimDragEnd}>
+              <SortableContext items={dimensions.map(d => d.key)} strategy={horizontalListSortingStrategy}>
+                <div className="flex flex-wrap gap-2">
+                  {dimensions.map(d => (
+                    <SortableDimChip key={d.key} id={d.key}>
+                      <div className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1 cursor-grab active:cursor-grabbing">
+                        <GripVertical size={12} className="text-gray-300" />
+                        <span className="text-sm">{d.label}</span>
+                        <span className="text-xs text-gray-400">({d.type === 'color' ? 'цвет' : 'текст'})</span>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); removeDimension(d.key) }} className="text-gray-400 hover:text-red-500">
+                          <X size={12} />
+                        </button>
+                      </div>
+                    </SortableDimChip>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>
           )}
 
           <VariantMatrix

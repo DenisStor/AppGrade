@@ -125,12 +125,12 @@ function BrandCard({ brand, category }) {
       to={`/catalog/${category}/${brand.slug}`}
       className="group flex flex-col h-full bg-white rounded-card border border-gray-100 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
     >
-      <div className="bg-gray-light aspect-square flex items-center justify-center p-6">
+      <div className="bg-gray-light aspect-square overflow-hidden flex items-center justify-center">
         {brand.flagshipImage ? (
           <ImageWithSkeleton
             src={brand.flagshipImage}
             alt={displayName}
-            className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-contain scale-[1.8] transition-transform duration-500 group-hover:scale-[1.9]"
           />
         ) : (
           <Package className="w-12 h-12 text-gray-300" />

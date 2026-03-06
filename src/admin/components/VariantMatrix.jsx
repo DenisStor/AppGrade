@@ -1,5 +1,8 @@
-import { useState, useCallback, useRef } from 'react'
-import { Plus, X, Pencil } from 'lucide-react'
+import { useState, useCallback, useRef, useEffect } from 'react'
+import { Plus, X, Pencil, GripVertical } from 'lucide-react'
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, horizontalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { useImageUpload } from '../hooks/useImageUpload'
 import AdminModal from './AdminModal'
 import SortableImages from './SortableImages'
@@ -29,7 +32,41 @@ function cartesianProduct(arrays) {
 // === PriceInput ===
 function PriceInput({ value, onChange, placeholder = 'Цена', row, col }) {
   const [focused, setFocused] = useState(false)
+  const [localValue, setLocalValue] = useState(value || '')
   const inputRef = useRef(null)
+
+  // Синхронизировать с внешним value когда не в фокусе
+  useEffect(() => {
+    if (!focused) setLocalValue(value || '')
+  }, [value, focused])
+
+  const commit = () => {
+    const num = parseInt(String(localValue).replace(/\D/g, ''), 10)
+    onChange(isNaN(num) ? 0 : num)
+  }
+
+  const handleBlur = () => {
+    commit()
+    setFocused(false)
+  }
+
+  const navigateNext = (target) => {
+    const all = [...document.querySelectorAll('[data-price-input]')]
+    const curRow = Number(target.dataset.row)
+    const curCol = Number(target.dataset.col)
+    const activate = el => el.tagName === 'BUTTON' ? el.click() : el.focus()
+    // Следующий по столбцу (тот же col, row + 1)
+    const next = all.find(el =>
+      Number(el.dataset.col) === curCol && Number(el.dataset.row) === curRow + 1
+    )
+    if (next) { activate(next); return }
+    // Следующий столбец, минимальный row
+    const nextColEls = all
+      .filter(el => Number(el.dataset.col) > curCol)
+      .sort((a, b) => Number(a.dataset.col) - Number(b.dataset.col) || Number(a.dataset.row) - Number(b.dataset.row))
+    if (nextColEls.length) { activate(nextColEls[0]); return }
+    target.blur()
+  }
 
   const displayValue = !focused && value
     ? `${priceFormatter.format(value)} ₽`
@@ -38,33 +75,23 @@ function PriceInput({ value, onChange, placeholder = 'Цена', row, col }) {
   return focused ? (
     <input
       ref={inputRef}
-      type="number"
-      min={0}
+      inputMode="numeric"
       data-price-input
       data-row={row}
       data-col={col}
       placeholder={placeholder}
-      value={value || ''}
-      onChange={e => onChange(Number(e.target.value))}
-      onBlur={() => setFocused(false)}
+      value={localValue}
+      onChange={e => {
+        const raw = e.target.value.replace(/[^\d]/g, '')
+        setLocalValue(raw === '' ? '' : Number(raw))
+      }}
+      onBlur={handleBlur}
       onKeyDown={e => {
         if (e.key === 'Enter' || (e.key === 'Tab' && !e.shiftKey)) {
           e.preventDefault()
-          const all = [...document.querySelectorAll('[data-price-input]')]
-          const curRow = Number(e.target.dataset.row)
-          const curCol = Number(e.target.dataset.col)
-          const activate = el => el.tagName === 'BUTTON' ? el.click() : el.focus()
-          // Следующий по столбцу (тот же col, row + 1)
-          const next = all.find(el =>
-            Number(el.dataset.col) === curCol && Number(el.dataset.row) === curRow + 1
-          )
-          if (next) { activate(next); return }
-          // Следующий столбец, минимальный row
-          const nextColEls = all
-            .filter(el => Number(el.dataset.col) > curCol)
-            .sort((a, b) => Number(a.dataset.col) - Number(b.dataset.col) || Number(a.dataset.row) - Number(b.dataset.row))
-          if (nextColEls.length) { activate(nextColEls[0]); return }
-          e.target.blur()
+          const target = e.target
+          inputRef.current?.blur()  // → handleBlur → commit() + setFocused(false) — один раз
+          setTimeout(() => navigateNext(target), 0)
         }
       }}
       autoFocus
@@ -196,8 +223,24 @@ function VariantCell({ variant, onUpdate, row, col }) {
   )
 }
 
+// === SortableDimValue ===
+function SortableDimValue({ id, children }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {children}
+    </div>
+  )
+}
+
 export default function VariantMatrix({ variants = [], onChange, dimensions = [] }) {
   const { upload, uploading } = useImageUpload()
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
   const [valueModal, setValueModal] = useState({
     open: false,
     dimKey: null,
@@ -276,13 +319,33 @@ export default function VariantMatrix({ variants = [], onChange, dimensions = []
   }
 
   const updateVariant = (rowValue, colAttrs, updates) => {
+    let found = false
     const newVariants = variants.map(v => {
       if (firstDim && v.attributes?.[firstDim.key]?.id !== rowValue?.id) return v
       for (const [key, val] of Object.entries(colAttrs || {})) {
         if (v.attributes?.[key]?.id !== val.id) return v
       }
+      found = true
       return { ...v, ...updates }
     })
+
+    if (!found) {
+      const attrs = {}
+      if (firstDim && rowValue) attrs[firstDim.key] = rowValue
+      for (const [key, val] of Object.entries(colAttrs || {})) {
+        attrs[key] = val
+      }
+      newVariants.push({
+        ...legacyFromAttrs(attrs),
+        attributes: attrs,
+        price: 0,
+        old_price: null,
+        stock_status: 'in_stock',
+        images: [],
+        ...updates,
+      })
+    }
+
     onChange(newVariants)
   }
 
@@ -426,6 +489,24 @@ export default function VariantMatrix({ variants = [], onChange, dimensions = []
     onChange(variants.filter(v => v.attributes?.[dimKey]?.id !== valueId))
   }
 
+  // === Drag-and-drop перетаскивание значений измерений ===
+  const handleDimValueDragEnd = (dimKey, event) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const values = getDimValues(dimKey)
+    const oldIndex = values.findIndex(v => v.id === active.id)
+    const newIndex = values.findIndex(v => v.id === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+
+    const newOrder = arrayMove(values, oldIndex, newIndex).map(v => v.id)
+    const sorted = [...variants].sort((a, b) => {
+      const aIdx = newOrder.indexOf(a.attributes?.[dimKey]?.id)
+      const bIdx = newOrder.indexOf(b.attributes?.[dimKey]?.id)
+      return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx)
+    })
+    onChange(sorted)
+  }
+
   // === Загрузка картинок ===
   const handleMultiUpload = async (rowValueId, files) => {
     const urls = []
@@ -444,32 +525,42 @@ export default function VariantMatrix({ variants = [], onChange, dimensions = []
   return (
     <div className="space-y-4">
       {/* Значения каждого измерения */}
-      {dimensions.map(dim => (
-        <div key={dim.key}>
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-700">{dim.label}</h4>
-            <button type="button" onClick={() => openValueModal(dim)} className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700">
-              <Plus size={14} /> Добавить
-            </button>
+      {dimensions.map(dim => {
+        const values = getDimValues(dim.key)
+        return (
+          <div key={dim.key}>
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-sm font-medium text-gray-700">{dim.label}</h4>
+              <button type="button" onClick={() => openValueModal(dim)} className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700">
+                <Plus size={14} /> Добавить
+              </button>
+            </div>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDimValueDragEnd(dim.key, e)}>
+              <SortableContext items={values.map(v => v.id)} strategy={horizontalListSortingStrategy}>
+                <div className="flex flex-wrap gap-2">
+                  {values.map(val => (
+                    <SortableDimValue key={val.id} id={val.id}>
+                      <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-1.5 cursor-grab active:cursor-grabbing">
+                        <GripVertical size={12} className="text-gray-300 shrink-0" />
+                        {dim.type === 'color' && (
+                          <div className="w-4 h-4 rounded-full border border-gray-300" style={{ backgroundColor: val.hex }} />
+                        )}
+                        <span className="text-sm">{val.name}</span>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); openValueModal(dim, val.id) }} className="text-gray-400 hover:text-blue-500">
+                          <Pencil size={12} />
+                        </button>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); removeValue(dim.key, val.id) }} className="text-gray-400 hover:text-red-500">
+                          <X size={14} />
+                        </button>
+                      </div>
+                    </SortableDimValue>
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {getDimValues(dim.key).map(val => (
-              <div key={val.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-1.5">
-                {dim.type === 'color' && (
-                  <div className="w-4 h-4 rounded-full border border-gray-300" style={{ backgroundColor: val.hex }} />
-                )}
-                <span className="text-sm">{val.name}</span>
-                <button type="button" onClick={() => openValueModal(dim, val.id)} className="text-gray-400 hover:text-blue-500">
-                  <Pencil size={12} />
-                </button>
-                <button type="button" onClick={() => removeValue(dim.key, val.id)} className="text-gray-400 hover:text-red-500">
-                  <X size={14} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+        )
+      })}
 
       {/* Bulk-тулбар */}
       {hasVariants && <BulkToolbar onApply={handleBulkApply} />}

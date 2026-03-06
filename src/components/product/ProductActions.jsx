@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ShoppingCart, Check } from 'lucide-react'
+import { ShoppingCart, Check, Bell } from 'lucide-react'
 import { Button } from '../ui/Button'
 
 export function ProductActions({
@@ -8,12 +8,25 @@ export function ProductActions({
   isInCart,
   onAddToCart,
   onQuickBuy,
+  onNotify,
 }) {
   const inCart = currentVariant && isInCart(product.id, currentVariant.id)
+  const inStock = currentVariant?.inStock !== false
 
   const handleAddToCart = () => {
     if (!currentVariant) return
     onAddToCart(product, currentVariant)
+  }
+
+  if (!inStock) {
+    return (
+      <div className="space-y-3 mb-8">
+        <Button variant="primary" size="lg" className="w-full" onClick={onNotify}>
+          <Bell className="w-5 h-5 mr-2" />
+          Уведомить о поступлении
+        </Button>
+      </div>
+    )
   }
 
   return (

@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { getAvailableColors, getAvailableMemory, getAvailableSims, getAvailableDimensionValues } from '../utils/product'
 
+const isAvailable = (v) => v.stockStatus !== 'out_of_stock'
+
 export function useProductVariant(product) {
   const [selections, setSelections] = useState({})
 
@@ -15,7 +17,7 @@ export function useProductVariant(product) {
   useEffect(() => {
     if (!product?.variants?.length) return
 
-    const firstInStock = product.variants.find((v) => v.inStock) || product.variants[0]
+    const firstInStock = product.variants.find((v) => isAvailable(v)) || product.variants[0]
     const initial = {}
 
     if (dimensions.length > 0) {
@@ -57,6 +59,28 @@ export function useProductVariant(product) {
     ) || null
   }, [product, selections, dimensions])
 
+  // Хелпер: проверка совпадения атрибута варианта с выбранным значением
+  const matchesAttr = useCallback((variant, key, value) => {
+    if (variant.attributes?.[key]?.id === value) return true
+    if (key === 'color') return variant.color?.id === value
+    if (key === 'memory') return String(variant.memory) === value
+    if (key === 'sim') return (variant.sim?.id || variant.attributes?.sim?.id) === value
+    return false
+  }, [])
+
+  // Извлечь selections из варианта
+  const extractSelections = useCallback((variant, keys) => {
+    const result = {}
+    for (const key of keys) {
+      result[key] = variant.attributes?.[key]?.id
+        || (key === 'color' && variant.color?.id)
+        || (key === 'memory' && String(variant.memory))
+        || (key === 'sim' && (variant.sim?.id || variant.attributes?.sim?.id))
+        || null
+    }
+    return result
+  }, [])
+
   // Установка выбранного значения с автоподбором
   const setSelection = useCallback((dimKey, valueId) => {
     if (!product?.variants?.length) return
@@ -64,36 +88,42 @@ export function useProductVariant(product) {
     setSelections(prev => {
       const next = { ...prev, [dimKey]: valueId }
 
-      // Проверяем существует ли такая комбинация
       const keys = dimensions.length > 0
         ? dimensions.map(d => d.key)
         : Object.keys(next)
 
-      const exists = product.variants.some(v =>
+      // Найти вариант с точным совпадением всех selections
+      const exactMatch = product.variants.find(v =>
         keys.every(key => {
           const sel = next[key]
           if (!sel) return true
-          return v.attributes?.[key]?.id === sel
+          return matchesAttr(v, key, sel)
         })
       )
 
-      if (!exists) {
-        // Подбираем первый вариант с этим значением
-        const fallback = product.variants.find(v =>
-          v.attributes?.[dimKey]?.id === valueId
-        )
+      if (!exactMatch) {
+        // Combo не существует — подобрать fallback (предпочитаем inStock)
+        const withDim = product.variants.filter(v => matchesAttr(v, dimKey, valueId))
+        const fallback = withDim.find(v => isAvailable(v)) || withDim[0]
         if (fallback) {
-          const adjusted = {}
-          for (const key of keys) {
-            adjusted[key] = fallback.attributes?.[key]?.id || null
-          }
-          return adjusted
+          return extractSelections(fallback, keys)
+        }
+        return next
+      }
+
+      // Combo существует, но если out_of_stock — попробовать in-stock с тем же dimKey
+      if (!isAvailable(exactMatch)) {
+        const inStockAlt = product.variants.find(v =>
+          isAvailable(v) && matchesAttr(v, dimKey, valueId)
+        )
+        if (inStockAlt) {
+          return extractSelections(inStockAlt, keys)
         }
       }
 
       return next
     })
-  }, [product, dimensions])
+  }, [product, dimensions, matchesAttr, extractSelections])
 
   // Опции для конкретного измерения (с учётом доступности)
   const getOptionsForDimension = useCallback((dimKey) => {
@@ -113,6 +143,32 @@ export function useProductVariant(product) {
       .map((v) => ({ memory: v.memory, inStock: v.inStock }))
   }, [product, selectedColor])
 
+  // Доступность SIM для выбранного цвета + памяти (legacy compat)
+  const availableSimsForSelection = useMemo(() => {
+    if (!product?.variants) return []
+    return product.variants
+      .filter(v => {
+        if (selectedColor && (v.attributes?.color?.id || v.color?.id) !== selectedColor) return false
+        if (selectedMemory && v.memory !== selectedMemory) return false
+        return true
+      })
+      .map(v => ({ id: v.sim?.id || v.attributes?.sim?.id, name: v.sim?.name || v.attributes?.sim?.name, inStock: v.inStock }))
+      .filter(s => s.id)
+  }, [product, selectedColor, selectedMemory])
+
+  // Доступность опции dimension с учётом остальных выбранных (modern dimensions)
+  const getOptionAvailability = useCallback((dimKey, optionId) => {
+    if (!product?.variants) return false
+    return product.variants.some(v => {
+      if (v.attributes?.[dimKey]?.id !== optionId) return false
+      for (const [key, val] of Object.entries(selections)) {
+        if (key === dimKey || !val) continue
+        if (v.attributes?.[key]?.id !== val) return false
+      }
+      return isAvailable(v)
+    })
+  }, [product, selections])
+
   return {
     selections,
     setSelection,
@@ -130,5 +186,7 @@ export function useProductVariant(product) {
     memoryOptions,
     simOptions,
     availableMemoryForColor,
+    availableSimsForSelection,
+    getOptionAvailability,
   }
 }

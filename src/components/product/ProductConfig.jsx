@@ -9,6 +9,7 @@ export function ProductConfig({
   selections = {},
   onSelectionChange,
   getOptionsForDimension,
+  getOptionAvailability,
   // Legacy props
   colors,
   memoryOptions,
@@ -19,6 +20,7 @@ export function ProductConfig({
   onMemoryChange,
   onSimChange,
   availableMemoryForColor,
+  availableSimsForSelection,
 }) {
   // Динамический рендеринг если есть dimensions
   if (dimensions.length > 0) {
@@ -41,6 +43,7 @@ export function ProductConfig({
               options={getOptionsForDimension(dim.key)}
               selected={selections[dim.key]}
               onChange={(id) => onSelectionChange(dim.key, id)}
+              isOptionAvailable={getOptionAvailability ? (optionId) => getOptionAvailability(dim.key, optionId) : undefined}
             />
           )
         )}
@@ -74,6 +77,7 @@ export function ProductConfig({
           options={product.simOptions}
           selected={selectedSim}
           onChange={onSimChange}
+          availableForSelection={availableSimsForSelection}
         />
       )}
     </div>

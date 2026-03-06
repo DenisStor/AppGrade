@@ -2,6 +2,11 @@ import { iphoneProducts } from './iphone'
 import { macProducts } from './mac'
 import { samsungProducts } from './samsung'
 import { dysonProducts } from './dyson'
+import { airpodsProducts } from './airpods'
+import { watchProducts } from './watch'
+import { ipadProducts } from './ipad'
+import { sonyProducts } from './sony'
+import { accessoriesProducts } from './accessories'
 import { usedProducts, CONDITIONS } from './used'
 import headphonesImg from '../../assets/categories/headphones.jpg'
 import watchesImg from '../../assets/categories/watches.jpg'
@@ -16,6 +21,11 @@ export const allProducts = [
   ...macProducts,
   ...samsungProducts,
   ...dysonProducts,
+  ...airpodsProducts,
+  ...watchProducts,
+  ...ipadProducts,
+  ...sonyProducts,
+  ...accessoriesProducts,
 ]
 
 // Б/У товары
@@ -43,6 +53,12 @@ export const brands = {
     name: 'Dyson',
     logo: 'https://dyson-h.assetsadobe2.com/is/content/content/dam/dyson/icons/logo.svg',
   },
+  sony: {
+    id: 'sony',
+    slug: 'sony',
+    name: 'Sony',
+    logo: 'https://www.sony.com/en/SonyInfo/CorporateInfo/Data/images/sony_logo.png',
+  },
 }
 
 // Маппинг имя бренда → slug
@@ -50,6 +66,7 @@ const brandSlugMap = {
   'Apple': 'apple',
   'Samsung': 'samsung',
   'Dyson': 'dyson',
+  'Sony': 'sony',
 }
 
 // Получить бренды категории
@@ -101,11 +118,11 @@ export const categories = {
     id: 'laptops',
     name: 'Ноутбуки',
     slug: 'laptops',
-    description: 'MacBook Pro, MacBook Air, iMac',
+    description: 'MacBook Pro, MacBook Air',
     image: laptopsImg,
     href: '/catalog/laptops',
     seoTitle: 'Купить ноутбук в Калининграде — APPGRADE',
-    seoDescription: 'MacBook Pro, MacBook Air, iMac с гарантией. Доставка по Калининграду.',
+    seoDescription: 'MacBook Pro, MacBook Air с гарантией. Доставка по Калининграду.',
   },
   tablets: {
     id: 'tablets',
@@ -121,7 +138,7 @@ export const categories = {
     id: 'watches',
     name: 'Умные часы',
     slug: 'watches',
-    description: 'Apple Watch, Samsung Watch',
+    description: 'Apple Watch',
     image: watchesImg,
     href: '/catalog/watches',
     seoTitle: 'Купить умные часы в Калининграде — APPGRADE',
@@ -131,7 +148,7 @@ export const categories = {
     id: 'headphones',
     name: 'Наушники',
     slug: 'headphones',
-    description: 'AirPods, Galaxy Buds',
+    description: 'AirPods',
     image: headphonesImg,
     href: '/catalog/headphones',
     seoTitle: 'Купить наушники в Калининграде — APPGRADE',
@@ -141,28 +158,28 @@ export const categories = {
     id: 'dyson',
     name: 'Dyson',
     slug: 'dyson',
-    description: 'Supersonic, Airwrap, Corrale',
+    description: 'Стайлеры Dyson',
     image: dysonImg,
     href: '/catalog/dyson',
     seoTitle: 'Купить Dyson в Калининграде — APPGRADE',
-    seoDescription: 'Dyson Supersonic, Airwrap, Corrale с гарантией. Доставка по Калининграду.',
+    seoDescription: 'Стайлеры Dyson с гарантией. Доставка по Калининграду.',
   },
   accessories: {
     id: 'accessories',
     name: 'Аксессуары',
     slug: 'accessories',
-    description: 'Чехлы, зарядки, кабели',
+    description: 'Apple Pencil, чехлы, зарядки',
     image: accessoriesImg,
     imageContain: true,
     href: '/catalog/accessories',
     seoTitle: 'Купить аксессуары в Калининграде — APPGRADE',
-    seoDescription: 'Аксессуары Apple и Samsung с гарантией. Доставка по Калининграду.',
+    seoDescription: 'Аксессуары Apple с гарантией. Доставка по Калининграду.',
   },
   gaming: {
     id: 'gaming',
     name: 'Игровые консоли',
     slug: 'gaming',
-    description: 'PlayStation 5, DualSense',
+    description: 'PlayStation 5',
     image: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$',
     href: '/catalog/gaming',
     seoTitle: 'Купить игровую консоль в Калининграде — APPGRADE',
@@ -259,10 +276,20 @@ export const BRAND_DISPLAY_NAMES = {
   'apple-tablets': 'iPad',
   'apple-watches': 'Apple Watch',
   'apple-headphones': 'AirPods',
+  'apple-accessories': 'Apple',
   'samsung-smartphones': 'Samsung Galaxy',
-  'samsung-watches': 'Samsung Galaxy Watch',
-  'samsung-headphones': 'Samsung Galaxy Buds',
   'dyson-dyson': 'Dyson',
+  'sony-gaming': 'PlayStation',
 }
 
-export { iphoneProducts, macProducts, samsungProducts, dysonProducts }
+export {
+  iphoneProducts,
+  macProducts,
+  samsungProducts,
+  dysonProducts,
+  airpodsProducts,
+  watchProducts,
+  ipadProducts,
+  sonyProducts,
+  accessoriesProducts,
+}

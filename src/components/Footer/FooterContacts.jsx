@@ -33,7 +33,7 @@ export function FooterContacts() {
           <span>{CONTACTS.email}</span>
         </a>
         <div className="flex items-center gap-3 text-gray-400">
-          <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+          <span className="w-8 h-8 shrink-0 rounded-lg bg-white/5 flex items-center justify-center">
             <MapPin size={16} />
           </span>
           <span>{CONTACTS.fullAddress}</span>

@@ -11,10 +11,10 @@ const __dirname = dirname(__filename)
 const uploadsDir = join(__dirname, '..', 'uploads')
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-const MAX_SIZE = 5 * 1024 * 1024
+const MAX_SIZE = 10 * 1024 * 1024
 
 const SIZE_CONFIG = {
-  products:   { maxWidth: 1200, thumbWidth: 400 },
+  products:   { maxWidth: 2000, thumbWidth: 400 },
   banners:    { maxWidth: 1920 },
   blog:       { maxWidth: 1200 },
   categories: { maxWidth: 800 },
@@ -61,19 +61,19 @@ async function optimizeImage(filePath, type) {
     if (ext === '.png') {
       const buf = await pipeline.clone()
         .resize(resizeOpts)
-        .png({ quality: 80, compressionLevel: 9 })
+        .png({ quality: 100, compressionLevel: 9 })
         .toBuffer()
       await sharp(buf).toFile(filePath)
     } else if (ext === '.webp') {
       const buf = await pipeline.clone()
         .resize(resizeOpts)
-        .webp({ quality: 80 })
+        .webp({ quality: 100 })
         .toBuffer()
       await sharp(buf).toFile(filePath)
     } else {
       const buf = await pipeline.clone()
         .resize(resizeOpts)
-        .jpeg({ quality: 80, progressive: true })
+        .jpeg({ quality: 100, progressive: true })
         .toBuffer()
       await sharp(buf).toFile(filePath)
     }
@@ -83,7 +83,7 @@ async function optimizeImage(filePath, type) {
       const webpPath = filePath.replace(/\.(png|jpe?g)$/i, '.webp')
       await sharp(filePath)
         .resize(resizeOpts)
-        .webp({ quality: 80 })
+        .webp({ quality: 100 })
         .toFile(webpPath)
     }
 
@@ -92,7 +92,7 @@ async function optimizeImage(filePath, type) {
       const thumbPath = filePath.replace(/(\.[^.]+)$/, `-thumb.webp`)
       await sharp(filePath)
         .resize({ width: config.thumbWidth, withoutEnlargement: true })
-        .webp({ quality: 75 })
+        .webp({ quality: 90 })
         .toFile(thumbPath)
     }
   } catch (err) {
@@ -119,7 +119,7 @@ router.post('/', upload.single('file'), async (req, res) => {
 router.use((err, req, res, _next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ error: 'Файл слишком большой (макс. 5 МБ)' })
+      return res.status(400).json({ error: 'Файл слишком большой (макс. 10 МБ)' })
     }
     return res.status(400).json({ error: err.message })
   }

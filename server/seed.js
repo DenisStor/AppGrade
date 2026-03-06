@@ -63,6 +63,11 @@ const { iphoneProducts } = loadProductFile('iphone.js')
 const { macProducts } = loadProductFile('mac.js')
 const { samsungProducts } = loadProductFile('samsung.js')
 const { dysonProducts } = loadProductFile('dyson.js')
+const { airpodsProducts } = loadProductFile('airpods.js')
+const { watchProducts } = loadProductFile('watch.js')
+const { ipadProducts } = loadProductFile('ipad.js')
+const { sonyProducts } = loadProductFile('sony.js')
+const { accessoriesProducts } = loadProductFile('accessories.js')
 const { usedProducts } = loadProductFile('used.js')
 
 const allProducts = [
@@ -70,6 +75,11 @@ const allProducts = [
   ...(macProducts || []),
   ...(samsungProducts || []),
   ...(dysonProducts || []),
+  ...(airpodsProducts || []),
+  ...(watchProducts || []),
+  ...(ipadProducts || []),
+  ...(sonyProducts || []),
+  ...(accessoriesProducts || []),
 ]
 
 const allUsed = usedProducts || []
@@ -78,13 +88,13 @@ const { SERVICE_PRICING } = loadProductFile('service.js', dataDir)
 
 // Категории (хардкод — в исходниках используют Vite image imports)
 const categoriesData = [
-  { slug: 'smartphones', name: 'Смартфоны', description: 'iPhone, Samsung Galaxy', image_url: '/uploads/categories/smartphones.jpg' },
-  { slug: 'laptops', name: 'Ноутбуки', description: 'MacBook Pro, MacBook Air, iMac', image_url: '/uploads/categories/laptops.jpg' },
-  { slug: 'tablets', name: 'Планшеты', description: 'iPad Pro, iPad Air, iPad', image_url: '/uploads/categories/tablets.jpg' },
-  { slug: 'watches', name: 'Умные часы', description: 'Apple Watch, Samsung Watch', image_url: '/uploads/categories/watches.jpg' },
-  { slug: 'headphones', name: 'Наушники', description: 'AirPods, Galaxy Buds', image_url: '/uploads/categories/headphones.jpg' },
+  { slug: 'smartphones', name: 'Смартфоны', description: 'iPhone, Samsung Galaxy', image_url: '/uploads/categories/smartphones.png' },
+  { slug: 'laptops', name: 'Ноутбуки', description: 'MacBook Pro, MacBook Air, iMac', image_url: '/uploads/categories/laptops.png' },
+  { slug: 'tablets', name: 'Планшеты', description: 'iPad Pro, iPad Air, iPad', image_url: '/uploads/categories/tablets.png' },
+  { slug: 'watches', name: 'Умные часы', description: 'Apple Watch, Samsung Watch', image_url: '/uploads/categories/watches.png' },
+  { slug: 'headphones', name: 'Наушники', description: 'AirPods, Galaxy Buds', image_url: '/uploads/categories/headphones.png' },
   { slug: 'dyson', name: 'Dyson', description: 'Supersonic, Airwrap, Corrale', image_url: '/uploads/categories/dyson.png' },
-  { slug: 'accessories', name: 'Аксессуары', description: 'Чехлы, зарядки, кабели', image_url: '/uploads/categories/accessories.jpg' },
+  { slug: 'accessories', name: 'Аксессуары', description: 'Чехлы, зарядки, кабели', image_url: '/uploads/categories/accessories.png' },
   { slug: 'gaming', name: 'Игровые консоли', description: 'PlayStation 5, DualSense', image_url: '/uploads/categories/gaming.png' },
 ]
 
@@ -92,6 +102,7 @@ const brandsData = [
   { slug: 'apple', name: 'Apple', logo_url: 'https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png' },
   { slug: 'samsung', name: 'Samsung', logo_url: 'https://images.samsung.com/is/image/samsung/assets/global/about-us/brand/logo/mo/360_197_1.png' },
   { slug: 'dyson', name: 'Dyson', logo_url: 'https://dyson-h.assetsadobe2.com/is/content/content/dam/dyson/icons/logo.svg' },
+  { slug: 'sony', name: 'Sony', logo_url: 'https://www.sony.com/en/SonyInfo/CorporateInfo/Data/images/sony_logo.png' },
 ]
 
 const brandDisplayNames = {
@@ -101,9 +112,9 @@ const brandDisplayNames = {
   'apple-watches': 'Apple Watch',
   'apple-headphones': 'AirPods',
   'samsung-smartphones': 'Samsung Galaxy',
-  'samsung-watches': 'Samsung Galaxy Watch',
-  'samsung-headphones': 'Samsung Galaxy Buds',
+  'apple-accessories': 'Apple',
   'dyson-dyson': 'Dyson',
+  'sony-gaming': 'PlayStation',
 }
 
 // Новости → блог
@@ -137,6 +148,26 @@ const blogData = [
 // --- SEED ---
 
 const seedTransaction = db.transaction(() => {
+  // Сохраняем порядок изображений, настроенный в админке
+  console.log('Сохранение порядка изображений...')
+  const imageSortSnapshot = new Map()
+  try {
+    const rows = db.prepare(`
+      SELECT p.slug, pv.color_name, pi.url, pi.sort_order
+      FROM product_images pi
+      JOIN product_variants pv ON pi.variant_id = pv.id
+      JOIN products p ON pv.product_id = p.id
+    `).all()
+    for (const row of rows) {
+      imageSortSnapshot.set(`${row.slug}|${row.color_name}|${row.url}`, row.sort_order)
+    }
+    if (imageSortSnapshot.size > 0) {
+      console.log(`  Сохранено ${imageSortSnapshot.size} записей порядка изображений`)
+    }
+  } catch (e) {
+    // Таблицы могут не существовать при первом запуске
+  }
+
   console.log('Очистка БД...')
   db.exec(`
     DELETE FROM product_relations;
@@ -380,6 +411,27 @@ const seedTransaction = db.transaction(() => {
       }
     }
   })
+
+  // Восстанавливаем порядок изображений из snapshot
+  if (imageSortSnapshot.size > 0) {
+    console.log('Восстановление порядка изображений...')
+    const updateSort = db.prepare(`
+      UPDATE product_images SET sort_order = ?
+      WHERE id = (
+        SELECT pi.id FROM product_images pi
+        JOIN product_variants pv ON pi.variant_id = pv.id
+        JOIN products p ON pv.product_id = p.id
+        WHERE p.slug = ? AND pv.color_name = ? AND pi.url = ?
+      )
+    `)
+    let restored = 0
+    for (const [key, sortOrder] of imageSortSnapshot) {
+      const [slug, colorName, url] = key.split('|')
+      const result = updateSort.run(sortOrder, slug, colorName, url)
+      if (result.changes > 0) restored++
+    }
+    console.log(`  Восстановлено: ${restored} из ${imageSortSnapshot.size}`)
+  }
 
   // Итоги
   const stats = {

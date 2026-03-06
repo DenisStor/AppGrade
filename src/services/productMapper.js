@@ -56,6 +56,7 @@ export function mapProduct(raw) {
         price: v.price,
         oldPrice: v.old_price || null,
         inStock: v.stock_status === 'in_stock',
+        stockStatus: v.stock_status || 'in_stock',
         images: v.images || [],
       }
     }),

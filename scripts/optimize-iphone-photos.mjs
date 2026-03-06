@@ -1,26 +1,23 @@
-import sharp from 'sharp'
-import { readdir, mkdir, stat } from 'fs/promises'
-import { join, dirname, relative } from 'path'
+import { readdir, mkdir, stat, copyFile } from 'fs/promises'
+import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { existsSync } from 'fs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const SOURCE_DIR = join(process.env.HOME, 'Desktop', 'iPhone_Shop_Photos')
+const SOURCE_DIR = join(process.env.HOME, 'Desktop', 'iPhone_Shop_Photos_JPEG_NoBG')
 const OUTPUT_DIR = join(__dirname, '..', 'public', 'images', 'iphone')
-
-const MAX_WIDTH = 1200
-const JPEG_QUALITY = 80
 
 // Model folder → output prefix mapping
 const MODEL_MAP = {
   'iPhone_17_Pro_Max': '17-pro-max',
   'iPhone_17_Pro': '17-pro',
   'iPhone_17': '17',
+  'iPhone_Air': '17-air',
   'iPhone_16_Pro_Max': '16-pro-max',
   'iPhone_16_Pro': '16-pro',
   'iPhone_16_Plus': '16-plus',
   'iPhone_16': '16',
-  'iPhone_16e': '16e',
+  'iPhone_16e': '17e',
   'iPhone_15_Pro_Max': '15-pro-max',
   'iPhone_15': '15',
 }
@@ -46,13 +43,17 @@ const COLOR_MAP = {
   'Blue': 'blue',
   'Green': 'green',
   'Yellow': 'yellow',
+  'Cloud_White': 'cloud-white',
+  'Light_Gold': 'light-gold',
+  'Sky_Blue': 'sky-blue',
+  'Space_Black': 'space-black',
 }
 
 // Photo file → view mapping
 const VIEW_MAP = {
-  '01_front_back.jpg': 'front',
-  '02_side.jpg': 'side',
-  '03_camera_closeup.jpg': 'camera',
+  '01_front_back.png': 'front',
+  '02_side.png': 'side',
+  '03_camera_closeup.png': 'camera',
 }
 
 function formatSize(bytes) {
@@ -97,33 +98,24 @@ async function main() {
         if (!view) continue
 
         const srcPath = join(colorPath, file)
-        const outName = `${modelSlug}-${colorSlug}-${view}.jpg`
+        const outName = `${modelSlug}-${colorSlug}-${view}.png`
         const outPath = join(OUTPUT_DIR, outName)
 
         const srcStats = await stat(srcPath)
         totalOriginal += srcStats.size
 
-        const buf = await sharp(srcPath)
-          .rotate()
-          .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-          .jpeg({ quality: JPEG_QUALITY, progressive: true })
-          .toBuffer()
-
-        await sharp(buf).toFile(outPath)
-        totalOptimized += buf.length
+        await copyFile(srcPath, outPath)
         processed++
 
-        console.log(`  ${outName} — ${formatSize(srcStats.size)} → ${formatSize(buf.length)}`)
+        console.log(`  ${outName} — ${formatSize(srcStats.size)}`)
       }
     }
   }
 
   console.log(`\n${'='.repeat(50)}`)
-  console.log(`Processed: ${processed} files`)
-  console.log(`Original:  ${formatSize(totalOriginal)}`)
-  console.log(`Optimized: ${formatSize(totalOptimized)}`)
-  console.log(`Saved:     ${formatSize(totalOriginal - totalOptimized)} (${((1 - totalOptimized / totalOriginal) * 100).toFixed(1)}%)`)
-  console.log(`Output:    ${OUTPUT_DIR}`)
+  console.log(`Copied: ${processed} files`)
+  console.log(`Total:  ${formatSize(totalOriginal)}`)
+  console.log(`Output: ${OUTPUT_DIR}`)
 }
 
 main().catch(console.error)

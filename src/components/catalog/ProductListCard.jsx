@@ -5,6 +5,7 @@ import { ColorSwatch } from '../ui/ColorSwatch'
 import { getMinPrice, formatPrice, getAvailableColors } from '../../utils/product'
 
 export const ProductListCard = memo(function ProductListCard({ product, category, brand }) {
+  const isHeadphones = category === 'headphones'
   const [selectedColorId, setSelectedColorId] = useState(null)
 
   const colors = getAvailableColors(product)
@@ -29,16 +30,13 @@ export const ProductListCard = memo(function ProductListCard({ product, category
   return (
     <Link to={productUrl} className="group flex flex-col h-full">
       <div className="bg-[#F5F5F7] rounded-2xl overflow-hidden">
-        <div className="aspect-square flex items-center justify-center lg:overflow-hidden">
-          <div className="w-[78%] h-[78%]">
-            <ImageWithSkeleton
+        <div className="aspect-square overflow-hidden relative">
+            <img
               src={selectedVariant?.images?.[0]}
               alt={product.name}
-              className="w-full h-full object-contain lg:transition-transform lg:duration-300 lg:group-hover:scale-105"
-              sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-              widths={[400, 800, 1200]}
+              loading="lazy"
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${isHeadphones ? 'w-[150%] h-[150%]' : 'w-[250%] h-[250%]'} max-w-none max-h-none object-contain lg:transition-transform lg:duration-300 lg:group-hover:scale-105`}
             />
-          </div>
         </div>
 
         {colors.length > 1 && (
